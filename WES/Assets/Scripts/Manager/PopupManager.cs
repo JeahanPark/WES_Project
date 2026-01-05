@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,23 +6,19 @@ public class PopupManager : MonoSingleton<PopupManager>
 {
     private Canvas m_Canvas;
     private Transform m_PopupRoot;
+    private List<BasePopup> m_OpenedPopups = new List<BasePopup>();
 
     public override void Init()
     {
         base.Init();
-        CreateCanvas();
+    }
+
+    public void InitializeForScene(Canvas _canvas)
+    {
+        m_Canvas = _canvas;
+        m_OpenedPopups.Clear();
         CreatePopupRoot();
     }
-
-    private void CreateCanvas()
-    {
-        m_Canvas = Object.FindFirstObjectByType<Canvas>();
-        if (m_Canvas == null)
-        {
-            Debug.LogError("PopupManager: No Canvas found in scene!");
-        }
-    }
-
     private void CreatePopupRoot()
     {
         if (m_Canvas == null)
@@ -44,11 +41,13 @@ public class PopupManager : MonoSingleton<PopupManager>
         rectTransform.anchorMax = Vector2.one;
         rectTransform.sizeDelta = Vector2.zero;
         rectTransform.anchoredPosition = Vector2.zero;
+        rectTransform.localScale = Vector3.one;
+        rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, rectTransform.localPosition.y, 0f);
 
         m_PopupRoot = rectTransform;
     }
 
-    public T Open<T>() where T : MonoBehaviour
+    public T Open<T>() where T : BasePopup
     {
         string popupName = typeof(T).Name;
         GameObject popupObj = Managers.Resource.InstantiateAddressable(popupName, m_PopupRoot);
@@ -67,16 +66,35 @@ public class PopupManager : MonoSingleton<PopupManager>
             return null;
         }
 
+        PopupOpenPolicy policy = popup.GetOpenPolicy();
+        if (policy == PopupOpenPolicy.CloseAllAndOpen)
+        {
+            CloseAll();
+        }
+
+        m_OpenedPopups.Add(popup);
+
         return popup;
     }
 
-    public void Close(GameObject _popup)
+    public void Close(BasePopup _popup)
     {
         if (_popup == null)
-        {
             return;
-        }
 
-        Managers.Resource.Destroy(_popup);
+        m_OpenedPopups.Remove(_popup);
+        Managers.Resource.Destroy(_popup.gameObject);
+    }
+
+    public void CloseAll()
+    {
+        for (int i = m_OpenedPopups.Count - 1; i >= 0; i--)
+        {
+            if (m_OpenedPopups[i] != null)
+            {
+                Managers.Resource.Destroy(m_OpenedPopups[i].gameObject);
+            }
+        }
+        m_OpenedPopups.Clear();
     }
 }

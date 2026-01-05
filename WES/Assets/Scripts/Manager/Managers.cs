@@ -37,7 +37,6 @@ public abstract class MonoSingleton<T> : MonoBehaviour, IManager where T : MonoB
 
         s_Instance = this as T;
         DontDestroyOnLoad(gameObject);
-        Init();
     }
 
     protected virtual void OnDestroy()
@@ -45,6 +44,15 @@ public abstract class MonoSingleton<T> : MonoBehaviour, IManager where T : MonoB
         if (s_Instance == this)
         {
             Clear();
+            s_Instance = null;
+        }
+    }
+
+    protected virtual void OnApplicationQuit()
+    {
+        if (s_Instance == this)
+        {
+            s_Instance = null;
         }
     }
 
@@ -68,10 +76,6 @@ public abstract class Singleton<T> : IManager where T : class, new()
             if (s_Instance == null)
             {
                 s_Instance = new T();
-                if (s_Instance is IManager manager)
-                {
-                    manager.Init();
-                }
             }
             return s_Instance;
         }
@@ -97,4 +101,42 @@ public class Managers : MonoSingleton<Managers>
     public static GameNetworkManager Network => GameNetworkManager.Instance;
     public static PopupManager Popup => PopupManager.Instance;
     public static ResourceManager Resource => ResourceManager.Instance;
+
+    public override void Init()
+    {
+        base.Init();
+        InitializeManagers();
+    }
+
+    private void InitializeManagers()
+    {
+        // 각 매니저 명시적 초기화
+        Camera.Init();
+        Input.Init();
+        Info.Init();
+        Game.Init();
+        User.Init();
+        Network.Init();
+        Popup.Init();
+        Resource.Init();
+    }
+
+    public override void Clear()
+    {
+        base.Clear();
+        ClearManagers();
+    }
+
+    private void ClearManagers()
+    {
+        // 각 매니저 정리
+        if (Camera) Camera.Clear();
+        if (Input) Input.Clear();
+        Info?.Clear();
+        Game?.Clear();
+        User?.Clear();
+        if (Network) Network.Clear();
+        if (Popup) Popup.Clear();
+        Resource?.Clear();
+    }
 }

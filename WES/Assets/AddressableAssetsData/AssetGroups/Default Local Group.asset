@@ -15,10 +15,29 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: d1778c85a1ae05245b00c13659e2dbac
   m_SerializeEntries:
-  - m_GUID: b9df4dbae37ede244bd68cd2b4731c80
-    m_Address: Assets/Prefabs/Popup/LoginPopup.prefab
+  - m_GUID: a51780f7b3fce154982353aa08aef351
+    m_Address: LobbyPopup
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Popup
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b0b54c5e139a86e4886b305d428dc1b2
+    m_Address: Assets/Prefabs/Popup
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Popup
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9df4dbae37ede244bd68cd2b4731c80
+    m_Address: LoginPopup
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Popup
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ebf4fdbc467fafe4eb4f6401af1aba2c
+    m_Address: LobbyRoomPopup
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Popup
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: fea0d92fe5f398d48b29130fef48d979, type: 2}

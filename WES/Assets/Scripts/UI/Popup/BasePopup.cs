@@ -1,16 +1,21 @@
 using UnityEngine;
 
+public enum PopupOpenPolicy
+{
+    CloseAllAndOpen,   // 기존 팝업 전부 닫고 단독으로 연다
+    StackOnTop         // 기존 팝업 위에 쌓아서 연다
+}
+
 public class BasePopup : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField] private PopupOpenPolicy m_OpenPolicy = PopupOpenPolicy.StackOnTop;
 
-    // Update is called once per frame
-    void Update()
+    public PopupOpenPolicy GetOpenPolicy()
     {
-        
+        return m_OpenPolicy;
+    }
+    public virtual void Close()
+    {
+        PopupManager.Instance.Close(this);
     }
 }
