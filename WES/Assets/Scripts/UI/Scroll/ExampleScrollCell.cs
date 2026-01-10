@@ -9,17 +9,7 @@ public class ExampleScrollCell : BaseScrollCell<string>
     [SerializeField] private TMP_Text m_IndexText;
     [SerializeField] private TMP_Text m_DataText;
 
-    protected override void OnInitialize(int _index, string _data)
-    {
-        UpdateCellData(_index, _data);
-    }
-
     protected override void OnUpdateCell(int _index, string _data)
-    {
-        UpdateCellData(_index, _data);
-    }
-
-    private void UpdateCellData(int _index, string _data)
     {
         m_IndexText.text = $"Index: {_index}";
         m_DataText.text = _data ?? "No Data";

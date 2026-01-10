@@ -101,6 +101,7 @@ public class Managers : MonoSingleton<Managers>
     public static GameNetworkManager Network => GameNetworkManager.Instance;
     public static PopupManager Popup => PopupManager.Instance;
     public static ResourceManager Resource => ResourceManager.Instance;
+    public static ChatManager Chat => ChatManager.Instance;
 
     public override void Init()
     {
@@ -119,6 +120,7 @@ public class Managers : MonoSingleton<Managers>
         Network.Init();
         Popup.Init();
         Resource.Init();
+        Chat.Init();
     }
 
     public override void Clear()
@@ -138,5 +140,6 @@ public class Managers : MonoSingleton<Managers>
         if (Network) Network.Clear();
         if (Popup) Popup.Clear();
         Resource?.Clear();
+        if (Chat) Chat.Clear();
     }
 }

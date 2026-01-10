@@ -5,7 +5,10 @@
       "Bash(dotnet build:*)",
       "Bash(find:*)",
       "Bash(dir:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(\"C:\\\\Program Files\\\\Unity\\\\Hub\\\\Editor\\\\6000.0.29f1\\\\Editor\\\\Data\\\\Tools\\\\InputActionsCodeGenerator\\\\InputActionsCodeGenerator.exe\" -i \"InputSystem_Actions.inputactions\" -o \"InputSystem_Actions.cs\")",
+      "Bash(if not exist Resources mkdir Resources)",
+      "Bash(test:*)"
     ]
   }
 }

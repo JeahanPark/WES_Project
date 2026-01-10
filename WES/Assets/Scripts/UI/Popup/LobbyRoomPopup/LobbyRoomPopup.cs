@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UniRx;
+using System.Collections.Generic;
 
 public class LobbyRoomPopup : BasePopup
 {
@@ -18,6 +19,10 @@ public class LobbyRoomPopup : BasePopup
     [SerializeField] private TMP_Text m_Player3Text;
     [SerializeField] private TMP_Text m_Player4Text;
 
+    [Header("Chat")]
+    [SerializeField] private LobbyRoomChatScroll m_ChatScroll;
+    [SerializeField] private TMP_InputField m_ChatInputField;
+
     [Header("Actions")]
     [SerializeField] private Button m_StartGameButton;
 
@@ -26,24 +31,23 @@ public class LobbyRoomPopup : BasePopup
     private const string ME_SUFFIX = " (Me)";
 
     private CompositeDisposable m_Disposables = new CompositeDisposable();
+    private List<LobbyRoomChatScrollData> m_ChatMessages = new List<LobbyRoomChatScrollData>();
 
     private void Awake()
     {
         m_InviteButton.onClick.AddListener(OnClickInvite);
         m_StartGameButton.onClick.AddListener(OnClickStartGame);
+        m_ChatInputField.onSubmit.AddListener(OnChatInputSubmit);
 
         InitializeUI();
     }
 
     private void OnEnable()
     {
-        Managers.Network.OnPlayerJoinedAsObservable
-            .Subscribe(_ => UpdatePlayerSlots())
-            .AddTo(m_Disposables);
-
-        Managers.Network.OnPlayerLeftAsObservable
-            .Subscribe(_ => UpdatePlayerSlots())
-            .AddTo(m_Disposables);
+        Managers.Network.OnPlayerJoinedAsObservable.Subscribe(_ => UpdatePlayerSlots()).AddTo(m_Disposables);
+        Managers.Network.OnPlayerLeftAsObservable.Subscribe(_ => UpdatePlayerSlots()).AddTo(m_Disposables);
+        Managers.Chat.OnMessageReceivedAsObservable.Subscribe(OnChatMessageReceived).AddTo(m_Disposables);
+        Managers.Input.OnEnterAsObservable.Subscribe(_ => OnEnterKeyPressed()).AddTo(m_Disposables);
     }
 
     private void OnDisable()
@@ -55,6 +59,22 @@ public class LobbyRoomPopup : BasePopup
     {
         UpdateRoomCode();
         UpdatePlayerSlots();
+        TestAddChatMessages();
+    }
+
+    private void TestAddChatMessages()
+    {
+        for (int i = 1; i <= 20; i++)
+        {
+            LobbyRoomChatScrollData testData = new LobbyRoomChatScrollData
+            {
+                SenderId = (ulong)i,
+                Message = $"Test message {i}",
+                IsMyMessage = i % 3 == 0
+            };
+            m_ChatMessages.Add(testData);
+        }
+        m_ChatScroll.SetData(m_ChatMessages);
     }
 
     private void InitializeUI()
@@ -115,5 +135,41 @@ public class LobbyRoomPopup : BasePopup
         }
 
         Debug.Log("Starting game...");
+    }
+    private void OnChatInputSubmit(string _text)
+    {
+        SendChatMessage();
+    }
+
+    private void SendChatMessage()
+    {
+        if (string.IsNullOrWhiteSpace(m_ChatInputField.text))
+            return;
+
+        Managers.Chat.SendChatMessage(m_ChatInputField.text);
+        m_ChatInputField.text = string.Empty;
+        m_ChatInputField.ActivateInputField();
+    }
+
+    private void OnChatMessageReceived(ChatMessage _chatMessage)
+    {
+        ulong localClientId = Managers.Network.GetLocalClientId();
+
+        LobbyRoomChatScrollData chatData = new LobbyRoomChatScrollData
+        {
+            SenderId = _chatMessage.SenderId,
+            Message = _chatMessage.Message,
+            IsMyMessage = _chatMessage.SenderId == localClientId
+        };
+
+        m_ChatMessages.Add(chatData);
+        m_ChatScroll.SetData(m_ChatMessages);
+    }
+
+    private void OnEnterKeyPressed()
+    {
+        // InputField가 포커스되어 있을 때만 채팅 전송
+        if (m_ChatInputField.isFocused)
+            SendChatMessage();
     }
 }

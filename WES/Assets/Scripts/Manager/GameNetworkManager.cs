@@ -10,6 +10,8 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UniRx;
 
+[RequireComponent(typeof(NetworkManager))]
+[RequireComponent(typeof(UnityTransport))]
 public class GameNetworkManager : MonoSingleton<GameNetworkManager>
 {
     public string GetCode => m_Code;
@@ -35,6 +37,11 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
     {
         base.Init();
         EnsureInitInternalAsync().Forget();
+    }
+
+    private void Start()
+    {
+        SetupNetworkManager();
 
         if (NetworkManager.Singleton != null)
         {
@@ -46,6 +53,48 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
             NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
         }
+    }
+
+    private void SetupNetworkManager()
+    {
+        NetworkManager networkManager = GetComponent<NetworkManager>();
+        if (networkManager == null)
+        {
+            Debug.LogError("[GameNetworkManager] NetworkManager component not found.");
+            return;
+        }
+
+        UnityTransport transport = GetComponent<UnityTransport>();
+        if (transport == null)
+        {
+            Debug.LogError("[GameNetworkManager] UnityTransport component not found.");
+            return;
+        }
+
+        if (networkManager.NetworkConfig == null)
+        {
+            Debug.LogWarning("[GameNetworkManager] NetworkConfig is null. Creating new instance.");
+            networkManager.NetworkConfig = new Unity.Netcode.NetworkConfig();
+        }
+
+        networkManager.NetworkConfig.NetworkTransport = transport;
+        networkManager.RunInBackground = true;
+        networkManager.LogLevel = LogLevel.Normal;
+        networkManager.NetworkConfig.ProtocolVersion = 0;
+        networkManager.NetworkConfig.TickRate = 30;
+        networkManager.NetworkConfig.SpawnTimeout = 10f;
+        networkManager.NetworkConfig.EnsureNetworkVariableLengthSafety = true;
+        networkManager.NetworkConfig.RecycleNetworkIds = true;
+        networkManager.NetworkConfig.NetworkIdRecycleDelay = 120f;
+        networkManager.NetworkConfig.ForceSamePrefabs = true;
+        networkManager.NetworkConfig.EnableSceneManagement = true;
+        networkManager.NetworkConfig.LoadSceneTimeOut = 120;
+
+        transport.ConnectionData.Address = "127.0.0.1";
+        transport.ConnectionData.Port = 7777;
+        transport.ConnectionData.ServerListenAddress = "";
+
+        Debug.Log("[GameNetworkManager] NetworkManager and UnityTransport configured");
     }
 
     public override void Clear()
