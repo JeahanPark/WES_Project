@@ -73,7 +73,6 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
 
         if (networkManager.NetworkConfig == null)
         {
-            Debug.LogWarning("[GameNetworkManager] NetworkConfig is null. Creating new instance.");
             networkManager.NetworkConfig = new Unity.Netcode.NetworkConfig();
         }
 

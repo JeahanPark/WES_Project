@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class IntroController : MonoBehaviour
+public class IntroController : GameController<IntroController>
 {
     [SerializeField] private Canvas m_Canvas;
 

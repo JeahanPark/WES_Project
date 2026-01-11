@@ -17,7 +17,7 @@ public class LoginPopup : BasePopup
 
     private void OnClickStart()
     {
-        SceneManager.LoadScene("Lobby");
+        GameSceneManager.Instance.LoadScene(GameSceneManager.SCENE_LOBBY);
     }
 
     private void OnClickOption()

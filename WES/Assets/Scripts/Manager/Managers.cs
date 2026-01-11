@@ -93,7 +93,6 @@ public abstract class Singleton<T> : IManager where T : class, new()
 
 public class Managers : MonoSingleton<Managers>
 {
-    public static CameraManager Camera => CameraManager.Instance;
     public static InputManager Input => InputManager.Instance;
     public static InfoManager Info => InfoManager.Instance;
     public static GameManager Game => GameManager.Instance;
@@ -102,6 +101,7 @@ public class Managers : MonoSingleton<Managers>
     public static PopupManager Popup => PopupManager.Instance;
     public static ResourceManager Resource => ResourceManager.Instance;
     public static ChatManager Chat => ChatManager.Instance;
+    public static GameSceneManager Scene => GameSceneManager.Instance;
 
     public override void Init()
     {
@@ -112,7 +112,6 @@ public class Managers : MonoSingleton<Managers>
     private void InitializeManagers()
     {
         // 각 매니저 명시적 초기화
-        Camera.Init();
         Input.Init();
         Info.Init();
         Game.Init();
@@ -121,6 +120,7 @@ public class Managers : MonoSingleton<Managers>
         Popup.Init();
         Resource.Init();
         Chat.Init();
+        Scene.Init();
     }
 
     public override void Clear()
@@ -132,7 +132,6 @@ public class Managers : MonoSingleton<Managers>
     private void ClearManagers()
     {
         // 각 매니저 정리
-        if (Camera) Camera.Clear();
         if (Input) Input.Clear();
         Info?.Clear();
         Game?.Clear();
@@ -141,5 +140,6 @@ public class Managers : MonoSingleton<Managers>
         if (Popup) Popup.Clear();
         Resource?.Clear();
         if (Chat) Chat.Clear();
+        if (Scene) Scene.Clear();
     }
 }

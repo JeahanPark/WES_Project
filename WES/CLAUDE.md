@@ -41,6 +41,21 @@
 - Any method that returns `IEnumerator` MUST be treated as a coroutine.
 - `IEnumerator` methods WITHOUT the `Co` prefix are FORBIDDEN.
 
+## Architecture Rules
+- **Manager**: Accessible from any scene (global singleton, inherits `MonoSingleton`)
+  - Accessed globally through the `Managers` class
+  - Persists across scene transitions (`DontDestroyOnLoad`)
+  - Examples: `InputManager`, `PopupManager`, `GameManager`
+- **Controller**: Manages a single scene (exists only within the scene)
+  - Manages overall scene flow and logic
+  - Destroyed on scene transition
+  - Examples: `InGameController`, `LobbyController`
+- **Worker**: Manages a specific feature (handles individual functionality within a scene)
+  - Uses regular `MonoBehaviour`
+  - Focuses on a specific domain or feature
+  - Destroyed on scene transition
+  - Examples: `CameraWorker`, `UIWorker`
+
 ## Class Layout Order (MUST KEEP THIS ORDER)
 1. `const` fields
 2. `private static readonly` fields

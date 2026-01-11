@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using UniRx;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class LobbyRoomPopup : BasePopup
 {
@@ -135,6 +136,7 @@ public class LobbyRoomPopup : BasePopup
         }
 
         Debug.Log("Starting game...");
+        GameSceneManager.Instance.LoadScene(GameSceneManager.SCENE_INGAME);
     }
     private void OnChatInputSubmit(string _text)
     {
