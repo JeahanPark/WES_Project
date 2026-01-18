@@ -81,11 +81,36 @@ public class PlayerCharacter : CharacterBase
 
     private void HandleInput()
     {
+        if (Managers.Input == null)
+            return;
+
         // WASD 이동 처리
-        if (Managers.Input != null)
+        Vector2 moveInput = Managers.Input.MoveInput;
+        MoveWithDirection(moveInput);
+
+        // 마우스 방향으로 회전
+        UpdateMouseLook();
+
+        // 마우스 좌클릭 공격
+        if (Input.GetMouseButtonDown(0))
         {
-            Vector2 moveInput = Managers.Input.MoveInput;
-            MoveWithDirection(moveInput);
+            Attack();
+        }
+    }
+
+    private void UpdateMouseLook()
+    {
+        Camera mainCamera = Camera.main;
+        if (mainCamera == null)
+            return;
+
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        Plane groundPlane = new(Vector3.up, Vector3.zero);
+
+        if (groundPlane.Raycast(ray, out float distance))
+        {
+            Vector3 hitPoint = ray.GetPoint(distance);
+            LookAtPosition(hitPoint);
         }
     }
 }

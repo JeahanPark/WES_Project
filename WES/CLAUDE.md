@@ -55,6 +55,13 @@
   - Focuses on a specific domain or feature
   - Destroyed on scene transition
   - Examples: `CameraWorker`, `UIWorker`
+- **Component**: Handles a specific functionality attached to a game object
+  - Uses regular `MonoBehaviour`
+  - Attached to and manages a specific aspect of a single GameObject
+  - Focused on a single responsibility (animation, input, physics, etc.)
+  - Can be reused across different object types
+  - Destroyed with the GameObject it's attached to
+  - Examples: `CharacterAnimationComponent`, `HealthComponent`, `InteractionComponent`
 
 ## Class Layout Order (MUST KEEP THIS ORDER)
 1. `const` fields
