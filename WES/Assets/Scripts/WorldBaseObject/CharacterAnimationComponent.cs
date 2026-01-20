@@ -6,10 +6,13 @@ using UnityEngine;
 public class CharacterAnimationComponent : MonoBehaviour
 {
     private const string ATTACK_STATE_NAME = "Attack";
+    private const string INTERACT_STATE_NAME = "Interact";
+    private const int BASE_LAYER = 0;
     private const int UPPER_BODY_LAYER = 1;
 
     private static readonly int HASH_WALK = Animator.StringToHash("Walk");
     private static readonly int HASH_ATTACK = Animator.StringToHash("Attack");
+    private static readonly int HASH_INTERACT = Animator.StringToHash("Interact");
 
     [SerializeField] private Animator m_Animator;
 
@@ -55,5 +58,29 @@ public class CharacterAnimationComponent : MonoBehaviour
             return;
 
         m_Animator.SetTrigger(HASH_ATTACK);
+    }
+
+    public bool IsInteracting()
+    {
+        if (m_Animator == null)
+            return false;
+
+        if (m_Animator.IsInTransition(BASE_LAYER))
+        {
+            var next = m_Animator.GetNextAnimatorStateInfo(BASE_LAYER);
+            if (next.IsName(INTERACT_STATE_NAME))
+                return true;
+        }
+
+        var cur = m_Animator.GetCurrentAnimatorStateInfo(BASE_LAYER);
+        return cur.IsName(INTERACT_STATE_NAME);
+    }
+
+    public void PlayInteract()
+    {
+        if (m_Animator == null)
+            return;
+
+        m_Animator.SetTrigger(HASH_INTERACT);
     }
 }

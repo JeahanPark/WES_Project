@@ -41,7 +41,19 @@ public class CharacterBase : WorldEntityBase
 
         if (m_AnimationComponent.IsAttacking())
             return;
+
         m_AnimationComponent.PlayAttack();
+    }
+
+    public void Interact()
+    {
+        if (m_AnimationComponent == null)
+            return;
+
+        if (m_AnimationComponent.IsInteracting())
+            return;
+
+        m_AnimationComponent.PlayInteract();
     }
 
     private void UpdateMovement()

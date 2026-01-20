@@ -1,3 +1,4 @@
+using UniRx;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -65,6 +66,8 @@ public class PlayerCharacter : CharacterBase
             }
         }
 
+        SubscribeInputEvents();
+
         Debug.Log($"Local Player Setup: PlayerIndex {m_PlayerIndex.Value}");
     }
 
@@ -90,12 +93,15 @@ public class PlayerCharacter : CharacterBase
 
         // 마우스 방향으로 회전
         UpdateMouseLook();
+    }
 
-        // 마우스 좌클릭 공격
-        if (Input.GetMouseButtonDown(0))
-        {
-            Attack();
-        }
+    private void SubscribeInputEvents()
+    {
+        if (Managers.Input == null)
+            return;
+
+        Managers.Input.OnAttackAsObservable.Subscribe(_ => Attack()).AddTo(this);
+        Managers.Input.OnInteractAsObservable.Subscribe(_ => Interact()).AddTo(this);
     }
 
     private void UpdateMouseLook()

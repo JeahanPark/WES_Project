@@ -12,6 +12,7 @@ public class InputManager : MonoSingleton<InputManager>
     private InputAction m_MoveAction;
     private InputAction m_LookAction;
     private InputAction m_AttackAction;
+    private InputAction m_InteractAction;
     private InputAction m_Key1Action;
     private InputAction m_Key2Action;
     private InputAction m_SubmitAction;
@@ -20,6 +21,7 @@ public class InputManager : MonoSingleton<InputManager>
     private readonly Subject<Vector2> m_OnMove = new Subject<Vector2>();
     private readonly Subject<Vector2> m_OnLook = new Subject<Vector2>();
     private readonly Subject<Unit> m_OnAttack = new Subject<Unit>();
+    private readonly Subject<Unit> m_OnInteract = new Subject<Unit>();
     private readonly Subject<Unit> m_OnKey1 = new Subject<Unit>();
     private readonly Subject<Unit> m_OnKey2 = new Subject<Unit>();
     private readonly Subject<Unit> m_OnKey3 = new Subject<Unit>();
@@ -29,6 +31,7 @@ public class InputManager : MonoSingleton<InputManager>
     public IObservable<Vector2> OnMoveAsObservable => m_OnMove;
     public IObservable<Vector2> OnLookAsObservable => m_OnLook;
     public IObservable<Unit> OnAttackAsObservable => m_OnAttack;
+    public IObservable<Unit> OnInteractAsObservable => m_OnInteract;
     public IObservable<Unit> OnKey1AsObservable => m_OnKey1;
     public IObservable<Unit> OnKey2AsObservable => m_OnKey2;
     public IObservable<Unit> OnKey3AsObservable => m_OnKey3;
@@ -61,6 +64,7 @@ public class InputManager : MonoSingleton<InputManager>
         m_MoveAction = m_PlayerMap.FindAction("Move");
         m_LookAction = m_PlayerMap.FindAction("Look");
         m_AttackAction = m_PlayerMap.FindAction("Attack");
+        m_InteractAction = m_PlayerMap.FindAction("Interact");
         m_Key1Action = m_PlayerMap.FindAction("Previous");
         m_Key2Action = m_PlayerMap.FindAction("Next");
 
@@ -75,6 +79,7 @@ public class InputManager : MonoSingleton<InputManager>
         m_LookAction.canceled += OnLookCanceled;
 
         m_AttackAction.performed += OnAttackPerformed;
+        m_InteractAction.performed += OnInteractPerformed;
         m_Key1Action.performed += OnKey1Performed;
         m_Key2Action.performed += OnKey2Performed;
 
@@ -99,6 +104,7 @@ public class InputManager : MonoSingleton<InputManager>
             m_LookAction.canceled -= OnLookCanceled;
 
             m_AttackAction.performed -= OnAttackPerformed;
+            m_InteractAction.performed -= OnInteractPerformed;
             m_Key1Action.performed -= OnKey1Performed;
             m_Key2Action.performed -= OnKey2Performed;
 
@@ -114,6 +120,7 @@ public class InputManager : MonoSingleton<InputManager>
         m_OnMove?.Dispose();
         m_OnLook?.Dispose();
         m_OnAttack?.Dispose();
+        m_OnInteract?.Dispose();
         m_OnKey1?.Dispose();
         m_OnKey2?.Dispose();
         m_OnKey3?.Dispose();
@@ -147,6 +154,11 @@ public class InputManager : MonoSingleton<InputManager>
     private void OnAttackPerformed(InputAction.CallbackContext _context)
     {
         m_OnAttack.OnNext(Unit.Default);
+    }
+
+    private void OnInteractPerformed(InputAction.CallbackContext _context)
+    {
+        m_OnInteract.OnNext(Unit.Default);
     }
 
     private void OnKey1Performed(InputAction.CallbackContext _context)
