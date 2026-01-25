@@ -5,12 +5,12 @@ using Unity.Netcode;
 
 public class InGameController : GameController<InGameController>
 {
-    [Header("Components")]
     [SerializeField] private Canvas m_Canvas;
+    [Header("Worker")]
     [SerializeField] private InGameCameraWorker m_CameraWorker;
-
-    [Header("Player Prefab")]
-    [SerializeField] private PlayerCharacter m_PlayerPrefab;
+    [SerializeField] private InGamePlayWorker m_PlayWorker;
+    [SerializeField] private InGameHUDWorker m_HUDWorker;
+    [SerializeField] private InGameObjectDataWorker m_ObjectDataWorker;
 
     [Header("Test Mode")]
     [SerializeField] private bool m_TestMode = false;
@@ -20,16 +20,11 @@ public class InGameController : GameController<InGameController>
     private HashSet<ulong> m_ReadyClients = new();
     private bool m_IsGameStarted = false;
 
-    // Local Player
-    private PlayerCharacter m_LocalPlayer;
-
     public InGameCameraWorker CameraWorker => m_CameraWorker;
+    public InGamePlayWorker PlayWorker => m_PlayWorker;
+    public InGameHUDWorker HUDWorker => m_HUDWorker;
+    public InGameObjectDataWorker ObjectDataWorker => m_ObjectDataWorker;
     public bool IsGameStarted => m_IsGameStarted;
-
-    public void RegisterLocalPlayer(PlayerCharacter _player)
-    {
-        m_LocalPlayer = _player;
-    }
 
     private IEnumerator Start()
     {
@@ -64,6 +59,10 @@ public class InGameController : GameController<InGameController>
         yield return CoWaitForLocalPlayer();
 
         Debug.Log("[InGameController] Game started! Local player is ready.");
+
+        // 테스트: 10초 뒤 데미지 50
+        yield return new WaitForSeconds(2f);
+        m_PlayWorker.LocalPlayer.AddHP(-50);
     }
 
     private IEnumerator CoWaitForLocalPlayer()
@@ -71,9 +70,9 @@ public class InGameController : GameController<InGameController>
         Debug.Log("[InGameController] Waiting for local player spawn...");
 
         // 로컬 플레이어가 스폰될 때까지 대기
-        yield return new WaitUntil(() => m_LocalPlayer != null);
+        yield return new WaitUntil(() => m_PlayWorker.LocalPlayer != null);
 
-        Debug.Log($"[InGameController] Local player spawned: {m_LocalPlayer.GetPlayerIndex()}");
+        Debug.Log($"[InGameController] Local player spawned: {m_PlayWorker.LocalPlayer.GetPlayerIndex()}");
     }
 
     private IEnumerator CoInitializeTestMode()
@@ -119,50 +118,10 @@ public class InGameController : GameController<InGameController>
         // 모든 클라이언트가 준비되었는지 확인
         if (m_ReadyClients.Count >= connectedCount)
         {
-            Debug.Log("[InGameController] All clients ready! Spawning players...");
-            SpawnAllPlayers();
+            Debug.Log("[InGameController] All clients ready! Starting game...");
+            m_PlayWorker.StartGame();
             StartGameClientRpc();
         }
-    }
-
-    private void SpawnAllPlayers()
-    {
-        if (!Managers.Network.IsServer)
-            return;
-
-        if (m_PlayerPrefab == null)
-        {
-            Debug.LogError("[InGameController] Player prefab is not assigned!");
-            return;
-        }
-
-        ulong[] clientIds = Managers.Network.GetConnectedClientIds();
-        int playerIndex = 0;
-
-        foreach (ulong clientId in clientIds)
-        {
-            // 플레이어 스폰 위치 계산 (TODO: 실제 스폰 포인트 사용)
-            Vector3 spawnPosition = Vector3.zero + new Vector3(playerIndex * 2f, 0f, 0f);
-
-            // 플레이어 생성
-            PlayerCharacter player = Instantiate(m_PlayerPrefab, spawnPosition, Quaternion.identity);
-            player.gameObject.SetActive(true); // 프리팹이 비활성화 상태이므로 활성화
-
-            NetworkObject networkObject = player.GetComponent<NetworkObject>();
-
-            if (networkObject != null)
-            {
-                // 해당 클라이언트의 소유로 스폰
-                networkObject.SpawnAsPlayerObject(clientId);
-                player.SetPlayerIndex(playerIndex);
-
-                Debug.Log($"[InGameController] Spawned player {playerIndex} for client {clientId}");
-            }
-
-            playerIndex++;
-        }
-
-        Debug.Log($"[InGameController] All players spawned! Total: {playerIndex}");
     }
 
     [Rpc(SendTo.ClientsAndHost)]

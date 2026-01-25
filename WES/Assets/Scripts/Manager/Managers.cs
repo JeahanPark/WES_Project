@@ -95,8 +95,6 @@ public class Managers : MonoSingleton<Managers>
 {
     public static InputManager Input => InputManager.Instance;
     public static InfoManager Info => InfoManager.Instance;
-    public static GameManager Game => GameManager.Instance;
-    public static UserManager User => UserManager.Instance;
     public static GameNetworkManager Network => GameNetworkManager.Instance;
     public static PopupManager Popup => PopupManager.Instance;
     public static ResourceManager Resource => ResourceManager.Instance;
@@ -114,8 +112,6 @@ public class Managers : MonoSingleton<Managers>
         // 각 매니저 명시적 초기화
         Input.Init();
         Info.Init();
-        Game.Init();
-        User.Init();
         Network.Init();
         Popup.Init();
         Resource.Init();
@@ -134,8 +130,6 @@ public class Managers : MonoSingleton<Managers>
         // 각 매니저 정리
         if (Input) Input.Clear();
         Info?.Clear();
-        Game?.Clear();
-        User?.Clear();
         if (Network) Network.Clear();
         if (Popup) Popup.Clear();
         Resource?.Clear();

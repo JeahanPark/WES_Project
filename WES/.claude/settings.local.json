@@ -13,7 +13,8 @@
       "Bash(Get-ChildItem \"c:\\\\GitFork\\\\WES_Project\\\\WES\\\\Library\\\\PackageCache\" -Directory)",
       "Bash(Where-Object { $_Name -like \"*cinemachine*\" })",
       "Bash(Select-Object -First 1 Name)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(if exist \"c:\\\\GitFork\\\\WES_Project\\\\WES\\\\Assets\\\\Scripts\\\\Worker\\\\InGamePlayerDataWorker.cs.meta\" del \"c:\\\\GitFork\\\\WES_Project\\\\WES\\\\Assets\\\\Scripts\\\\Worker\\\\InGamePlayerDataWorker.cs.meta\")"
     ]
   }
 }

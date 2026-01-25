@@ -33,6 +33,16 @@ MonoBehaviour:
     m_SerializedLabels:
     - Popup
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bdc161c4a02a58745929928a16dfbce8
+    m_Address: Assets/GameResource/Character
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d57a24be1625e4241ba519a6e70135dd
+    m_Address: Test01Monster
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ebf4fdbc467fafe4eb4f6401af1aba2c
     m_Address: LobbyRoomPopup
     m_ReadOnly: 0
