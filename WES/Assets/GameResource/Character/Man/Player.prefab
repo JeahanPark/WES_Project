@@ -2239,7 +2239,7 @@ GameObject:
   - component: {fileID: 3163448375351285404}
   - component: {fileID: -6890128845267417269}
   - component: {fileID: 6540701504800891650}
-  - component: {fileID: 5760803795340003463}
+  - component: {fileID: 3448229036276244563}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2324,8 +2324,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  m_AnimationComponent: {fileID: 5760803795340003463}
---- !u!114 &5760803795340003463
+  m_AnimationComponent: {fileID: 3448229036276244563}
+--- !u!114 &3448229036276244563
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2334,7 +2334,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7664717173207742987}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfbfe3b7d6e1a064abdb2e036897f015, type: 3}
+  m_Script: {fileID: 11500000, guid: cd8782cb78269f04588227eb90e112ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Animator: {fileID: 3163448375351285404}

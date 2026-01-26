@@ -14,7 +14,9 @@
       "Bash(Where-Object { $_Name -like \"*cinemachine*\" })",
       "Bash(Select-Object -First 1 Name)",
       "Bash(tree:*)",
-      "Bash(if exist \"c:\\\\GitFork\\\\WES_Project\\\\WES\\\\Assets\\\\Scripts\\\\Worker\\\\InGamePlayerDataWorker.cs.meta\" del \"c:\\\\GitFork\\\\WES_Project\\\\WES\\\\Assets\\\\Scripts\\\\Worker\\\\InGamePlayerDataWorker.cs.meta\")"
+      "Bash(if exist \"c:\\\\GitFork\\\\WES_Project\\\\WES\\\\Assets\\\\Scripts\\\\Worker\\\\InGamePlayerDataWorker.cs.meta\" del \"c:\\\\GitFork\\\\WES_Project\\\\WES\\\\Assets\\\\Scripts\\\\Worker\\\\InGamePlayerDataWorker.cs.meta\")",
+      "WebFetch(domain:docs.unity3d.com)",
+      "WebFetch(domain:giannisakritidis.com)"
     ]
   }
 }

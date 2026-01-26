@@ -8,32 +8,26 @@ using UnityEngine;
 /// </summary>
 public class PlayerCharacter : CharacterBase
 {
-    public const int DEFAULT_MAX_HP = 100;
     public const int DEFAULT_MAX_COLD = 100;
+
+    [SerializeField] private PlayerAnimationComponent m_AnimationComponent;
 
     // Network Variables
     private readonly NetworkVariable<int> m_PlayerIndex = new();
-    private NetworkVariable<int> m_HP = new(DEFAULT_MAX_HP, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    private NetworkVariable<int> m_MaxHP = new(DEFAULT_MAX_HP, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<int> m_Cold = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<int> m_MaxCold = new(DEFAULT_MAX_COLD, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
-    private event System.Action<int, int> m_OnHPChanged;
     private event System.Action<int, int> m_OnColdChanged;
 
     // Properties
     public int GetPlayerIndex() => m_PlayerIndex.Value;
-    public int HP => m_HP.Value;
-    public int MaxHP => m_MaxHP.Value;
     public int Cold => m_Cold.Value;
     public int MaxCold => m_MaxCold.Value;
-    public bool IsDead => m_HP.Value <= 0;
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
 
-        m_HP.OnValueChanged += OnHPValueChanged;
         m_Cold.OnValueChanged += OnColdValueChanged;
 
         if (IsOwner)
@@ -46,23 +40,12 @@ public class PlayerCharacter : CharacterBase
     {
         base.OnNetworkDespawn();
 
-        m_HP.OnValueChanged -= OnHPValueChanged;
         m_Cold.OnValueChanged -= OnColdValueChanged;
 
         if (IsOwner)
         {
             CleanupLocalPlayer();
         }
-    }
-
-    public void SubscribeOnHPChanged(System.Action<int, int> _callback)
-    {
-        m_OnHPChanged += _callback;
-    }
-
-    public void UnsubscribeOnHPChanged(System.Action<int, int> _callback)
-    {
-        m_OnHPChanged -= _callback;
     }
 
     public void SubscribeOnColdChanged(System.Action<int, int> _callback)
@@ -73,18 +56,6 @@ public class PlayerCharacter : CharacterBase
     public void UnsubscribeOnColdChanged(System.Action<int, int> _callback)
     {
         m_OnColdChanged -= _callback;
-    }
-
-    public void SetHP(int _value)
-    {
-        if (!IsServer) return;
-        m_HP.Value = System.Math.Clamp(_value, 0, m_MaxHP.Value);
-    }
-
-    public void SetMaxHP(int _value)
-    {
-        if (!IsServer) return;
-        m_MaxHP.Value = _value;
     }
 
     public void SetCold(int _value)
@@ -100,25 +71,11 @@ public class PlayerCharacter : CharacterBase
     }
 
     /// <summary>
-    /// HP 증감 (양수: 힐, 음수: 데미지)
-    /// </summary>
-    public void AddHP(int _amount)
-    {
-        AddHPServerRpc(_amount);
-    }
-
-    /// <summary>
     /// Cold 증감 (양수: 증가, 음수: 감소)
     /// </summary>
     public void AddCold(int _amount)
     {
         AddColdServerRpc(_amount);
-    }
-
-    [Rpc(SendTo.Server)]
-    private void AddHPServerRpc(int _amount)
-    {
-        SetHP(m_HP.Value + _amount);
     }
 
     [Rpc(SendTo.Server)]
@@ -143,6 +100,36 @@ public class PlayerCharacter : CharacterBase
         {
             m_PlayerIndex.Value = _index;
         }
+    }
+
+    public override void Attack()
+    {
+        if (m_AnimationComponent == null)
+            return;
+
+        if (m_AnimationComponent.IsAttacking())
+            return;
+
+        m_AnimationComponent.PlayAttack();
+    }
+
+    public override void Interact()
+    {
+        if (m_AnimationComponent == null)
+            return;
+
+        if (m_AnimationComponent.IsInteracting())
+            return;
+
+        m_AnimationComponent.PlayInteract();
+    }
+
+    protected override void OnWalkChanged(bool _isWalking)
+    {
+        if (m_AnimationComponent == null)
+            return;
+
+        m_AnimationComponent.SetWalk(_isWalking);
     }
 
     private void SetupLocalPlayer()
@@ -229,11 +216,6 @@ public class PlayerCharacter : CharacterBase
             Vector3 hitPoint = ray.GetPoint(distance);
             LookAtPosition(hitPoint);
         }
-    }
-
-    private void OnHPValueChanged(int _prev, int _current)
-    {
-        m_OnHPChanged?.Invoke(_current, m_MaxHP.Value);
     }
 
     private void OnColdValueChanged(int _prev, int _current)

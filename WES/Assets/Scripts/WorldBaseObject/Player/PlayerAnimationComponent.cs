@@ -1,9 +1,10 @@
 using UnityEngine;
 
 /// <summary>
-/// 캐릭터의 애니메이션을 담당하는 컴포넌트
+/// 플레이어 캐릭터의 애니메이션을 담당하는 컴포넌트
+/// 상하체 분리 애니메이션을 위해 파라미터 방식 사용
 /// </summary>
-public class CharacterAnimationComponent : MonoBehaviour
+public class PlayerAnimationComponent : GameAnimationComponent
 {
     private const string ATTACK_STATE_NAME = "Attack";
     private const string INTERACT_STATE_NAME = "Interact";
@@ -14,73 +15,65 @@ public class CharacterAnimationComponent : MonoBehaviour
     private static readonly int HASH_ATTACK = Animator.StringToHash("Attack");
     private static readonly int HASH_INTERACT = Animator.StringToHash("Interact");
 
-    [SerializeField] private Animator m_Animator;
-
     private bool m_IsWalking;
-
-    public void Initialize(Animator _animator)
-    {
-        m_Animator = _animator;
-    }
 
     public bool IsAttacking()
     {
-        if (m_Animator == null)
+        if (Animator == null)
             return false;
 
-        // 현재 상태 + 전이중인 다음 상태 둘 다 체크
-        if (m_Animator.IsInTransition(UPPER_BODY_LAYER))
+        if (Animator.IsInTransition(UPPER_BODY_LAYER))
         {
-            var next = m_Animator.GetNextAnimatorStateInfo(UPPER_BODY_LAYER);
+            var next = Animator.GetNextAnimatorStateInfo(UPPER_BODY_LAYER);
             if (next.IsName(ATTACK_STATE_NAME))
                 return true;
         }
 
-        var cur = m_Animator.GetCurrentAnimatorStateInfo(UPPER_BODY_LAYER);
+        var cur = Animator.GetCurrentAnimatorStateInfo(UPPER_BODY_LAYER);
         return cur.IsName(ATTACK_STATE_NAME);
     }
 
     public void SetWalk(bool _isWalking)
     {
-        if (m_Animator == null)
+        if (Animator == null)
             return;
 
         if (m_IsWalking == _isWalking)
             return;
 
         m_IsWalking = _isWalking;
-        m_Animator.SetBool(HASH_WALK, m_IsWalking);
+        Animator.SetBool(HASH_WALK, m_IsWalking);
     }
 
     public void PlayAttack()
     {
-        if (m_Animator == null)
+        if (Animator == null)
             return;
 
-        m_Animator.SetTrigger(HASH_ATTACK);
+        Animator.SetTrigger(HASH_ATTACK);
     }
 
     public bool IsInteracting()
     {
-        if (m_Animator == null)
+        if (Animator == null)
             return false;
 
-        if (m_Animator.IsInTransition(BASE_LAYER))
+        if (Animator.IsInTransition(BASE_LAYER))
         {
-            var next = m_Animator.GetNextAnimatorStateInfo(BASE_LAYER);
+            var next = Animator.GetNextAnimatorStateInfo(BASE_LAYER);
             if (next.IsName(INTERACT_STATE_NAME))
                 return true;
         }
 
-        var cur = m_Animator.GetCurrentAnimatorStateInfo(BASE_LAYER);
+        var cur = Animator.GetCurrentAnimatorStateInfo(BASE_LAYER);
         return cur.IsName(INTERACT_STATE_NAME);
     }
 
     public void PlayInteract()
     {
-        if (m_Animator == null)
+        if (Animator == null)
             return;
 
-        m_Animator.SetTrigger(HASH_INTERACT);
+        Animator.SetTrigger(HASH_INTERACT);
     }
 }
