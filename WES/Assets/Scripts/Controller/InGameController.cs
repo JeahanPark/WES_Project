@@ -10,7 +10,9 @@ public class InGameController : GameController<InGameController>
     [SerializeField] private InGameCameraWorker m_CameraWorker;
     [SerializeField] private InGamePlayWorker m_PlayWorker;
     [SerializeField] private InGameHUDWorker m_HUDWorker;
+    [SerializeField] private InGameWorldUIWorker m_WorldUIWorker;
     [SerializeField] private InGameObjectDataWorker m_ObjectDataWorker;
+    [SerializeField] private InGameColliderWorker m_ColliderWorker;
 
     [Header("Test Mode")]
     [SerializeField] private bool m_TestMode = false;
@@ -23,7 +25,9 @@ public class InGameController : GameController<InGameController>
     public InGameCameraWorker CameraWorker => m_CameraWorker;
     public InGamePlayWorker PlayWorker => m_PlayWorker;
     public InGameHUDWorker HUDWorker => m_HUDWorker;
+    public InGameWorldUIWorker WorldUIWorker => m_WorldUIWorker;
     public InGameObjectDataWorker ObjectDataWorker => m_ObjectDataWorker;
+    public InGameColliderWorker ColliderWorker => m_ColliderWorker;
     public bool IsGameStarted => m_IsGameStarted;
 
     private IEnumerator Start()
@@ -41,8 +45,9 @@ public class InGameController : GameController<InGameController>
     private IEnumerator CoWaitForGameStart()
     {
         Managers.Popup.InitializeForScene(m_Canvas);
+        m_WorldUIWorker.Initialize(m_CameraWorker.GetCamera());
 
-        Debug.Log("[InGameController] Waiting for game start...");
+        GameDebug.Log("[InGameController] Waiting for game start...");
 
         // NetworkObject 스폰 대기
         yield return new WaitUntil(() => m_NetworkObject != null && m_NetworkObject.IsSpawned);
@@ -53,12 +58,12 @@ public class InGameController : GameController<InGameController>
         // 게임 시작 신호 대기
         yield return new WaitUntil(() => m_IsGameStarted);
 
-        Debug.Log("[InGameController] Game start signal received!");
+        GameDebug.Log("[InGameController] Game start signal received!");
 
         // 로컬 플레이어 스폰 대기
         yield return CoWaitForLocalPlayer();
 
-        Debug.Log("[InGameController] Game started! Local player is ready.");
+        GameDebug.Log("[InGameController] Game started! Local player is ready.");
 
         // 테스트: 10초 뒤 데미지 50
         yield return new WaitForSeconds(2f);
@@ -67,42 +72,42 @@ public class InGameController : GameController<InGameController>
 
     private IEnumerator CoWaitForLocalPlayer()
     {
-        Debug.Log("[InGameController] Waiting for local player spawn...");
+        GameDebug.Log("[InGameController] Waiting for local player spawn...");
 
         // 로컬 플레이어가 스폰될 때까지 대기
         yield return new WaitUntil(() => m_PlayWorker.LocalPlayer != null);
 
-        Debug.Log($"[InGameController] Local player spawned: {m_PlayWorker.LocalPlayer.GetPlayerIndex()}");
+        GameDebug.Log($"[InGameController] Local player spawned: {m_PlayWorker.LocalPlayer.GetPlayerIndex()}");
     }
 
     private IEnumerator CoInitializeTestMode()
     {
-        Debug.Log("[InGameController] TestMode enabled - Initializing all systems...");
+        GameDebug.Log("[InGameController] TestMode enabled - Initializing all systems...");
 
         // 1. Managers 초기화 (Intro 씬에서 하는 것과 동일)
         Managers.Instance.Init();
         yield return null;
 
         // 3. Network 초기화 대기
-        Debug.Log("[InGameController] Waiting for Network initialization...");
+        GameDebug.Log("[InGameController] Waiting for Network initialization...");
         yield return new WaitUntil(() => Managers.Network.IsInitialized);
 
         // 4. 테스트용 Relay Host 시작
-        Debug.Log("[InGameController] Starting test Relay host...");
+        GameDebug.Log("[InGameController] Starting test Relay host...");
         var hostTask = Managers.Network.HostRelayAsync(destroyCancellationToken);
         yield return new WaitUntil(() => hostTask.Status != Cysharp.Threading.Tasks.UniTaskStatus.Pending);
 
         if (hostTask.Status == Cysharp.Threading.Tasks.UniTaskStatus.Succeeded)
         {
             string roomCode = hostTask.GetAwaiter().GetResult();
-            Debug.Log($"[InGameController] TestMode room created with code: {roomCode}");
+            GameDebug.Log($"[InGameController] TestMode room created with code: {roomCode}");
         }
         else
         {
-            Debug.LogError("[InGameController] TestMode failed to create room");
+            GameDebug.LogError("[InGameController] TestMode failed to create room");
         }
 
-        Debug.Log("[InGameController] TestMode initialization complete!");
+        GameDebug.Log("[InGameController] TestMode initialization complete!");
     }
 
     [Rpc(SendTo.Server)]
@@ -113,12 +118,12 @@ public class InGameController : GameController<InGameController>
 
         m_ReadyClients.Add(_clientId);
         int connectedCount = Managers.Network.GetConnectedPlayerCount();
-        Debug.Log($"[InGameController] Client {_clientId} is ready. ({m_ReadyClients.Count}/{connectedCount})");
+        GameDebug.Log($"[InGameController] Client {_clientId} is ready. ({m_ReadyClients.Count}/{connectedCount})");
 
         // 모든 클라이언트가 준비되었는지 확인
         if (m_ReadyClients.Count >= connectedCount)
         {
-            Debug.Log("[InGameController] All clients ready! Starting game...");
+            GameDebug.Log("[InGameController] All clients ready! Starting game...");
             m_PlayWorker.StartGame();
             StartGameClientRpc();
         }
@@ -128,6 +133,6 @@ public class InGameController : GameController<InGameController>
     private void StartGameClientRpc()
     {
         m_IsGameStarted = true;
-        Debug.Log("[InGameController] Received game start signal!");
+        GameDebug.Log("[InGameController] Received game start signal!");
     }
 }

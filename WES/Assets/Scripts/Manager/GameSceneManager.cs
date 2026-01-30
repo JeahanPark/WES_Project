@@ -17,7 +17,7 @@ public class GameSceneManager : MonoSingleton<GameSceneManager>
     {
         if (m_IsLoadingScene)
         {
-            Debug.LogWarning($"[GameSceneManager] Already loading a scene. Cannot load {_sceneName}");
+            GameDebug.LogWarning($"[GameSceneManager] Already loading a scene. Cannot load {_sceneName}");
             return;
         }
 
@@ -28,7 +28,7 @@ public class GameSceneManager : MonoSingleton<GameSceneManager>
     {
         if (m_IsLoadingScene)
         {
-            Debug.LogWarning($"[GameSceneManager] Already loading a scene. Cannot load {_sceneName}");
+            GameDebug.LogWarning($"[GameSceneManager] Already loading a scene. Cannot load {_sceneName}");
             return;
         }
 

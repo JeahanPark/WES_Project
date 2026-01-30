@@ -28,7 +28,7 @@ public class InGameHUDWorker : MonoBehaviour
         SubscribeEvents();
         RefreshHUD();
 
-        Debug.Log($"[InGameHUDWorker] Local player set: PlayerIndex {_player.GetPlayerIndex()}");
+        GameDebug.Log($"[InGameHUDWorker] Local player set: PlayerIndex {_player.GetPlayerIndex()}");
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public class InGameHUDWorker : MonoBehaviour
         UnsubscribeEvents();
         m_LocalPlayer = null;
 
-        Debug.Log("[InGameHUDWorker] Local player cleared");
+        GameDebug.Log("[InGameHUDWorker] Local player cleared");
     }
 
     private void SubscribeEvents()

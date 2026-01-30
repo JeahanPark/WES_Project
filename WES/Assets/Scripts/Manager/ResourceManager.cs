@@ -14,7 +14,7 @@ public class ResourceManager : Singleton<ResourceManager>
         GameObject prefab = Load<GameObject>(_path);
         if (prefab == null)
         {
-            Debug.LogError($"Failed to load prefab at path: {_path}");
+            GameDebug.LogError($"Failed to load prefab at path: {_path}");
             return null;
         }
 
@@ -34,7 +34,7 @@ public class ResourceManager : Singleton<ResourceManager>
         }
         else
         {
-            Debug.LogError($"Failed to load addressable asset with key: {_key}");
+            GameDebug.LogError($"Failed to load addressable asset with key: {_key}");
             return null;
         }
     }
@@ -44,7 +44,7 @@ public class ResourceManager : Singleton<ResourceManager>
         GameObject prefab = LoadAddressable<GameObject>(_key);
         if (prefab == null)
         {
-            Debug.LogError($"Failed to load addressable prefab with key: {_key}");
+            GameDebug.LogError($"Failed to load addressable prefab with key: {_key}");
             return null;
         }
 

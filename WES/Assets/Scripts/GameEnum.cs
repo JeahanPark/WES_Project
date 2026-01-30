@@ -16,11 +16,15 @@ public enum AnimationType
     Idle,
     Walk,
     Attack,
-    Interact
+    Interact,
+    Hit,
+    Death
 }
 
 public enum MonsterStateType
 {
     Idle,
-    Walk
+    Walk,
+    Hit,
+    Death
 }

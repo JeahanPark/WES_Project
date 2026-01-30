@@ -16,6 +16,8 @@ public class CharacterBase : WorldEntityBase
     private NetworkVariable<int> m_MaxHP = new(DEFAULT_MAX_HP, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private event System.Action<int, int> m_OnHPChanged;
+    private event System.Action<int, CharacterBase> m_OnDamaged;
+    private event System.Action m_OnDeath;
 
     private Vector2 m_MoveDirection;
     private Vector3 m_LookTarget;
@@ -48,6 +50,26 @@ public class CharacterBase : WorldEntityBase
         m_OnHPChanged -= _callback;
     }
 
+    public void SubscribeOnDamaged(System.Action<int, CharacterBase> _callback)
+    {
+        m_OnDamaged += _callback;
+    }
+
+    public void UnsubscribeOnDamaged(System.Action<int, CharacterBase> _callback)
+    {
+        m_OnDamaged -= _callback;
+    }
+
+    public void SubscribeOnDeath(System.Action _callback)
+    {
+        m_OnDeath += _callback;
+    }
+
+    public void UnsubscribeOnDeath(System.Action _callback)
+    {
+        m_OnDeath -= _callback;
+    }
+
     public void SetHP(int _value)
     {
         if (!IsServer) return;
@@ -72,6 +94,72 @@ public class CharacterBase : WorldEntityBase
     private void AddHPServerRpc(int _amount)
     {
         SetHP(m_HP.Value + _amount);
+    }
+
+    /// <summary>
+    /// 데미지 받기 (공격자로부터)
+    /// </summary>
+    public void TakeDamage(int _damage, CharacterBase _attacker)
+    {
+        if (IsDead)
+            return;
+
+        ulong attackerId = _attacker != null ? _attacker.NetworkObjectId : 0;
+        TakeDamageServerRpc(_damage, attackerId);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void TakeDamageServerRpc(int _damage, ulong _attackerId)
+    {
+        if (IsDead)
+            return;
+
+        SetHP(m_HP.Value - _damage);
+
+        OnDamagedClientRpc(_damage, _attackerId);
+
+        if (IsDead)
+        {
+            OnDeathClientRpc();
+        }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void OnDamagedClientRpc(int _damage, ulong _attackerId)
+    {
+        CharacterBase attacker = null;
+
+        if (_attackerId != 0 && NetworkManager.Singleton != null)
+        {
+            if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(_attackerId, out var attackerObj))
+            {
+                attacker = attackerObj.GetComponent<CharacterBase>();
+            }
+        }
+
+        m_OnDamaged?.Invoke(_damage, attacker);
+        OnDamaged(_damage, attacker);
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void OnDeathClientRpc()
+    {
+        m_OnDeath?.Invoke();
+        OnDeath();
+    }
+
+    /// <summary>
+    /// 피격 시 호출 (자식 클래스에서 오버라이드)
+    /// </summary>
+    protected virtual void OnDamaged(int _damage, CharacterBase _attacker)
+    {
+    }
+
+    /// <summary>
+    /// 사망 시 호출 (자식 클래스에서 오버라이드)
+    /// </summary>
+    protected virtual void OnDeath()
+    {
     }
 
     protected virtual void Update()

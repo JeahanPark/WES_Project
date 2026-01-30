@@ -48,7 +48,7 @@ public class InGameCameraWorker : MonoBehaviour
 
         if (m_VirtualCamera == null)
         {
-            Debug.LogError("[InGameCameraWorker] CinemachineCamera not found!");
+            GameDebug.LogError("[InGameCameraWorker] CinemachineCamera not found!");
             return;
         }
 

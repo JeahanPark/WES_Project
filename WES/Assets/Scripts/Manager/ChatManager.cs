@@ -24,13 +24,13 @@ public class ChatManager : MonoSingleton<ChatManager>
     {
         if (string.IsNullOrWhiteSpace(_message))
         {
-            Debug.LogWarning("[ChatManager] Cannot send empty message");
+            GameDebug.LogWarning("[ChatManager] Cannot send empty message");
             return;
         }
 
         if (!Managers.Network.IsRunning)
         {
-            Debug.LogError("[ChatManager] Network is not running");
+            GameDebug.LogError("[ChatManager] Network is not running");
             return;
         }
 
@@ -55,7 +55,7 @@ public class ChatManager : MonoSingleton<ChatManager>
         };
 
         m_OnMessageReceived.OnNext(chatMessage);
-        Debug.Log($"[ChatManager] Message from {_senderId}: {_message}");
+        GameDebug.Log($"[ChatManager] Message from {_senderId}: {_message}");
     }
 }
 

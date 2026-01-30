@@ -2061,8 +2061,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  m_AnimationComponent: {fileID: 0}
   m_StateAnimationComponent: {fileID: 3585720746636348683}
+  m_StateMachine: {fileID: 7027161138349586120}
 --- !u!114 &3585720746636348683
 MonoBehaviour:
   m_ObjectHideFlags: 0

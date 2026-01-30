@@ -123,7 +123,7 @@ public class LobbyRoomPopup : BasePopup
         if (!string.IsNullOrEmpty(code))
         {
             GUIUtility.systemCopyBuffer = code;
-            Debug.Log($"Room code copied to clipboard: {code}");
+            GameDebug.Log($"Room code copied to clipboard: {code}");
         }
     }
 
@@ -131,11 +131,11 @@ public class LobbyRoomPopup : BasePopup
     {
         if (!Managers.Network.IsServer)
         {
-            Debug.LogWarning("Only host can start the game");
+            GameDebug.LogWarning("Only host can start the game");
             return;
         }
 
-        Debug.Log("Starting game...");
+        GameDebug.Log("Starting game...");
         GameSceneManager.Instance.LoadScene(GameSceneManager.SCENE_INGAME);
     }
     private void OnChatInputSubmit(string _text)

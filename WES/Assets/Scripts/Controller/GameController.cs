@@ -17,7 +17,7 @@ public abstract class GameController<T> : MonoBehaviour where T : GameController
                 s_Instance = FindFirstObjectByType<T>();
                 if (s_Instance == null)
                 {
-                    Debug.LogError($"[GameController] No instance of {typeof(T).Name} found in scene!");
+                    GameDebug.LogError($"[GameController] No instance of {typeof(T).Name} found in scene!");
                 }
             }
             return s_Instance;
@@ -28,7 +28,7 @@ public abstract class GameController<T> : MonoBehaviour where T : GameController
     {
         if (s_Instance != null && s_Instance != this)
         {
-            Debug.LogWarning($"[GameController] Multiple instances of {typeof(T).Name} detected. Destroying duplicate.");
+            GameDebug.LogWarning($"[GameController] Multiple instances of {typeof(T).Name} detected. Destroying duplicate.");
             Destroy(gameObject);
             return;
         }

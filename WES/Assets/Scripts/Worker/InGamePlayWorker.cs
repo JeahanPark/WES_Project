@@ -33,7 +33,7 @@ public class InGamePlayWorker : NetworkBehaviour
     {
         m_LocalPlayer = _player;
 
-        Debug.Log($"[InGamePlayWorker] Local player registered: PlayerIndex {_player.GetPlayerIndex()}");
+        GameDebug.Log($"[InGamePlayWorker] Local player registered: PlayerIndex {_player.GetPlayerIndex()}");
     }
 
     private void SpawnAllPlayers()
@@ -43,14 +43,14 @@ public class InGamePlayWorker : NetworkBehaviour
 
         if (m_PlayerPrefab == null)
         {
-            Debug.LogError("[InGamePlayWorker] Player prefab is not assigned!");
+            GameDebug.LogError("[InGamePlayWorker] Player prefab is not assigned!");
             return;
         }
 
         var objectDataWorker = InGameController.Instance.ObjectDataWorker;
         if (objectDataWorker == null)
         {
-            Debug.LogError("[InGamePlayWorker] ObjectDataWorker is not assigned!");
+            GameDebug.LogError("[InGamePlayWorker] ObjectDataWorker is not assigned!");
             return;
         }
 
@@ -74,13 +74,13 @@ public class InGamePlayWorker : NetworkBehaviour
                 // ObjectDataWorker에 등록
                 objectDataWorker.RegisterPlayer(player);
 
-                Debug.Log($"[InGamePlayWorker] Spawned player {playerIndex} for client {clientId}");
+                GameDebug.Log($"[InGamePlayWorker] Spawned player {playerIndex} for client {clientId}");
             }
 
             playerIndex++;
         }
 
-        Debug.Log($"[InGamePlayWorker] All players spawned! Total: {playerIndex}");
+        GameDebug.Log($"[InGamePlayWorker] All players spawned! Total: {playerIndex}");
     }
 
     private Vector3 GetSpawnPosition(int _playerIndex)

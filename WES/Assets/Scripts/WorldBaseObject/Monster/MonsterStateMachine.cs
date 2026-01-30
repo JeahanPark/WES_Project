@@ -71,12 +71,31 @@ public class MonsterStateMachine : MonoBehaviour
         }
     }
 
+    public void SetCollisionEnabled(bool _enabled)
+    {
+        var colliders = GetComponentsInChildren<Collider>();
+        foreach (var col in colliders)
+        {
+            col.enabled = _enabled;
+        }
+    }
+
+    public void RequestDespawn()
+    {
+        if (m_Owner.IsServer)
+        {
+            m_Owner.NetworkObject.Despawn();
+        }
+    }
+
     private void InitializeStates()
     {
         m_States = new Dictionary<MonsterStateType, MonsterStateBase>
         {
             { MonsterStateType.Idle, new MonsterIdleState() },
-            { MonsterStateType.Walk, new MonsterWalkState() }
+            { MonsterStateType.Walk, new MonsterWalkState() },
+            { MonsterStateType.Hit, new MonsterHitState() },
+            { MonsterStateType.Death, new MonsterDeathState() }
         };
 
         foreach (var state in m_States.Values)

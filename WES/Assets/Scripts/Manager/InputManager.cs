@@ -52,7 +52,7 @@ public class InputManager : MonoSingleton<InputManager>
 
         if (m_InputActionAsset == null)
         {
-            Debug.LogError("[InputManager] InputActionAsset not found! Please assign it in Inspector or place in Resources folder.");
+            GameDebug.LogError("[InputManager] InputActionAsset not found! Please assign it in Inspector or place in Resources folder.");
             return;
         }
 

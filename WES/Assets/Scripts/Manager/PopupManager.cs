@@ -54,14 +54,14 @@ public class PopupManager : MonoSingleton<PopupManager>
 
         if (popupObj == null)
         {
-            Debug.LogError($"Failed to open popup: {popupName}");
+            GameDebug.LogError($"Failed to open popup: {popupName}");
             return null;
         }
 
         T popup = popupObj.GetComponent<T>();
         if (popup == null)
         {
-            Debug.LogError($"Popup prefab does not have component: {typeof(T).Name}");
+            GameDebug.LogError($"Popup prefab does not have component: {typeof(T).Name}");
             Object.Destroy(popupObj);
             return null;
         }

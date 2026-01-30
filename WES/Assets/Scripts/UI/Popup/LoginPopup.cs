@@ -22,7 +22,7 @@ public class LoginPopup : BasePopup
 
     private void OnClickOption()
     {
-        Debug.Log("Option button clicked");
+        GameDebug.Log("Option button clicked");
     }
 
     private void OnClickExit()

@@ -37,14 +37,14 @@ public abstract class BaseScroll<TData> : ScrollRect
     {
         if (content == null)
         {
-            Debug.LogError($"[BaseScroll] Content RectTransform not found in ScrollRect on {gameObject.name}.");
+            GameDebug.LogError($"[BaseScroll] Content RectTransform not found in ScrollRect on {gameObject.name}.");
             return;
         }
 
         m_CellPrefab = content.GetComponentInChildren<BaseScrollCell<TData>>(true);
         if (m_CellPrefab == null)
         {
-            Debug.LogError($"[BaseScroll] CellPrefab not found in Content's children on {gameObject.name}. Please add a cell prefab as a child of Content.");
+            GameDebug.LogError($"[BaseScroll] CellPrefab not found in Content's children on {gameObject.name}. Please add a cell prefab as a child of Content.");
             return;
         }
 
@@ -66,7 +66,7 @@ public abstract class BaseScroll<TData> : ScrollRect
             if (m_CellSize <= 0f)
             {
                 m_CellSize = 100f;
-                Debug.LogWarning($"[BaseScroll] CellPrefab size is 0 or negative. Using default size: {m_CellSize}");
+                GameDebug.LogWarning($"[BaseScroll] CellPrefab size is 0 or negative. Using default size: {m_CellSize}");
             }
         }
 

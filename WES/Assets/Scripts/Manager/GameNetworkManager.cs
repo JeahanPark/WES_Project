@@ -60,14 +60,14 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
         NetworkManager networkManager = GetComponent<NetworkManager>();
         if (networkManager == null)
         {
-            Debug.LogError("[GameNetworkManager] NetworkManager component not found.");
+            GameDebug.LogError("[GameNetworkManager] NetworkManager component not found.");
             return;
         }
 
         UnityTransport transport = GetComponent<UnityTransport>();
         if (transport == null)
         {
-            Debug.LogError("[GameNetworkManager] UnityTransport component not found.");
+            GameDebug.LogError("[GameNetworkManager] UnityTransport component not found.");
             return;
         }
 
@@ -93,7 +93,7 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
         transport.ConnectionData.Port = 7777;
         transport.ConnectionData.ServerListenAddress = "";
 
-        Debug.Log("[GameNetworkManager] NetworkManager and UnityTransport configured");
+        GameDebug.Log("[GameNetworkManager] NetworkManager and UnityTransport configured");
     }
 
     public override void Clear()
@@ -109,7 +109,7 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
             if (NetworkManager.Singleton.IsListening)
             {
                 NetworkManager.Singleton.Shutdown();
-                Debug.Log("NetworkManager Shutdown");
+                GameDebug.Log("NetworkManager Shutdown");
             }
         }
 
@@ -118,7 +118,7 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
         if (AuthenticationService.Instance.IsSignedIn)
         {
             AuthenticationService.Instance.SignOut();
-            Debug.Log("Signed out from Authentication Service");
+            GameDebug.Log("Signed out from Authentication Service");
         }
 
         m_OnPlayerJoined?.Dispose();
@@ -173,7 +173,7 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
 
         if (NetworkManager.Singleton == null)
         {
-            Debug.LogError("[GameNetworkManager] NetworkManager.Singleton is null. Please add NetworkManager to the scene.");
+            GameDebug.LogError("[GameNetworkManager] NetworkManager.Singleton is null. Please add NetworkManager to the scene.");
             return null;
         }
 
@@ -198,7 +198,7 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
             NetworkManager.Singleton.StartHost();
 
         m_Code = code;
-        Debug.Log($"Relay Host started. Code={code}");
+        GameDebug.Log($"Relay Host started. Code={code}");
         return code;
     }
 
@@ -206,7 +206,7 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
     {
         if (string.IsNullOrWhiteSpace(_code))
         {
-            Debug.LogWarning("Join code is empty.");
+            GameDebug.LogWarning("Join code is empty.");
             return false;
         }
 
@@ -214,7 +214,7 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
 
         if (NetworkManager.Singleton == null)
         {
-            Debug.LogError("[GameNetworkManager] NetworkManager.Singleton is null. Please add NetworkManager to the scene.");
+            GameDebug.LogError("[GameNetworkManager] NetworkManager.Singleton is null. Please add NetworkManager to the scene.");
             return false;
         }
 
@@ -233,7 +233,7 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
         );
 
         bool ok = NetworkManager.Singleton.StartClient();
-        Debug.Log("Relay Client connecting...");
+        GameDebug.Log("Relay Client connecting...");
         return ok;
     }
 
@@ -268,12 +268,12 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
 
             m_IsInitialized = true;
             m_InitTcs.TrySetResult();
-            Debug.Log("[GameNetworkManager] Services & Auth initialized");
+            GameDebug.Log("[GameNetworkManager] Services & Auth initialized");
         }
         catch (Exception e)
         {
             m_InitTcs.TrySetException(e);
-            Debug.LogError($"[GameNetworkManager] EnsureInit failed: {e}");
+            GameDebug.LogError($"[GameNetworkManager] EnsureInit failed: {e}");
             throw;
         }
         finally
@@ -284,24 +284,24 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
 
     private void HandleServerStarted()
     {
-        Debug.Log("[GameNetworkManager] Server started");
+        GameDebug.Log("[GameNetworkManager] Server started");
 
         if (NetworkManager.Singleton.IsHost)
         {
             ulong hostClientId = NetworkManager.Singleton.LocalClientId;
-            Debug.Log($"[GameNetworkManager] Host registered as client: {hostClientId}");
+            GameDebug.Log($"[GameNetworkManager] Host registered as client: {hostClientId}");
         }
     }
 
     private void HandleClientConnected(ulong _clientId)
     {
-        Debug.Log($"[GameNetworkManager] Client connected: {_clientId}");
+        GameDebug.Log($"[GameNetworkManager] Client connected: {_clientId}");
         m_OnPlayerJoined.OnNext(Unit.Default);
     }
 
     private void HandleClientDisconnected(ulong _clientId)
     {
-        Debug.Log($"[GameNetworkManager] Client disconnected: {_clientId}");
+        GameDebug.Log($"[GameNetworkManager] Client disconnected: {_clientId}");
         m_OnPlayerLeft.OnNext(Unit.Default);
     }
 }

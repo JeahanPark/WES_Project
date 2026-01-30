@@ -157,7 +157,7 @@ public class PlayerCharacter : CharacterBase
 
         SubscribeInputEvents();
 
-        Debug.Log($"Local Player Setup: PlayerIndex {m_PlayerIndex.Value}");
+        GameDebug.Log($"Local Player Setup: PlayerIndex {m_PlayerIndex.Value}");
     }
 
     private void CleanupLocalPlayer()
@@ -177,7 +177,7 @@ public class PlayerCharacter : CharacterBase
             }
         }
 
-        Debug.Log($"Local Player Cleanup: PlayerIndex {m_PlayerIndex.Value}");
+        GameDebug.Log($"Local Player Cleanup: PlayerIndex {m_PlayerIndex.Value}");
     }
 
     private void HandleInput()

@@ -39,7 +39,7 @@ public class LobbyPopup : BasePopup
 
         if (string.IsNullOrEmpty(code))
         {
-            Debug.LogWarning("Room code is empty");
+            GameDebug.LogWarning("Room code is empty");
             return;
         }
 
@@ -58,17 +58,17 @@ public class LobbyPopup : BasePopup
             string roomCode = task.GetAwaiter().GetResult();
             if (!string.IsNullOrEmpty(roomCode))
             {
-                Debug.Log($"Room created with code: {roomCode}");
+                GameDebug.Log($"Room created with code: {roomCode}");
                 Managers.Popup.Open<LobbyRoomPopup>();
             }
             else
             {
-                Debug.LogError("Failed to create room");
+                GameDebug.LogError("Failed to create room");
             }
         }
         else
         {
-            Debug.LogError($"Error creating room: {task.AsTask().Exception}");
+            GameDebug.LogError($"Error creating room: {task.AsTask().Exception}");
         }
 
         m_CreateButton.interactable = true;
@@ -86,17 +86,17 @@ public class LobbyPopup : BasePopup
             bool success = task.GetAwaiter().GetResult();
             if (success)
             {
-                Debug.Log($"Successfully joined room with code: {_code}");
+                GameDebug.Log($"Successfully joined room with code: {_code}");
                 Managers.Popup.Open<LobbyRoomPopup>();
             }
             else
             {
-                Debug.LogError("Failed to join room");
+                GameDebug.LogError("Failed to join room");
             }
         }
         else
         {
-            Debug.LogError($"Error joining room: {task.AsTask().Exception}");
+            GameDebug.LogError($"Error joining room: {task.AsTask().Exception}");
         }
 
         m_CodeConfirmButton.interactable = true;
