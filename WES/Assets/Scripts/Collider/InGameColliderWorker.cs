@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 /// <summary>
@@ -6,26 +7,34 @@ using UnityEngine;
 /// - BaseColliderObject 풀링 관리
 /// - 충돌 객체 생성/반환
 /// - 지속 판정 콜라이더 업데이트
-/// - Gizmo 디버그 시각화
+/// - LineRenderer 디버그 시각화
 /// </summary>
 public class InGameColliderWorker : MonoBehaviour
 {
     private const int INITIAL_POOL_SIZE = 10;
-    private const float GIZMO_DISPLAY_DURATION = 0.5f;
+    private const int DEBUG_CIRCLE_POOL_SIZE = 10;
+    private const int DEBUG_CIRCLE_SEGMENTS = 32;
+    private const float DEBUG_CIRCLE_WIDTH = 0.05f;
+    private const float DEBUG_CIRCLE_HEIGHT = 0.05f;
+    private const float DEBUG_DISPLAY_DURATION = 0.5f;
 
     private Queue<BaseColliderObject> m_Pool;
     private List<BaseColliderObject> m_ActiveColliders;
-    private List<GizmoInfo> m_GizmoInfos;
+
+    private Queue<DebugCircle> m_DebugCirclePool;
+    private List<DebugCircle> m_ActiveDebugCircles;
+    private Material m_DebugMaterial;
 
     private void Awake()
     {
         InitializePool();
+        InitializeDebugCirclePool();
     }
 
     private void Update()
     {
         UpdateActiveColliders();
-        UpdateGizmos();
+        UpdateDebugCircles();
     }
 
     /// <summary>
@@ -41,7 +50,7 @@ public class InGameColliderWorker : MonoBehaviour
 
         if (collider.IsInstant)
         {
-            AddGizmoInfo(collider.Position, collider.Radius, collider.HasHit);
+            ShowDebugCircle(collider.Position, collider.Radius, collider.HasHit);
             ReturnCollider(collider);
         }
         else
@@ -79,13 +88,42 @@ public class InGameColliderWorker : MonoBehaviour
     {
         m_Pool = new Queue<BaseColliderObject>();
         m_ActiveColliders = new List<BaseColliderObject>();
-        m_GizmoInfos = new List<GizmoInfo>();
 
         for (int i = 0; i < INITIAL_POOL_SIZE; i++)
         {
             BaseColliderObject collider = new BaseColliderObject();
             m_Pool.Enqueue(collider);
         }
+    }
+
+    [Conditional("DEBUG_COLLIDER")]
+    private void InitializeDebugCirclePool()
+    {
+        m_DebugCirclePool = new Queue<DebugCircle>();
+        m_ActiveDebugCircles = new List<DebugCircle>();
+        m_DebugMaterial = new Material(Shader.Find("Sprites/Default"));
+
+        for (int i = 0; i < DEBUG_CIRCLE_POOL_SIZE; i++)
+        {
+            DebugCircle circle = CreateDebugCircleObject();
+            m_DebugCirclePool.Enqueue(circle);
+        }
+    }
+
+    private DebugCircle CreateDebugCircleObject()
+    {
+        GameObject obj = new GameObject("DebugCircle");
+        obj.transform.SetParent(transform);
+        obj.SetActive(false);
+
+        LineRenderer line = obj.AddComponent<LineRenderer>();
+        line.useWorldSpace = false;
+        line.startWidth = DEBUG_CIRCLE_WIDTH;
+        line.endWidth = DEBUG_CIRCLE_WIDTH;
+        line.material = m_DebugMaterial;
+        line.positionCount = DEBUG_CIRCLE_SEGMENTS + 1;
+
+        return new DebugCircle(obj, line);
     }
 
     private BaseColliderObject GetFromPool()
@@ -98,6 +136,22 @@ public class InGameColliderWorker : MonoBehaviour
         return new BaseColliderObject();
     }
 
+    private DebugCircle GetDebugCircleFromPool()
+    {
+        if (m_DebugCirclePool.Count > 0)
+        {
+            return m_DebugCirclePool.Dequeue();
+        }
+
+        return CreateDebugCircleObject();
+    }
+
+    private void ReturnDebugCircle(DebugCircle _circle)
+    {
+        _circle.Hide();
+        m_DebugCirclePool.Enqueue(_circle);
+    }
+
     private void UpdateActiveColliders()
     {
         for (int i = m_ActiveColliders.Count - 1; i >= 0; i--)
@@ -105,7 +159,7 @@ public class InGameColliderWorker : MonoBehaviour
             BaseColliderObject collider = m_ActiveColliders[i];
             collider.Update(Time.deltaTime);
 
-            AddGizmoInfo(collider.Position, collider.Radius, collider.HasHit);
+            ShowDebugCircle(collider.Position, collider.Radius, collider.HasHit);
 
             if (collider.IsExpired)
             {
@@ -115,52 +169,73 @@ public class InGameColliderWorker : MonoBehaviour
         }
     }
 
-    private void AddGizmoInfo(Vector3 _position, float _radius, bool _hasHit)
+    [Conditional("DEBUG_COLLIDER")]
+    private void ShowDebugCircle(Vector3 _position, float _radius, bool _hasHit)
     {
-        m_GizmoInfos.Add(new GizmoInfo
-        {
-            Position = _position,
-            Radius = _radius,
-            HasHit = _hasHit,
-            RemainingTime = GIZMO_DISPLAY_DURATION
-        });
+        DebugCircle circle = GetDebugCircleFromPool();
+        Color color = _hasHit ? Color.red : Color.yellow;
+        circle.Show(_position, _radius, color, DEBUG_DISPLAY_DURATION);
+        m_ActiveDebugCircles.Add(circle);
     }
 
-    private void UpdateGizmos()
+    [Conditional("DEBUG_COLLIDER")]
+    private void UpdateDebugCircles()
     {
-        for (int i = m_GizmoInfos.Count - 1; i >= 0; i--)
+        for (int i = m_ActiveDebugCircles.Count - 1; i >= 0; i--)
         {
-            GizmoInfo info = m_GizmoInfos[i];
-            info.RemainingTime -= Time.deltaTime;
+            DebugCircle circle = m_ActiveDebugCircles[i];
+            circle.Update(Time.deltaTime);
 
-            if (info.RemainingTime <= 0f)
+            if (circle.IsExpired)
             {
-                m_GizmoInfos.RemoveAt(i);
-            }
-            else
-            {
-                m_GizmoInfos[i] = info;
+                m_ActiveDebugCircles.RemoveAt(i);
+                ReturnDebugCircle(circle);
             }
         }
     }
 
-    private void OnDrawGizmos()
+    private class DebugCircle
     {
-        if (m_GizmoInfos == null)
-            return;
+        private GameObject m_Object;
+        private LineRenderer m_LineRenderer;
+        private float m_RemainingTime;
 
-        foreach (var info in m_GizmoInfos)
+        public bool IsExpired => m_RemainingTime <= 0f;
+
+        public DebugCircle(GameObject _object, LineRenderer _lineRenderer)
         {
-            Gizmos.color = info.HasHit ? Color.red : Color.yellow;
-            Gizmos.DrawWireSphere(info.Position, info.Radius);
+            m_Object = _object;
+            m_LineRenderer = _lineRenderer;
         }
-    }
 
-    private struct GizmoInfo
-    {
-        public Vector3 Position;
-        public float Radius;
-        public bool HasHit;
-        public float RemainingTime;
+        public void Show(Vector3 _position, float _radius, Color _color, float _duration)
+        {
+            m_Object.transform.position = new Vector3(_position.x, DEBUG_CIRCLE_HEIGHT, _position.z);
+            m_Object.SetActive(true);
+
+            m_LineRenderer.startColor = _color;
+            m_LineRenderer.endColor = _color;
+
+            for (int i = 0; i <= DEBUG_CIRCLE_SEGMENTS; i++)
+            {
+                float angle = i * 2f * Mathf.PI / DEBUG_CIRCLE_SEGMENTS;
+                float x = Mathf.Cos(angle) * _radius;
+                float z = Mathf.Sin(angle) * _radius;
+                m_LineRenderer.SetPosition(i, new Vector3(x, 0f, z));
+            }
+
+            m_RemainingTime = _duration;
+        }
+
+        public void Hide()
+        {
+            m_Object.SetActive(false);
+            m_RemainingTime = 0f;
+        }
+
+        public void Update(float _deltaTime)
+        {
+            m_RemainingTime -= _deltaTime;
+        }
     }
 }

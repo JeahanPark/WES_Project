@@ -3,13 +3,15 @@ using UnityEngine;
 
 /// <summary>
 /// 게임 진행을 관리하는 Worker
-/// - 플레이어 스폰
+/// - 플레이어/몬스터 스폰
 /// </summary>
 public class InGamePlayWorker : NetworkBehaviour
 {
-    [Header("Player")]
-    [SerializeField] private PlayerCharacter m_PlayerPrefab;
-    [SerializeField] private Transform[] m_SpawnPoints;
+    private const string PLAYER_PREFAB_KEY = "PlayerCharacter";
+    private const string TEST_MONSTER_PREFAB_KEY = "Test01Monster";
+
+    [Header("Spawn Points")]
+    [SerializeField] private Transform[] m_PlayerSpawnPoints;
 
     private PlayerCharacter m_LocalPlayer;
 
@@ -24,6 +26,7 @@ public class InGamePlayWorker : NetworkBehaviour
             return;
 
         SpawnAllPlayers();
+        SpawnTestMonster();
     }
 
     /// <summary>
@@ -36,14 +39,38 @@ public class InGamePlayWorker : NetworkBehaviour
         GameDebug.Log($"[InGamePlayWorker] Local player registered: PlayerIndex {_player.GetPlayerIndex()}");
     }
 
+    public void SpawnMonster(string _prefabKey, Vector3 _position)
+    {
+        if (!Managers.Network.IsServer)
+            return;
+
+        GameObject prefab = Managers.Resource.LoadAddressable<GameObject>(_prefabKey);
+        if (prefab == null)
+        {
+            GameDebug.LogError($"[InGamePlayWorker] Monster prefab not found: {_prefabKey}");
+            return;
+        }
+
+        GameObject instance = Instantiate(prefab, _position, Quaternion.identity);
+        instance.SetActive(true);
+
+        NetworkObject networkObject = instance.GetComponent<NetworkObject>();
+        if (networkObject != null)
+        {
+            networkObject.Spawn();
+            GameDebug.Log($"[InGamePlayWorker] Monster spawned: {_prefabKey} at {_position}");
+        }
+    }
+
     private void SpawnAllPlayers()
     {
         if (!Managers.Network.IsServer)
             return;
 
-        if (m_PlayerPrefab == null)
+        GameObject playerPrefab = Managers.Resource.LoadAddressable<GameObject>(PLAYER_PREFAB_KEY);
+        if (playerPrefab == null)
         {
-            GameDebug.LogError("[InGamePlayWorker] Player prefab is not assigned!");
+            GameDebug.LogError($"[InGamePlayWorker] Player prefab not found: {PLAYER_PREFAB_KEY}");
             return;
         }
 
@@ -59,19 +86,19 @@ public class InGamePlayWorker : NetworkBehaviour
 
         foreach (ulong clientId in clientIds)
         {
-            Vector3 spawnPosition = GetSpawnPosition(playerIndex);
+            Vector3 spawnPosition = GetPlayerSpawnPosition(playerIndex);
 
-            PlayerCharacter player = Instantiate(m_PlayerPrefab, spawnPosition, Quaternion.identity);
-            player.gameObject.SetActive(true);
+            GameObject instance = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
+            instance.SetActive(true);
 
-            NetworkObject networkObject = player.GetComponent<NetworkObject>();
+            PlayerCharacter player = instance.GetComponent<PlayerCharacter>();
+            NetworkObject networkObject = instance.GetComponent<NetworkObject>();
 
-            if (networkObject != null)
+            if (networkObject != null && player != null)
             {
                 networkObject.SpawnAsPlayerObject(clientId);
                 player.SetPlayerIndex(playerIndex);
 
-                // ObjectDataWorker에 등록
                 objectDataWorker.RegisterPlayer(player);
 
                 GameDebug.Log($"[InGamePlayWorker] Spawned player {playerIndex} for client {clientId}");
@@ -83,14 +110,22 @@ public class InGamePlayWorker : NetworkBehaviour
         GameDebug.Log($"[InGamePlayWorker] All players spawned! Total: {playerIndex}");
     }
 
-    private Vector3 GetSpawnPosition(int _playerIndex)
+    private void SpawnTestMonster()
     {
-        if (m_SpawnPoints != null && m_SpawnPoints.Length > 0)
+        if (!Managers.Network.IsServer)
+            return;
+
+        SpawnMonster(TEST_MONSTER_PREFAB_KEY, Vector3.zero);
+    }
+
+    private Vector3 GetPlayerSpawnPosition(int _index)
+    {
+        if (m_PlayerSpawnPoints != null && m_PlayerSpawnPoints.Length > 0)
         {
-            int spawnIndex = _playerIndex % m_SpawnPoints.Length;
-            return m_SpawnPoints[spawnIndex].position;
+            int spawnIndex = _index % m_PlayerSpawnPoints.Length;
+            return m_PlayerSpawnPoints[spawnIndex].position;
         }
 
-        return Vector3.zero + new Vector3(_playerIndex * 2f, 0f, 0f);
+        return Vector3.zero + new Vector3(_index * 2f, 0f, 0f);
     }
 }

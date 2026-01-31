@@ -11,6 +11,8 @@ public class CharacterBase : WorldEntityBase
     private const float MOVE_SPEED = 3.5f;
     private const float ROTATION_SPEED = 15f;
 
+    [SerializeField] private CharacterData m_CharacterData;
+
     // HP Network Variables
     private NetworkVariable<int> m_HP = new(DEFAULT_MAX_HP, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<int> m_MaxHP = new(DEFAULT_MAX_HP, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -19,6 +21,7 @@ public class CharacterBase : WorldEntityBase
     private event System.Action<int, CharacterBase> m_OnDamaged;
     private event System.Action m_OnDeath;
 
+    private CharacterWorldUI m_WorldUI;
     private Vector2 m_MoveDirection;
     private Vector3 m_LookTarget;
     private bool m_HasLookTarget;
@@ -27,17 +30,20 @@ public class CharacterBase : WorldEntityBase
     public int HP => m_HP.Value;
     public int MaxHP => m_MaxHP.Value;
     public bool IsDead => m_HP.Value <= 0;
+    public Vector3 WorldUIOffset => m_CharacterData != null ? m_CharacterData.WorldUIOffset : Vector3.up * 2f;
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         m_HP.OnValueChanged += OnHPValueChanged;
+        CreateWorldUI();
     }
 
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
         m_HP.OnValueChanged -= OnHPValueChanged;
+        ReleaseWorldUI();
     }
 
     public void SubscribeOnHPChanged(System.Action<int, int> _callback)
@@ -224,6 +230,38 @@ public class CharacterBase : WorldEntityBase
 
     private void OnHPValueChanged(int _prev, int _current)
     {
+        GameDebug.Log($"[CharacterBase] OnHPValueChanged: {_prev} -> {_current}, Subscribers: {m_OnHPChanged?.GetInvocationList()?.Length ?? 0}");
         m_OnHPChanged?.Invoke(_current, m_MaxHP.Value);
+    }
+
+    private void CreateWorldUI()
+    {
+        if (InGameController.Instance == null)
+        {
+            GameDebug.LogWarning($"[CharacterBase] CreateWorldUI failed: InGameController.Instance is null");
+            return;
+        }
+
+        if (InGameController.Instance.WorldUIWorker == null)
+        {
+            GameDebug.LogWarning($"[CharacterBase] CreateWorldUI failed: WorldUIWorker is null");
+            return;
+        }
+
+        m_WorldUI = InGameController.Instance.WorldUIWorker.CreateCharacterWorldUI(this, transform);
+        GameDebug.Log($"[CharacterBase] WorldUI created: {m_WorldUI != null}");
+    }
+
+    private void ReleaseWorldUI()
+    {
+        if (m_WorldUI == null)
+            return;
+
+        if (InGameController.Instance != null && InGameController.Instance.WorldUIWorker != null)
+        {
+            InGameController.Instance.WorldUIWorker.ReleaseWorldUI(m_WorldUI);
+        }
+
+        m_WorldUI = null;
     }
 }

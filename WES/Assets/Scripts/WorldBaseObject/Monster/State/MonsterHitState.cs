@@ -11,7 +11,7 @@ public class MonsterHitState : MonsterStateBase
 
     public override void Enter()
     {
-        m_StateMachine.Owner.StateAnimationComponent.PlayAnimation(AnimationType.Hit);
+        m_StateMachine.Owner.SetHitColor(true);
         m_Timer = 0f;
     }
 
@@ -27,5 +27,6 @@ public class MonsterHitState : MonsterStateBase
 
     public override void Exit()
     {
+        m_StateMachine.Owner.SetHitColor(false);
     }
 }

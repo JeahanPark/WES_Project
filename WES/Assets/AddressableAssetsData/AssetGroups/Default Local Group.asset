@@ -15,6 +15,16 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: d1778c85a1ae05245b00c13659e2dbac
   m_SerializeEntries:
+  - m_GUID: 09b414800fa827e44bf1367db448b0be
+    m_Address: Assets/GameResource/UI/WorldUI
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f0859bdacc3c714894a50003a684bc1
+    m_Address: CharacterWorldUI
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a51780f7b3fce154982353aa08aef351
     m_Address: LobbyPopup
     m_ReadOnly: 0
@@ -40,6 +50,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d57a24be1625e4241ba519a6e70135dd
     m_Address: Test01Monster
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd6b65dec6fd9784ea617695e87419ea
+    m_Address: PlayerCharacter
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

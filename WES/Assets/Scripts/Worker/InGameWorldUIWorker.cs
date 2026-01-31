@@ -9,7 +9,9 @@ using UnityEngine;
 public class InGameWorldUIWorker : MonoBehaviour
 {
     private Camera m_Camera;
+    private Camera m_UICamera;
     private Transform m_WorldUIRoot;
+    private RectTransform m_CanvasRectTransform;
 
     private Dictionary<Type, Queue<BaseWorldUI>> m_Pools = new();
     private Dictionary<Type, GameObject> m_Prefabs = new();
@@ -19,6 +21,10 @@ public class InGameWorldUIWorker : MonoBehaviour
     {
         m_Camera = _camera;
         m_WorldUIRoot = transform;
+
+        Canvas canvas = GetComponentInParent<Canvas>();
+        m_CanvasRectTransform = canvas.GetComponent<RectTransform>();
+        m_UICamera = canvas.worldCamera;
     }
 
     public void SetCamera(Camera _camera)
@@ -54,7 +60,7 @@ public class InGameWorldUIWorker : MonoBehaviour
 
         if (worldUI != null)
         {
-            worldUI.SetTarget(_target, m_Camera);
+            worldUI.SetTarget(_target, m_Camera, m_UICamera, m_CanvasRectTransform);
             worldUI.SetCharacter(_character);
         }
 

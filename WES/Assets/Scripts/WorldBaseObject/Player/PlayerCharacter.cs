@@ -9,8 +9,15 @@ using UnityEngine;
 public class PlayerCharacter : CharacterBase
 {
     public const int DEFAULT_MAX_COLD = 100;
+    private const float DEFAULT_ATTACK_RANGE = 1.5f;
+    private const int DEFAULT_ATTACK_DAMAGE = 10;
+    private const int DEFAULT_MAX_HIT_COUNT = 3;
 
     [SerializeField] private PlayerAnimationComponent m_AnimationComponent;
+    [SerializeField] private float m_AttackRange = DEFAULT_ATTACK_RANGE;
+    [SerializeField] private int m_AttackDamage = DEFAULT_ATTACK_DAMAGE;
+    [SerializeField] private int m_MaxHitCount = DEFAULT_MAX_HIT_COUNT;
+    [SerializeField] private LayerMask m_TargetLayer;
 
     // Network Variables
     private readonly NetworkVariable<int> m_PlayerIndex = new();
@@ -111,6 +118,26 @@ public class PlayerCharacter : CharacterBase
             return;
 
         m_AnimationComponent.PlayAttack();
+    }
+
+    public void OnAttackHit()
+    {
+        if (!IsOwner)
+            return;
+
+        if (InGameController.Instance == null || InGameController.Instance.ColliderWorker == null)
+            return;
+
+        Vector3 attackPosition = transform.position + transform.forward * (m_AttackRange * 0.5f);
+
+        InGameController.Instance.ColliderWorker.CreateCollider(
+            this,
+            attackPosition,
+            m_AttackRange,
+            m_AttackDamage,
+            m_MaxHitCount,
+            m_TargetLayer
+        );
     }
 
     public override void Interact()

@@ -823,7 +823,7 @@ PlayerSettings:
   webGLCloseOnQuit: 0
   webWasm2023: 0
   scriptingDefineSymbols:
-    Standalone: DEVELOPMENT_BUILD
+    Standalone: DEVELOPMENT_BUILD;DEBUG_COLLIDER
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
