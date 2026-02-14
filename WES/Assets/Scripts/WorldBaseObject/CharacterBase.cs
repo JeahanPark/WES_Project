@@ -37,6 +37,7 @@ public class CharacterBase : WorldEntityBase
         base.OnNetworkSpawn();
         m_HP.OnValueChanged += OnHPValueChanged;
         CreateWorldUI();
+        RegisterToCharacterRegistry();
     }
 
     public override void OnNetworkDespawn()
@@ -44,6 +45,23 @@ public class CharacterBase : WorldEntityBase
         base.OnNetworkDespawn();
         m_HP.OnValueChanged -= OnHPValueChanged;
         ReleaseWorldUI();
+        UnregisterFromCharacterRegistry();
+    }
+
+    private void RegisterToCharacterRegistry()
+    {
+        if (InGameController.Instance == null || InGameController.Instance.ObjectDataWorker == null)
+            return;
+
+        InGameController.Instance.ObjectDataWorker.GetCharacterRegistry().RegisterCharacter(this);
+    }
+
+    private void UnregisterFromCharacterRegistry()
+    {
+        if (InGameController.Instance == null || InGameController.Instance.ObjectDataWorker == null)
+            return;
+
+        InGameController.Instance.ObjectDataWorker.GetCharacterRegistry().UnregisterCharacter(NetworkObjectId);
     }
 
     public void SubscribeOnHPChanged(System.Action<int, int> _callback)

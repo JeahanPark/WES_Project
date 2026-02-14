@@ -1,0 +1,4 @@
+Id.INT,Name.STRING,IsStackable.BOOL,MaxStack.INT
+1,나무,true,99
+2,돌,true,99
+3,검,false,1

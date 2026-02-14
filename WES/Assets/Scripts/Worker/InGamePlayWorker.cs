@@ -74,13 +74,6 @@ public class InGamePlayWorker : NetworkBehaviour
             return;
         }
 
-        var objectDataWorker = InGameController.Instance.ObjectDataWorker;
-        if (objectDataWorker == null)
-        {
-            GameDebug.LogError("[InGamePlayWorker] ObjectDataWorker is not assigned!");
-            return;
-        }
-
         ulong[] clientIds = Managers.Network.GetConnectedClientIds();
         int playerIndex = 0;
 
@@ -98,8 +91,6 @@ public class InGamePlayWorker : NetworkBehaviour
             {
                 networkObject.SpawnAsPlayerObject(clientId);
                 player.SetPlayerIndex(playerIndex);
-
-                objectDataWorker.RegisterPlayer(player);
 
                 GameDebug.Log($"[InGamePlayWorker] Spawned player {playerIndex} for client {clientId}");
             }

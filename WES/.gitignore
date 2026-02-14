@@ -101,3 +101,9 @@ InitTestScene*.unity*
 
 
 .vscode/
+
+# MCP
+.mcp.json
+MCP/
+*.ir.json
+*.ir.json.meta
