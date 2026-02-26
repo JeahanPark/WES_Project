@@ -25,12 +25,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a51780f7b3fce154982353aa08aef351
-    m_Address: LobbyPopup
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Popup
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b0b54c5e139a86e4886b305d428dc1b2
     m_Address: Assets/GameResource/Popup
     m_ReadOnly: 0

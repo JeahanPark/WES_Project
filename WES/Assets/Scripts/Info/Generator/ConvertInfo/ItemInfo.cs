@@ -6,6 +6,7 @@ public class ItemInfo
 {
     public int Id;
     public string Name;
+    public string Description;
     public bool IsStackable;
     public int MaxStack;
 }

@@ -3,9 +3,11 @@ using UnityEngine;
 public class InventoryPopup : BasePopup
 {
     [SerializeField] private InventoryScroll m_InventoryScroll;
+    [SerializeField] private InventoryDetailPanel m_DetailPanel;
 
     private void Start()
     {
+        m_InventoryScroll.SetCellClickCallback(OnCellClicked);
         RefreshInventory();
     }
 
@@ -23,5 +25,10 @@ public class InventoryPopup : BasePopup
     public void OnClickClose()
     {
         Close();
+    }
+
+    private void OnCellClicked(ItemData _itemData)
+    {
+        m_DetailPanel.Show(_itemData);
     }
 }

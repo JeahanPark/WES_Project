@@ -49,6 +49,7 @@ public class InventoryScrollCell : BaseScrollCell<ItemData>
         if (m_ItemData == null)
             return;
 
-        GameDebug.Log($"[InventoryScrollCell] Clicked: {m_ItemData.Info.Name} x{m_ItemData.Count}");
+        var scroll = GetComponentInParent<InventoryScroll>(true);
+        scroll?.NotifyCellClicked(m_ItemData);
     }
 }
