@@ -1,200 +1,180 @@
 {
   "name": "InventoryPopup",
   "type": "panel",
-  "anchor": "center",
-  "size": [900, 600],
+  "anchor": "stretch",
+  "size": [0, 0],
   "position": [0, 0],
-  "color": [0.1, 0.1, 0.1, 0.92],
+  "color": [0, 0, 0, 0.6],
   "children": [
     {
-      "name": "BG",
+      "name": "InventoryWindow",
       "type": "panel",
-      "anchor": "stretch",
-      "size": [0, 0],
+      "anchor": "center",
+      "size": [760, 520],
       "position": [0, 0],
-      "color": [0.13, 0.13, 0.15, 1.0],
+      "color": [0.15, 0.15, 0.18, 1],
       "children": [
         {
-          "name": "Title",
-          "type": "text",
-          "anchor": "top-left",
-          "position": [30, -30],
-          "size": [200, 40],
-          "color": [0.9, 0.85, 0.7, 1],
-          "text": "Inventory",
-          "fontSize": 26,
-          "fontStyle": 0,
-          "hAlign": 1
+          "name": "TitleBar",
+          "type": "panel",
+          "anchor": "top-stretch",
+          "size": [0, 52],
+          "position": [0, 0],
+          "color": [0.1, 0.1, 0.12, 1],
+          "children": [
+            {
+              "name": "TitleText",
+              "type": "text",
+              "anchor": "center",
+              "size": [300, 40],
+              "position": [0, 0],
+              "color": [0.9, 0.85, 0.6, 1],
+              "text": "인벤토리",
+              "fontSize": 26,
+              "fontStyle": 1,
+              "hAlign": 2
+            },
+            {
+              "name": "CloseButton",
+              "type": "button",
+              "anchor": "top-right",
+              "size": [44, 44],
+              "position": [-4, -4],
+              "color": [0.7, 0.2, 0.2, 1],
+              "text": "X",
+              "fontSize": 20,
+              "fontStyle": 1,
+              "hAlign": 2
+            }
+          ]
         },
         {
-          "name": "CloseButton",
-          "type": "button",
-          "anchor": "top-right",
-          "position": [-20, -20],
-          "size": [36, 36],
-          "color": [0.5, 0.2, 0.2, 1],
-          "text": "X",
-          "fontSize": 18,
-          "fontStyle": 1,
-          "hAlign": 2
-        }
-      ]
-    },
-    {
-      "name": "InventoryScrollArea",
-      "type": "panel",
-      "anchor": "top-left",
-      "position": [20, -60],
-      "size": [590, 510],
-      "color": [0.08, 0.08, 0.1, 0.8],
-      "children": [
-        {
-          "name": "InventoryScroll",
+          "name": "ContentArea",
           "type": "panel",
           "anchor": "stretch",
-          "position": [0, 0],
-          "size": [0, 0],
+          "size": [0, -52],
+          "position": [0, -26],
           "color": [0, 0, 0, 0],
           "children": [
             {
-              "name": "Viewport",
-              "type": "panel",
-              "anchor": "stretch",
-              "position": [0, 0],
-              "size": [0, 0],
-              "color": [0, 0, 0, 0],
+              "name": "InventoryScroll",
+              "type": "scroll",
+              "anchor": "left-stretch",
+              "size": [480, 0],
+              "position": [-140, 0],
+              "color": [0.12, 0.12, 0.14, 1],
+              "cellSize": 80,
+              "spacing": 10,
               "children": [
                 {
-                  "name": "Content",
+                  "name": "IconImage",
+                  "type": "image",
+                  "anchor": "center",
+                  "size": [60, 60],
+                  "position": [0, 0],
+                  "color": [1, 1, 1, 1],
+                  "sprite": "UISprite"
+                },
+                {
+                  "name": "CountText",
+                  "type": "text",
+                  "anchor": "bottom-right",
+                  "size": [30, 20],
+                  "position": [-5, 5],
+                  "color": [1, 1, 1, 1],
+                  "text": "0",
+                  "fontSize": 14,
+                  "fontStyle": 0,
+                  "hAlign": 4
+                }
+              ]
+            },
+            {
+              "name": "DetailPanel",
+              "type": "panel",
+              "anchor": "right-stretch",
+              "size": [280, 0],
+              "position": [0, 0],
+              "color": [0.18, 0.16, 0.13, 1],
+              "children": [
+                {
+                  "name": "DetailTop",
                   "type": "panel",
-                  "anchor": "top-left",
-                  "position": [5, -5],
-                  "size": [560, 500],
+                  "anchor": "top-stretch",
+                  "size": [0, 100],
+                  "position": [0, 0],
                   "color": [0, 0, 0, 0],
                   "children": [
                     {
-                      "name": "InventoryScrollCell",
+                      "name": "IconImage",
+                      "type": "image",
+                      "anchor": "left-stretch",
+                      "size": [80, 0],
+                      "position": [0, 0],
+                      "color": [1, 1, 1, 1],
+                      "sprite": "UISprite"
+                    },
+                    {
+                      "name": "InfoArea",
                       "type": "panel",
-                      "anchor": "top-left",
-                      "position": [5, -5],
-                      "size": [78, 78],
-                      "color": [0.18, 0.18, 0.22, 1.0],
+                      "anchor": "stretch",
+                      "size": [-90, 0],
+                      "position": [45, 0],
+                      "color": [0, 0, 0, 0],
                       "children": [
                         {
-                          "name": "IconImage",
-                          "type": "image",
-                          "anchor": "center",
-                          "position": [0, 8],
-                          "size": [52, 52],
-                          "color": [1, 1, 1, 1],
-                          "sprite": "UISprite",
-                          "raycastTarget": false
+                          "name": "NameText",
+                          "type": "text",
+                          "anchor": "top-stretch",
+                          "size": [100, 36],
+                          "position": [0, 0],
+                          "color": [0.9, 0.85, 0.6, 1],
+                          "text": "아이템 이름",
+                          "fontSize": 20,
+                          "fontStyle": 1,
+                          "hAlign": 1
                         },
                         {
                           "name": "CountText",
                           "type": "text",
-                          "anchor": "bottom-right",
-                          "position": [-4, 4],
-                          "size": [30, 20],
-                          "color": [1, 1, 1, 1],
-                          "text": "0",
-                          "fontSize": 16,
+                          "anchor": "top-stretch",
+                          "size": [100, 24],
+                          "position": [0, -36],
+                          "color": [0.75, 0.75, 0.75, 1],
+                          "text": "x0",
+                          "fontSize": 15,
                           "fontStyle": 0,
-                          "hAlign": 4
+                          "hAlign": 1
                         }
                       ]
                     }
                   ]
+                },
+                {
+                  "name": "DescriptionText",
+                  "type": "text",
+                  "anchor": "top-stretch",
+                  "size": [200, 100],
+                  "position": [0, -100],
+                  "color": [0.8, 0.8, 0.8, 1],
+                  "text": "아이템 설명",
+                  "fontSize": 15,
+                  "fontStyle": 0,
+                  "hAlign": 1
+                },
+                {
+                  "name": "StatsText",
+                  "type": "text",
+                  "anchor": "stretch",
+                  "size": [200, -200],
+                  "position": [0, -100],
+                  "color": [0.75, 0.75, 0.75, 1],
+                  "text": "공격력: -\n무게: -",
+                  "fontSize": 14,
+                  "fontStyle": 0,
+                  "hAlign": 1
                 }
               ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "DetailPanel",
-      "type": "panel",
-      "anchor": "top-right",
-      "position": [-10, -60],
-      "size": [280, 510],
-      "color": [0.72, 0.68, 0.58, 1.0],
-      "children": [
-        {
-          "name": "IconArea",
-          "type": "panel",
-          "anchor": "top-left",
-          "position": [15, -15],
-          "size": [70, 70],
-          "color": [0.55, 0.5, 0.4, 1.0],
-          "children": [
-            {
-              "name": "IconImage",
-              "type": "image",
-              "anchor": "center",
-              "position": [0, 0],
-              "size": [56, 56],
-              "color": [1, 1, 1, 1],
-              "sprite": "UISprite",
-              "raycastTarget": false
-            }
-          ]
-        },
-        {
-          "name": "NameText",
-          "type": "text",
-          "anchor": "top-left",
-          "position": [100, -25],
-          "size": [160, 36],
-          "color": [0.15, 0.1, 0.05, 1],
-          "text": "Item Name",
-          "fontSize": 22,
-          "fontStyle": 0,
-          "hAlign": 1
-        },
-        {
-          "name": "DescriptionText",
-          "type": "text",
-          "anchor": "top-left",
-          "position": [15, -100],
-          "size": [250, 80],
-          "color": [0.2, 0.15, 0.1, 1],
-          "text": "Item description text goes here.",
-          "fontSize": 14,
-          "fontStyle": 0,
-          "hAlign": 1
-        },
-        {
-          "name": "StatsArea",
-          "type": "panel",
-          "anchor": "top-left",
-          "position": [15, -195],
-          "size": [250, 200],
-          "color": [0, 0, 0, 0],
-          "children": [
-            {
-              "name": "StatAttack",
-              "type": "text",
-              "anchor": "top-left",
-              "position": [0, -10],
-              "size": [240, 28],
-              "color": [0.2, 0.15, 0.1, 1],
-              "text": "Attack: 0",
-              "fontSize": 15,
-              "fontStyle": 0,
-              "hAlign": 1
-            },
-            {
-              "name": "StatWeight",
-              "type": "text",
-              "anchor": "top-left",
-              "position": [0, -45],
-              "size": [240, 28],
-              "color": [0.2, 0.15, 0.1, 1],
-              "text": "Weight: 0.0",
-              "fontSize": 15,
-              "fontStyle": 0,
-              "hAlign": 1
             }
           ]
         }

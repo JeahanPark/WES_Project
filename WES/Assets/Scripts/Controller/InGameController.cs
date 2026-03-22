@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Cysharp.Threading.Tasks;
 
 public class InGameController : GameController<InGameController>
 {
@@ -13,6 +14,8 @@ public class InGameController : GameController<InGameController>
     [SerializeField] private InGameWorldUIWorker m_WorldUIWorker;
     [SerializeField] private InGameObjectDataWorker m_ObjectDataWorker;
     [SerializeField] private InGameColliderWorker m_ColliderWorker;
+    [SerializeField] private InGameSpawnWorker m_SpawnWorker;
+    [SerializeField] private InGameAreaWorker m_AreaWorker;
 
     [Header("Test Mode")]
     [SerializeField] private bool m_TestMode = false;
@@ -28,6 +31,8 @@ public class InGameController : GameController<InGameController>
     public InGameWorldUIWorker WorldUIWorker => m_WorldUIWorker;
     public InGameObjectDataWorker ObjectDataWorker => m_ObjectDataWorker;
     public InGameColliderWorker ColliderWorker => m_ColliderWorker;
+    public InGameSpawnWorker SpawnWorker => m_SpawnWorker;
+    public InGameAreaWorker AreaWorker => m_AreaWorker;
     public bool IsGameStarted => m_IsGameStarted;
 
     private IEnumerator Start()
@@ -88,6 +93,11 @@ public class InGameController : GameController<InGameController>
         Managers.Instance.Init();
         yield return null;
 
+        // 2. Info 로드
+        GameDebug.Log("[InGameController] Loading info data...");
+        yield return Managers.Info.LoadAllInfo().ToCoroutine();
+        GameDebug.Log("[InGameController] Info data loaded!");
+
         // 3. Network 초기화 대기
         GameDebug.Log("[InGameController] Waiting for Network initialization...");
         yield return new WaitUntil(() => Managers.Network.IsInitialized);
@@ -125,6 +135,7 @@ public class InGameController : GameController<InGameController>
         {
             GameDebug.Log("[InGameController] All clients ready! Starting game...");
             m_PlayWorker.StartGame();
+            m_AreaWorker.Initialize();
             StartGameClientRpc();
         }
     }

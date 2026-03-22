@@ -1,0 +1,5 @@
+WorldObjectType.ENUM,SourceId.INT,DropTableId.INT
+Monster,1,1001
+Monster,2,1002
+WorldObject,1,2001
+WorldObject,3,2002

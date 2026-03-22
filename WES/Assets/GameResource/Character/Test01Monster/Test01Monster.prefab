@@ -2062,7 +2062,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  m_WorldObjectType: 0
+  m_SourceId: 1
   m_CharacterData: {fileID: 11400000, guid: a3f161358e829e34ba613f0621385a2d, type: 2}
+  m_MonsterId: 1
   m_StateAnimationComponent: {fileID: 3585720746636348683}
   m_StateMachine: {fileID: 7027161138349586120}
   m_Renderer: {fileID: 1063570667729363517}

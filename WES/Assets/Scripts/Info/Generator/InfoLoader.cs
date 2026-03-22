@@ -10,7 +10,13 @@ public partial class InfoManager
 {
     public async UniTask LoadAllInfo()
     {
+        DropSourceInfoList = await LoadInfo<DropSourceInfo>();
+        DropTableItemInfoList = await LoadInfo<DropTableItemInfo>();
         ItemInfoList = await LoadInfo<ItemInfo>();
+        MonsterInfoList = await LoadInfo<MonsterInfo>();
+        WorldAreaInfoList = await LoadInfo<WorldAreaInfo>();
+        WorldAreaMonsterInfoList = await LoadInfo<WorldAreaMonsterInfo>();
+        WorldObjectInfoList = await LoadInfo<WorldObjectInfo>();
     }
 
     private async UniTask<List<T>> LoadInfo<T>() where T : new()

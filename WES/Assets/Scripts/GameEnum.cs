@@ -28,3 +28,16 @@ public enum MonsterStateType
     Hit,
     Death
 }
+
+public enum WorldObjectType
+{
+    Monster,
+    WorldObject,
+    NPC,
+}
+
+public enum RewardType
+{
+    Item,
+    Currency,
+}

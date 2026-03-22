@@ -12,6 +12,7 @@ public class PlayerCharacter : CharacterBase
     private const float DEFAULT_ATTACK_RANGE = 1.5f;
     private const int DEFAULT_ATTACK_DAMAGE = 10;
     private const int DEFAULT_MAX_HIT_COUNT = 3;
+    private const float COLLECT_RADIUS = 2f;
 
     [SerializeField] private PlayerAnimationComponent m_AnimationComponent;
     [SerializeField] private float m_AttackRange = DEFAULT_ATTACK_RANGE;
@@ -142,6 +143,9 @@ public class PlayerCharacter : CharacterBase
 
     public override void Interact()
     {
+        if (TryCollectNearbyDropItem())
+            return;
+
         if (m_AnimationComponent == null)
             return;
 
@@ -149,6 +153,22 @@ public class PlayerCharacter : CharacterBase
             return;
 
         m_AnimationComponent.PlayInteract();
+    }
+
+    private bool TryCollectNearbyDropItem()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, COLLECT_RADIUS);
+        foreach (var hit in hits)
+        {
+            WorldDropItem dropItem = hit.GetComponent<WorldDropItem>();
+            if (dropItem == null)
+                continue;
+
+            dropItem.CollectServerRpc();
+            return true;
+        }
+
+        return false;
     }
 
     protected override void OnWalkChanged(bool _isWalking)

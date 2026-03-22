@@ -11,7 +11,7 @@ public class CharacterBase : WorldEntityBase
     private const float MOVE_SPEED = 3.5f;
     private const float ROTATION_SPEED = 15f;
 
-    [SerializeField] private CharacterData m_CharacterData;
+    [SerializeField] private CharacterScriptable m_CharacterData;
 
     // HP Network Variables
     private NetworkVariable<int> m_HP = new(DEFAULT_MAX_HP, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);

@@ -1,0 +1,2 @@
+Id.INT,Name.STRING,MaxCount.INT,RespawnDelay.FLOAT
+1,Test01Area,3,10.0
