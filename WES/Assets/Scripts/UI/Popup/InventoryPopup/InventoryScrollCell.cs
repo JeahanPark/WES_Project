@@ -29,6 +29,15 @@ public class InventoryScrollCell : BaseScrollCell<ItemData>
         {
             m_CountText.text = m_ItemData.Count.ToString();
         }
+
+        if (m_IconImage != null)
+        {
+            string iconKey = m_ItemData.Info.IconKey;
+            m_IconImage.sprite = !string.IsNullOrEmpty(iconKey)
+                ? Managers.Resource.LoadAddressable<Sprite>(iconKey)
+                : null;
+            m_IconImage.enabled = m_IconImage.sprite != null;
+        }
     }
 
     private void SetEmpty()
@@ -41,6 +50,12 @@ public class InventoryScrollCell : BaseScrollCell<ItemData>
         if (m_CountText != null)
         {
             m_CountText.text = string.Empty;
+        }
+
+        if (m_IconImage != null)
+        {
+            m_IconImage.sprite = null;
+            m_IconImage.enabled = false;
         }
     }
 

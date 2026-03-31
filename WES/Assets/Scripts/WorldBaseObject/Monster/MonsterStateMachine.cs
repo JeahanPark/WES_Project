@@ -82,7 +82,7 @@ public class MonsterStateMachine : MonoBehaviour
 
     public void RequestDespawn()
     {
-        if (m_Owner.IsServer)
+        if (m_Owner.IsServer && m_Owner.IsSpawned)
         {
             m_Owner.NetworkObject.Despawn();
         }

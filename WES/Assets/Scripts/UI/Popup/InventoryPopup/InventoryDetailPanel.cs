@@ -29,7 +29,13 @@ public class InventoryDetailPanel : MonoBehaviour
             m_DescriptionText.text = _itemData.Info.Description;
 
         if (m_IconImage != null)
-            m_IconImage.sprite = null;
+        {
+            string iconKey = _itemData.Info.IconKey;
+            m_IconImage.sprite = !string.IsNullOrEmpty(iconKey)
+                ? Managers.Resource.LoadAddressable<Sprite>(iconKey)
+                : null;
+            m_IconImage.enabled = m_IconImage.sprite != null;
+        }
     }
 
     public void Hide()

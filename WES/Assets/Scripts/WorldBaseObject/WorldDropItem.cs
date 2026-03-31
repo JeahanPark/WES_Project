@@ -44,17 +44,27 @@ public class WorldDropItem : WorldBaseObject
     /// 플레이어가 수집 요청 (클라이언트 → 서버)
     /// </summary>
     [Rpc(SendTo.Server)]
-    public void CollectServerRpc()
+    public void CollectServerRpc(RpcParams _rpcParams = default)
     {
         if (!IsSpawned)
             return;
 
-        var inventory = InGameController.Instance.ObjectDataWorker.GetInventoryRegistry();
-        inventory.AddItem(m_ItemInfoId.Value, m_Count.Value);
+        int itemInfoId = m_ItemInfoId.Value;
+        int count = m_Count.Value;
+        ulong senderClientId = _rpcParams.Receive.SenderClientId;
 
-        GameDebug.Log($"[WorldDropItem] Collected: ItemId={m_ItemInfoId.Value}, Count={m_Count.Value}");
+        AddItemClientRpc(itemInfoId, count, RpcTarget.Single(senderClientId, RpcTargetUse.Temp));
+
+        GameDebug.Log($"[WorldDropItem] Collected: ItemId={itemInfoId}, Count={count}");
 
         NetworkObject.Despawn();
+    }
+
+    [Rpc(SendTo.SpecifiedInParams)]
+    private void AddItemClientRpc(int _itemInfoId, int _count, RpcParams _rpcParams = default)
+    {
+        var inventory = InGameController.Instance.ObjectDataWorker.GetInventoryRegistry();
+        inventory.AddItem(_itemInfoId, _count);
     }
 
     private void LoadItemInfo()

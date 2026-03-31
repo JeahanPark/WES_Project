@@ -69,13 +69,35 @@ public abstract class MonsterBase : CharacterBase
 
         if (IsServer)
         {
-            ExecuteDrop(transform.position);
+            ExecuteMonsterDrop(transform.position);
             InGameController.Instance.AreaWorker.OnMonsterDied(this, m_SpawnAreaId);
         }
 
         if (m_StateMachine != null)
         {
             m_StateMachine.ChangeState(MonsterStateType.Death);
+        }
+    }
+
+    private void ExecuteMonsterDrop(Vector3 _position)
+    {
+        if (m_MonsterInfo == null || m_MonsterInfo.DropTableId == 0)
+            return;
+
+        var dropItems = Managers.Info.DropTableItemInfoList.FindAll(x => x.DropTableId == m_MonsterInfo.DropTableId);
+        foreach (var dropItem in dropItems)
+        {
+            if (dropItem.RewardType != RewardType.Item)
+                continue;
+
+            int count = UnityEngine.Random.Range(dropItem.Min, dropItem.Max + 1);
+            if (count <= 0)
+                continue;
+
+            Vector3 spawnPos = _position + new Vector3(
+                UnityEngine.Random.Range(-0.5f, 0.5f), 0f, UnityEngine.Random.Range(-0.5f, 0.5f));
+
+            InGameController.Instance.PlayWorker.SpawnDropItem(dropItem.RewardId, count, spawnPos);
         }
     }
 

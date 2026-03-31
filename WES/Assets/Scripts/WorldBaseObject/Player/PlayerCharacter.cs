@@ -112,6 +112,9 @@ public class PlayerCharacter : CharacterBase
 
     public override void Attack()
     {
+        if (TryCollectClickedDropItem())
+            return;
+
         if (m_AnimationComponent == null)
             return;
 
@@ -153,6 +156,27 @@ public class PlayerCharacter : CharacterBase
             return;
 
         m_AnimationComponent.PlayInteract();
+    }
+
+    private bool TryCollectClickedDropItem()
+    {
+        Camera mainCamera = Camera.main;
+        if (mainCamera == null)
+            return false;
+
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        if (!Physics.Raycast(ray, out RaycastHit hit))
+            return false;
+
+        WorldDropItem dropItem = hit.collider.GetComponentInParent<WorldDropItem>();
+        if (dropItem == null)
+            return false;
+
+        if (Vector3.Distance(transform.position, dropItem.transform.position) > COLLECT_RADIUS)
+            return false;
+
+        dropItem.CollectServerRpc();
+        return true;
     }
 
     private bool TryCollectNearbyDropItem()
@@ -247,6 +271,16 @@ public class PlayerCharacter : CharacterBase
 
         Managers.Input.OnAttackAsObservable.Subscribe(_ => Attack()).AddTo(this);
         Managers.Input.OnInteractAsObservable.Subscribe(_ => Interact()).AddTo(this);
+        Managers.Input.OnInventoryAsObservable.Subscribe(_ => ToggleInventory()).AddTo(this);
+    }
+
+    private void ToggleInventory()
+    {
+        var existing = Managers.Popup.FindOpen<InventoryPopup>();
+        if (existing != null)
+            existing.Close();
+        else
+            Managers.Popup.Open<InventoryPopup>();
     }
 
     private void UpdateMouseLook()

@@ -77,6 +77,16 @@ public class PopupManager : MonoSingleton<PopupManager>
         return popup;
     }
 
+    public T FindOpen<T>() where T : BasePopup
+    {
+        foreach (var popup in m_OpenedPopups)
+        {
+            if (popup is T typed)
+                return typed;
+        }
+        return null;
+    }
+
     public void Close(BasePopup _popup)
     {
         if (_popup == null)

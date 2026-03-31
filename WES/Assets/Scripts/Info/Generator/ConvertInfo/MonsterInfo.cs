@@ -8,6 +8,7 @@ public class MonsterInfo
     public string Name;
     public int MaxHP;
     public string PrefabKey;
+    public int DropTableId;
 }
 
 

@@ -44,7 +44,16 @@ public class InGamePlayWorker : NetworkBehaviour
         if (!Managers.Network.IsServer)
             return;
 
-        var dropItem = InGameController.Instance.SpawnWorker.SpawnObject<WorldDropItem>(WORLD_DROP_ITEM_PREFAB_KEY, _position);
+        var itemInfo = Managers.Info.ItemInfoList.Find(x => x.Id == _itemInfoId);
+        if (itemInfo == null)
+        {
+            GameDebug.LogError($"[InGamePlayWorker] ItemInfo not found: {_itemInfoId}");
+            return;
+        }
+
+        string prefabKey = string.IsNullOrEmpty(itemInfo.PrefabKey) ? WORLD_DROP_ITEM_PREFAB_KEY : itemInfo.PrefabKey;
+
+        var dropItem = InGameController.Instance.SpawnWorker.SpawnObject<WorldDropItem>(prefabKey, _position);
         dropItem?.Initialize(_itemInfoId, _count);
     }
 

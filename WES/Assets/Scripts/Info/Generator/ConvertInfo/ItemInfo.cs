@@ -9,6 +9,8 @@ public class ItemInfo
     public string Description;
     public bool IsStackable;
     public int MaxStack;
+    public string PrefabKey;
+    public string IconKey;
 }
 
 

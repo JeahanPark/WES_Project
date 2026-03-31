@@ -15,6 +15,7 @@ public class InputManager : MonoSingleton<InputManager>
     private InputAction m_InteractAction;
     private InputAction m_Key1Action;
     private InputAction m_Key2Action;
+    private InputAction m_InventoryAction;
     private InputAction m_SubmitAction;
 
     // Observable Subjects
@@ -25,6 +26,7 @@ public class InputManager : MonoSingleton<InputManager>
     private readonly Subject<Unit> m_OnKey1 = new Subject<Unit>();
     private readonly Subject<Unit> m_OnKey2 = new Subject<Unit>();
     private readonly Subject<Unit> m_OnKey3 = new Subject<Unit>();
+    private readonly Subject<Unit> m_OnInventory = new Subject<Unit>();
     private readonly Subject<Unit> m_OnEnter = new Subject<Unit>();
 
     // Public Observables
@@ -35,6 +37,7 @@ public class InputManager : MonoSingleton<InputManager>
     public IObservable<Unit> OnKey1AsObservable => m_OnKey1;
     public IObservable<Unit> OnKey2AsObservable => m_OnKey2;
     public IObservable<Unit> OnKey3AsObservable => m_OnKey3;
+    public IObservable<Unit> OnInventoryAsObservable => m_OnInventory;
     public IObservable<Unit> OnEnterAsObservable => m_OnEnter;
 
     // Current Input Values
@@ -67,6 +70,7 @@ public class InputManager : MonoSingleton<InputManager>
         m_InteractAction = m_PlayerMap.FindAction("Interact");
         m_Key1Action = m_PlayerMap.FindAction("Previous");
         m_Key2Action = m_PlayerMap.FindAction("Next");
+        m_InventoryAction = m_PlayerMap.FindAction("Inventory");
 
         // Get UI Actions
         m_SubmitAction = m_UIMap.FindAction("Submit");
@@ -82,6 +86,7 @@ public class InputManager : MonoSingleton<InputManager>
         m_InteractAction.performed += OnInteractPerformed;
         m_Key1Action.performed += OnKey1Performed;
         m_Key2Action.performed += OnKey2Performed;
+        m_InventoryAction.performed += OnInventoryPerformed;
 
         // Subscribe to UI events
         m_SubmitAction.performed += OnEnterPerformed;
@@ -107,6 +112,7 @@ public class InputManager : MonoSingleton<InputManager>
             m_InteractAction.performed -= OnInteractPerformed;
             m_Key1Action.performed -= OnKey1Performed;
             m_Key2Action.performed -= OnKey2Performed;
+            m_InventoryAction.performed -= OnInventoryPerformed;
 
             m_PlayerMap.Disable();
         }
@@ -124,6 +130,7 @@ public class InputManager : MonoSingleton<InputManager>
         m_OnKey1?.Dispose();
         m_OnKey2?.Dispose();
         m_OnKey3?.Dispose();
+        m_OnInventory?.Dispose();
         m_OnEnter?.Dispose();
     }
 
@@ -169,6 +176,11 @@ public class InputManager : MonoSingleton<InputManager>
     private void OnKey2Performed(InputAction.CallbackContext _context)
     {
         m_OnKey2.OnNext(Unit.Default);
+    }
+
+    private void OnInventoryPerformed(InputAction.CallbackContext _context)
+    {
+        m_OnInventory.OnNext(Unit.Default);
     }
 
     private void OnEnterPerformed(InputAction.CallbackContext _context)
