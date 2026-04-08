@@ -8,6 +8,7 @@ public class InGameHUDWorker : MonoBehaviour
 {
     [Header("HUD")]
     [SerializeField] private PlayerStatusHUD m_PlayerStatusHUD;
+    [SerializeField] private CraftHUDTab m_CraftHUDTab;
 
     private PlayerCharacter m_LocalPlayer;
 

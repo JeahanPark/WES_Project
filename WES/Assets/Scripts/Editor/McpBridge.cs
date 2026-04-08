@@ -153,12 +153,13 @@ public static partial class McpBridge
 
         return req.action.ToLowerInvariant() switch
         {
-            "add"           => AddComponent(req),    // McpBridgeComponents.cs
-            "remove"        => RemoveComponent(req), // McpBridgeComponents.cs
-            "set_property"  => SetProperty(req),     // McpBridgeComponents.cs
-            "list"          => ListComponents(req),  // McpBridgeComponents.cs
-            "set_reference" => SetReference(req),    // McpBridgeReferences.cs
-            _               => BuildError($"Unknown action: '{req.action}'")
+            "add"                => AddComponent(req),       // McpBridgeComponents.cs
+            "remove"             => RemoveComponent(req),    // McpBridgeComponents.cs
+            "set_property"       => SetProperty(req),        // McpBridgeComponents.cs
+            "list"               => ListComponents(req),     // McpBridgeComponents.cs
+            "set_reference"      => SetReference(req),       // McpBridgeReferences.cs
+            "instantiate_prefab" => InstantiatePrefab(req),  // McpBridgeInstantiate.cs
+            _                    => BuildError($"Unknown action: '{req.action}'")
         };
     }
 
@@ -263,6 +264,7 @@ public static partial class McpBridge
         public string action;
         public string target;
         public string prefabPath;
+        public string parentPrefabPath;
         public string componentType;
         public string propertyName;
         public string propertyValue;

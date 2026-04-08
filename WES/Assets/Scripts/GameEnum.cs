@@ -41,3 +41,16 @@ public enum RewardType
     Item,
     Currency,
 }
+
+public enum CraftCategoryType
+{
+    Building,
+    Item,
+}
+
+public enum CraftConditionType
+{
+    None,
+    MaxCold,
+    MinCold,
+}

@@ -20,6 +20,8 @@ public class InventoryPopup : BasePopup
         var items = inventory.GetAllItems();
 
         m_InventoryScroll.SetData(items);
+
+        m_DetailPanel.gameObject.SetActive(false);
     }
 
     public void OnClickClose()
@@ -29,6 +31,7 @@ public class InventoryPopup : BasePopup
 
     private void OnCellClicked(ItemData _itemData)
     {
+        m_DetailPanel.gameObject.SetActive(true);
         m_DetailPanel.Show(_itemData);
     }
 }

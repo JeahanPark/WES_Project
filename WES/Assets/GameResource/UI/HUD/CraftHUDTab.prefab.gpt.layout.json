@@ -1,0 +1,34 @@
+{
+  "name": "CraftHUDTab",
+  "type": "panel",
+  "anchor": "left-stretch",
+  "size": [80, 80],
+  "position": [40, 0],
+  "color": [0, 0, 0, 0],
+  "children": [
+    {
+      "name": "CraftButton",
+      "type": "button",
+      "anchor": "stretch",
+      "size": [0, 0],
+      "position": [0, 0],
+      "color": [0.2, 0.2, 0.2, 0.78],
+      "style": "btn_default",
+      "children": [
+        {
+          "name": "CraftLabel",
+          "type": "text",
+          "anchor": "center",
+          "size": [80, 40],
+          "position": [0, 0],
+          "color": [1, 1, 1, 1],
+          "text": "제작",
+          "fontSize": 18,
+          "fontStyle": 0,
+          "hAlign": 2,
+          "raycastTarget": false
+        }
+      ]
+    }
+  ]
+}
