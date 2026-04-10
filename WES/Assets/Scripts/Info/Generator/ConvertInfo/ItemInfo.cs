@@ -11,6 +11,9 @@ public class ItemInfo
     public int MaxStack;
     public string PrefabKey;
     public string IconKey;
+    public int BuildingInfoId;
+
+    public bool IsBuilding => BuildingInfoId > 0;
 }
 
 

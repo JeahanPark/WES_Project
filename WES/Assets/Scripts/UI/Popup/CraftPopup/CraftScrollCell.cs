@@ -6,8 +6,14 @@ public class CraftScrollCell : BaseScrollCell<CraftInfo>
 {
     [SerializeField] private TextMeshProUGUI m_NameText;
     [SerializeField] private Image m_IconImage;
+    [SerializeField] private Button m_Button;
 
     private CraftInfo m_CraftInfo;
+
+    private void Awake()
+    {
+        m_Button.onClick.AddListener(OnClickCell);
+    }
 
     protected override void OnUpdateCell(int _index, CraftInfo _data)
     {
@@ -44,7 +50,7 @@ public class CraftScrollCell : BaseScrollCell<CraftInfo>
         }
     }
 
-    public void OnClickCell()
+    private void OnClickCell()
     {
         if (m_CraftInfo == null)
             return;

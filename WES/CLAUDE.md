@@ -74,10 +74,16 @@
 8. `private` methods
 9. `OnClick*` methods
 
+## Button Binding Rules
+- 버튼 바인딩은 반드시 `[SerializeField] private Button m_XxxButton;` 으로 참조를 Inspector에서 연결한다.
+- 실제 메서드 바인딩은 `Awake`에서 `m_XxxButton.onClick.AddListener(OnClickXxx);` 로 코드에서 처리한다.
+- Inspector의 Button onClick 이벤트에 직접 메서드를 Persistent Listener로 등록하는 방식은 사용하지 않는다.
+
 ## MCP Rules
 - Unity 관련 작업(프리팹, 컴포넌트, Inspector 참조 등)은 MCP 도구를 우선 사용한다.
 - 사용 가능한 도구: `echo` / `generate_ui_with_gpt` / `manage_components` / `set_reference` / `instantiate_prefab` / `add_gameobject` / `connect_button` / `refresh_assets`
 - 도구 사용법은 반드시 [Assets/MCP_Unity_Plugin/README.md](Assets/MCP_Unity_Plugin/README.md)를 참고한다.
+- 에셋(스크립트, CSV, 프리팹 등)을 추가/수정/삭제한 경우 작업 완료 후 반드시 `refresh_assets` 도구를 호출하여 Unity 에디터에 변경 사항을 반영한다.
 
 ---
 

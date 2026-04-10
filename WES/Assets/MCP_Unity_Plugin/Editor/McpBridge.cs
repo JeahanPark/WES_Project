@@ -27,17 +27,27 @@ public static partial class McpBridge
 
     // ---- 도메인 리로드 대응 ----
 
+    private const string SESSION_KEY = "McpBridge.AutoRestart";
+
     static McpBridge()
     {
         AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+        AssemblyReloadEvents.afterAssemblyReload  += OnAfterAssemblyReload;
     }
 
     private static void OnBeforeAssemblyReload()
     {
+        SessionState.SetBool(SESSION_KEY, m_Running);
         if (m_Running)
-        {
             Stop();
-            Debug.Log("[McpBridge] 도메인 리로드 전 서버 자동 중지됨");
+    }
+
+    private static void OnAfterAssemblyReload()
+    {
+        if (SessionState.GetBool(SESSION_KEY, false))
+        {
+            Start();
+            Debug.Log("[McpBridge] 도메인 리로드 후 서버 자동 재시작됨");
         }
     }
 

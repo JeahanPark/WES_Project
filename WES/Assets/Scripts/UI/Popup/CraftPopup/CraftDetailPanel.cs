@@ -16,6 +16,11 @@ public class CraftDetailPanel : MonoBehaviour
 
     private CraftInfo m_CurrentCraftInfo;
 
+    private void Awake()
+    {
+        m_CraftButton.onClick.AddListener(OnClickCraft);
+    }
+
     public void Show(CraftInfo _craftInfo)
     {
         gameObject.SetActive(true);
@@ -44,6 +49,7 @@ public class CraftDetailPanel : MonoBehaviour
 
         RefreshMaterials(_craftInfo.Id);
         RefreshConditions(_craftInfo.Id);
+        RefreshCraftButton(_craftInfo.Id);
     }
 
     public void Hide()
@@ -51,7 +57,7 @@ public class CraftDetailPanel : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void OnClickCraft()
+    private void OnClickCraft()
     {
         if (m_CurrentCraftInfo == null)
             return;
@@ -76,6 +82,24 @@ public class CraftDetailPanel : MonoBehaviour
                 return false;
         }
 
+        var player = InGameController.Instance?.PlayWorker?.LocalPlayer;
+        var conditions = Managers.Info.GetConditionsByCraftId(_craftId);
+        foreach (var condition in conditions)
+        {
+            if (player == null)
+                return false;
+
+            bool conditionMet = condition.ConditionType switch
+            {
+                CraftConditionType.MaxCold => player.Cold <= condition.ConditionValue,
+                CraftConditionType.MinCold => player.Cold >= condition.ConditionValue,
+                _ => true
+            };
+
+            if (!conditionMet)
+                return false;
+        }
+
         return true;
     }
 
@@ -97,6 +121,12 @@ public class CraftDetailPanel : MonoBehaviour
         }
 
         Show(m_CurrentCraftInfo);
+    }
+
+    private void RefreshCraftButton(int _craftId)
+    {
+        if (m_CraftButton != null)
+            m_CraftButton.interactable = CanCraft(_craftId);
     }
 
     private void RefreshMaterials(int _craftId)

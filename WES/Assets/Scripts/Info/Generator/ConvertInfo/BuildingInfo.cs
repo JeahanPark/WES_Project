@@ -1,0 +1,17 @@
+// 해당 코드는 엑셀로 뽑은 .cs파일이라 수정해도 의미가 없습니다.
+
+using System.Collections.Generic;
+
+public class BuildingInfo
+{
+    public int Id;
+    public string Name;
+    public string PrefabKey;
+}
+
+
+
+public partial class InfoManager
+{
+    public List<BuildingInfo> BuildingInfoList = new List<BuildingInfo>();
+}

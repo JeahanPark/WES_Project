@@ -39,6 +39,24 @@ public class InGamePlayWorker : NetworkBehaviour
         GameDebug.Log($"[InGamePlayWorker] Local player registered: PlayerIndex {_player.GetPlayerIndex()}");
     }
 
+    public void SpawnBuilding(int _buildingInfoId, Vector3 _position)
+    {
+        SpawnBuildingServerRpc(_buildingInfoId, _position);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void SpawnBuildingServerRpc(int _buildingInfoId, Vector3 _position)
+    {
+        var buildingInfo = Managers.Info.BuildingInfoList.Find(x => x.Id == _buildingInfoId);
+        if (buildingInfo == null)
+        {
+            GameDebug.LogError($"[InGamePlayWorker] BuildingInfo not found: {_buildingInfoId}");
+            return;
+        }
+
+        InGameController.Instance.SpawnWorker.SpawnObject(buildingInfo.PrefabKey, _position);
+    }
+
     public void SpawnDropItem(int _itemInfoId, int _count, Vector3 _position)
     {
         if (!Managers.Network.IsServer)

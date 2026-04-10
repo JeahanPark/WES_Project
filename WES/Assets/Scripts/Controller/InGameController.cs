@@ -16,6 +16,7 @@ public class InGameController : GameController<InGameController>
     [SerializeField] private InGameColliderWorker m_ColliderWorker;
     [SerializeField] private InGameSpawnWorker m_SpawnWorker;
     [SerializeField] private InGameAreaWorker m_AreaWorker;
+    [SerializeField] private BuildingPlacementWorker m_BuildingPlacementWorker;
 
     [Header("Test Mode")]
     [SerializeField] private bool m_TestMode = false;
@@ -33,6 +34,7 @@ public class InGameController : GameController<InGameController>
     public InGameColliderWorker ColliderWorker => m_ColliderWorker;
     public InGameSpawnWorker SpawnWorker => m_SpawnWorker;
     public InGameAreaWorker AreaWorker => m_AreaWorker;
+    public BuildingPlacementWorker BuildingPlacementWorker => m_BuildingPlacementWorker;
     public bool IsGameStarted => m_IsGameStarted;
 
     private IEnumerator Start()

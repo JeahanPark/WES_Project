@@ -10,6 +10,7 @@ public partial class InfoManager
 {
     public async UniTask LoadAllInfo()
     {
+        BuildingInfoList = await LoadInfo<BuildingInfo>();
         CraftConditionInfoList = await LoadInfo<CraftConditionInfo>();
         CraftInfoList = await LoadInfo<CraftInfo>();
         CraftMaterialInfoList = await LoadInfo<CraftMaterialInfo>();
