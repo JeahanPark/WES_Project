@@ -25,11 +25,22 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85b946bd83753ec4086332e1a355acaa
+    m_Address: CraftPopup
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Popup
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b0b54c5e139a86e4886b305d428dc1b2
     m_Address: Assets/GameResource/Popup
     m_ReadOnly: 0
     m_SerializedLabels:
     - Popup
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4e4b295493f2814cb195e233578d81f
+    m_Address: wood_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b9df4dbae37ede244bd68cd2b4731c80
     m_Address: LoginPopup
@@ -39,6 +50,22 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bdc161c4a02a58745929928a16dfbce8
     m_Address: Assets/GameResource/Character
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c191598d18ea5304bb0bf9db9de4b268
+    m_Address: TestItem
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c912869b85ccd4a41ba3d690870a0461
+    m_Address: InventoryPopup
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Popup
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4cbacd3120afa54e9382787bb6f4036
+    m_Address: stone_icon
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -52,35 +79,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c191598d18ea5304bb0bf9db9de4b268
-    m_Address: TestItem
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b4e4b295493f2814cb195e233578d81f
-    m_Address: wood_icon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d4cbacd3120afa54e9382787bb6f4036
-    m_Address: stone_icon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c912869b85ccd4a41ba3d690870a0461
-    m_Address: InventoryPopup
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Popup
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ebf4fdbc467fafe4eb4f6401af1aba2c
     m_Address: LobbyRoomPopup
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Popup
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 85b946bd83753ec4086332e1a355acaa
-    m_Address: CraftPopup
     m_ReadOnly: 0
     m_SerializedLabels:
     - Popup

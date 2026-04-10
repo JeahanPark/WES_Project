@@ -15,6 +15,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
+[InitializeOnLoad]
 public static partial class McpBridge
 {
     private const int PORT = 9876;
@@ -23,6 +24,22 @@ public static partial class McpBridge
     private static Thread m_ListenThread;
     private static bool m_Running;
     private static readonly ConcurrentQueue<PendingRequest> m_PendingQueue = new ConcurrentQueue<PendingRequest>();
+
+    // ---- 도메인 리로드 대응 ----
+
+    static McpBridge()
+    {
+        AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+    }
+
+    private static void OnBeforeAssemblyReload()
+    {
+        if (m_Running)
+        {
+            Stop();
+            Debug.Log("[McpBridge] 도메인 리로드 전 서버 자동 중지됨");
+        }
+    }
 
     // ---- Tools 메뉴 ----
 
@@ -69,7 +86,13 @@ public static partial class McpBridge
     private static void Stop()
     {
         m_Running = false;
-        m_Listener?.Stop();
+        try
+        {
+            m_Listener?.Server?.Close();
+            m_Listener?.Stop();
+        }
+        catch { }
+        m_Listener = null;
         EditorApplication.update -= ProcessQueue;
         EditorApplication.quitting -= Stop;
         Debug.Log("[McpBridge] TCP 서버 중지됨");
@@ -159,6 +182,9 @@ public static partial class McpBridge
             "list"               => ListComponents(req),     // McpBridgeComponents.cs
             "set_reference"      => SetReference(req),       // McpBridgeReferences.cs
             "instantiate_prefab" => InstantiatePrefab(req),  // McpBridgeInstantiate.cs
+            "add_gameobject"     => AddGameObject(req),      // McpBridgeGameObject.cs
+            "connect_button"     => ConnectButton(req),      // McpBridgeButton.cs
+            "refresh_assets"     => RefreshAssets(req),      // McpBridgeRefresh.cs
             _                    => BuildError($"Unknown action: '{req.action}'")
         };
     }
@@ -269,6 +295,11 @@ public static partial class McpBridge
         public string propertyName;
         public string propertyValue;
         public string mappingsJson;
+        public string gameObjectName;
+        public string listenerTarget;
+        public string listenerComponent;
+        public string methodName;
+        public string assetPath;
     }
 
     private class PendingRequest
