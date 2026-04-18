@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
 /// "캐릭터" 공통 (플레이어/몬스터 둘 다 공유)
@@ -29,6 +30,7 @@ public class CharacterBase : WorldEntityBase
     private event System.Action m_OnDeath;
 
     private CharacterWorldUI m_WorldUI;
+    private NavMeshAgent m_NavAgent;
     private Vector2 m_MoveDirection;
     private Vector3 m_LookTarget;
     private bool m_HasLookTarget;
@@ -56,6 +58,20 @@ public class CharacterBase : WorldEntityBase
         m_HP.OnValueChanged += OnHPValueChanged;
         CreateWorldUI();
         RegisterToCharacterRegistry();
+        InitializeNavAgent();
+    }
+
+    private void InitializeNavAgent()
+    {
+        m_NavAgent = GetComponent<NavMeshAgent>();
+        if (m_NavAgent != null)
+        {
+            m_NavAgent.speed = m_MoveSpeed;
+            m_NavAgent.angularSpeed = ROTATION_SPEED * 30f;
+            m_NavAgent.acceleration = 20f;
+            m_NavAgent.stoppingDistance = 0.1f;
+            m_NavAgent.updateRotation = false; // 회전은 직접 처리
+        }
     }
 
     public override void OnNetworkDespawn()
@@ -265,10 +281,22 @@ public class CharacterBase : WorldEntityBase
 
         OnWalkChanged(isMoving);
 
-        if (isMoving)
+        if (m_NavAgent != null && m_NavAgent.isOnNavMesh)
         {
-            Vector3 moveDirection = new(m_MoveDirection.x, 0f, m_MoveDirection.y);
-            transform.position += moveDirection.normalized * (Time.deltaTime * m_MoveSpeed);
+            if (isMoving)
+            {
+                Vector3 moveDirection = new Vector3(m_MoveDirection.x, 0f, m_MoveDirection.y).normalized;
+                m_NavAgent.Move(moveDirection * (Time.deltaTime * m_MoveSpeed));
+            }
+        }
+        else
+        {
+            // NavMesh 없을 때 폴백: 직접 이동
+            if (isMoving)
+            {
+                Vector3 moveDirection = new(m_MoveDirection.x, 0f, m_MoveDirection.y);
+                transform.position += moveDirection.normalized * (Time.deltaTime * m_MoveSpeed);
+            }
         }
     }
 

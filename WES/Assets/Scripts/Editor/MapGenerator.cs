@@ -10,8 +10,40 @@ using UnityEditor.AI;
 /// </summary>
 public class MapGenerator : EditorWindow
 {
-    private const float MAP_SIZE = 200f;
+    private const float MAP_SIZE = 100f;
+    private const float GROUND_TILE_SIZE = 4.5f;
     private const float HALF_MAP = MAP_SIZE / 2f;
+
+    [MenuItem("Tools/Map Generator/Populate Forest and Mountain")]
+    public static void PopulateForestAndMountain()
+    {
+        var root = GameObject.Find("MapRoot");
+        if (root == null)
+        {
+            Debug.LogError("[MapGenerator] MapRoot not found!");
+            return;
+        }
+
+        // 기존 Area_Forest, Area_Mountain 자식 오브젝트 제거 후 재생성
+        var oldForest = root.transform.Find("Area_Forest");
+        if (oldForest != null) DestroyImmediate(oldForest.gameObject);
+
+        var oldMountain = root.transform.Find("Area_Mountain");
+        if (oldMountain != null) DestroyImmediate(oldMountain.gameObject);
+
+        // 물리 콜라이더 동기화 (에디터 레이캐스트 정확도)
+        Physics.SyncTransforms();
+
+        GenerateForestArea(root.transform);
+        GenerateMountainArea(root.transform);
+
+        // 씬 저장
+        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+        UnityEditor.SceneManagement.EditorSceneManager.SaveOpenScenes();
+
+        Debug.Log("[MapGenerator] Forest and Mountain areas populated!");
+    }
 
     [MenuItem("Tools/Map Generator/Generate Island Map")]
     public static void GenerateMap()
@@ -69,17 +101,17 @@ public class MapGenerator : EditorWindow
         var groundParent = new GameObject("Ground");
         groundParent.transform.SetParent(_parent);
 
-        // 해안가 영역 (남쪽) — 밝은 모래/잔디
+        // 해안가 영역 (남쪽) — 잔디
         PlaceGroundTiles(groundParent.transform, "SM_Gen_Env_Ground_Grass",
-            -HALF_MAP, -HALF_MAP, HALF_MAP, -HALF_MAP + 60f, 20f);
+            -HALF_MAP, -HALF_MAP, HALF_MAP, -HALF_MAP + 30f, GROUND_TILE_SIZE);
 
         // 숲 영역 (중앙) — 잔디
         PlaceGroundTiles(groundParent.transform, "SM_Gen_Env_Ground_Grass",
-            -HALF_MAP, -HALF_MAP + 60f, HALF_MAP, HALF_MAP - 60f, 20f);
+            -HALF_MAP, -HALF_MAP + 30f, HALF_MAP, HALF_MAP - 30f, GROUND_TILE_SIZE);
 
         // 산지 영역 (북쪽) — 흙
         PlaceGroundTiles(groundParent.transform, "SM_Gen_Env_Ground_Dirt",
-            -HALF_MAP, HALF_MAP - 60f, HALF_MAP, HALF_MAP, 20f);
+            -HALF_MAP, HALF_MAP - 30f, HALF_MAP, HALF_MAP, GROUND_TILE_SIZE);
     }
 
     private static void PlaceGroundTiles(Transform _parent, string _prefabPrefix,
@@ -115,19 +147,19 @@ public class MapGenerator : EditorWindow
 
         // 나무 (참나무) — 해안가에 듬성듬성
         PlaceRandomObjects(area.transform, "SM_Gen_Env_Tree_01", 8,
-            -80f, -HALF_MAP, 80f, -HALF_MAP + 50f, 2f);
+            -40f, -HALF_MAP, 40f, -HALF_MAP + 25f, 2f);
 
         // 바위
         PlaceRandomObjects(area.transform, "SM_Gen_Env_Rock_02", 6,
-            -80f, -HALF_MAP, 80f, -HALF_MAP + 50f, 1f);
+            -40f, -HALF_MAP, 40f, -HALF_MAP + 25f, 1f);
 
         // 풀
         PlaceRandomObjects(area.transform, "SM_Gen_Env_Grass_01", 15,
-            -80f, -HALF_MAP, 80f, -HALF_MAP + 50f, 0.5f);
+            -40f, -HALF_MAP, 40f, -HALF_MAP + 25f, 0.5f);
 
         // 조개/작은 바위
         PlaceRandomObjects(area.transform, "SM_Gen_Env_Rock_Pebbles_01", 10,
-            -80f, -HALF_MAP, 80f, -HALF_MAP + 30f, 0.5f);
+            -40f, -HALF_MAP, 40f, -HALF_MAP + 15f, 0.5f);
     }
 
     private static void GenerateForestArea(Transform _parent)
@@ -136,32 +168,32 @@ public class MapGenerator : EditorWindow
         area.transform.SetParent(_parent);
 
         // 소나무 — 숲 밀집
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Tree_Pine_02", 20,
-            -80f, -30f, 80f, 30f, 3f);
+        PlaceRandomObjects(area.transform, "SM_Gen_Env_Tree_Pine_02", 15,
+            -40f, -15f, 40f, 15f, 3f);
 
         // 일반 나무
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Tree_02", 12,
-            -80f, -30f, 80f, 30f, 2.5f);
+        PlaceRandomObjects(area.transform, "SM_Gen_Env_Tree_02", 10,
+            -40f, -15f, 40f, 15f, 2.5f);
 
         // 덤불 (약초 덤불 표현)
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Bush_01", 15,
-            -80f, -30f, 80f, 30f, 1f);
+        PlaceRandomObjects(area.transform, "SM_Gen_Env_Bush_01", 12,
+            -40f, -15f, 40f, 15f, 1f);
 
         // 큰 덤불
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Bush_Large_01", 8,
-            -80f, -30f, 80f, 30f, 1.5f);
+        PlaceRandomObjects(area.transform, "SM_Gen_Env_Bush_Large_01", 6,
+            -40f, -15f, 40f, 15f, 1.5f);
 
         // 꽃
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Flowers_05", 12,
-            -60f, -20f, 60f, 20f, 0.5f);
+        PlaceRandomObjects(area.transform, "SM_Gen_Env_Flowers_05", 10,
+            -30f, -10f, 30f, 10f, 0.5f);
 
         // 버섯
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Mushroom_01", 8,
-            -60f, -20f, 60f, 20f, 0.5f);
+        PlaceRandomObjects(area.transform, "SM_Gen_Env_Mushroom_01", 6,
+            -30f, -10f, 30f, 10f, 0.5f);
 
         // 언덕
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Hill_04", 3,
-            -50f, -20f, 50f, 20f, 8f);
+        PlaceRandomObjects(area.transform, "SM_Gen_Env_Hill_04", 2,
+            -25f, -10f, 25f, 10f, 8f);
     }
 
     private static void GenerateMountainArea(Transform _parent)
@@ -170,15 +202,15 @@ public class MapGenerator : EditorWindow
         area.transform.SetParent(_parent);
 
         // 큰 바위
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Rock_07", 10,
-            -80f, 40f, 80f, 90f, 3f);
+        PlaceRandomObjects(area.transform, "SM_Gen_Env_Rock_07", 8,
+            -40f, 20f, 40f, 45f, 3f);
 
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Rock_10", 6,
-            -80f, 40f, 80f, 90f, 4f);
+        PlaceRandomObjects(area.transform, "SM_Gen_Env_Rock_10", 4,
+            -40f, 20f, 40f, 45f, 4f);
 
         // 절벽
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Dirt_Cliff_06", 4,
-            -60f, 60f, 60f, 85f, 10f);
+        PlaceRandomObjects(area.transform, "SM_Gen_Env_Dirt_Cliff_06", 3,
+            -30f, 30f, 30f, 43f, 10f);
 
         // 산 배경
         var mountainPrefab = FindPrefab("SM_Gen_Env_Mountain_02");
@@ -186,22 +218,22 @@ public class MapGenerator : EditorWindow
         {
             var m1 = (GameObject)PrefabUtility.InstantiatePrefab(mountainPrefab);
             m1.transform.SetParent(area.transform);
-            m1.transform.position = new Vector3(-40f, 0, 95f);
+            m1.transform.position = new Vector3(-20f, 0, 48f);
             m1.transform.localScale = Vector3.one * 2f;
 
             var m2 = (GameObject)PrefabUtility.InstantiatePrefab(mountainPrefab);
             m2.transform.SetParent(area.transform);
-            m2.transform.position = new Vector3(40f, 0, 95f);
+            m2.transform.position = new Vector3(20f, 0, 48f);
             m2.transform.localScale = Vector3.one * 1.5f;
         }
 
         // 죽은 나무
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Tree_Dead_01", 5,
-            -70f, 40f, 70f, 85f, 2f);
+        PlaceRandomObjects(area.transform, "SM_Gen_Env_Tree_Dead_01", 4,
+            -35f, 20f, 35f, 43f, 2f);
 
-        // 철광석 바위 (밝은 색 바위로 구분)
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Rock_05", 5,
-            -60f, 50f, 60f, 80f, 3f);
+        // 철광석 바위
+        PlaceRandomObjects(area.transform, "SM_Gen_Env_Rock_05", 4,
+            -30f, 25f, 30f, 40f, 3f);
     }
 
     private static void GenerateWater(Transform _parent)
@@ -213,7 +245,7 @@ public class MapGenerator : EditorWindow
         waterParent.transform.SetParent(_parent);
 
         // 해안가 주변 물
-        for (float x = -HALF_MAP; x < HALF_MAP; x += 30f)
+        for (float x = -HALF_MAP; x < HALF_MAP; x += 15f)
         {
             var water = (GameObject)PrefabUtility.InstantiatePrefab(waterPrefab);
             water.transform.SetParent(waterParent.transform);
@@ -225,13 +257,18 @@ public class MapGenerator : EditorWindow
     private static void SetupSpawnAndEscapePoints()
     {
         // 스폰 지점 이동 (해안가 남쪽)
-        MoveObject("StartPosition1", new Vector3(-5f, 0, -85f));
-        MoveObject("StartPosition2", new Vector3(5f, 0, -85f));
-        MoveObject("StartPosition3", new Vector3(-10f, 0, -80f));
-        MoveObject("StartPosition4", new Vector3(10f, 0, -80f));
+        MoveObject("StartPosition1", new Vector3(-3f, 0, -42f));
+        MoveObject("StartPosition2", new Vector3(3f, 0, -42f));
+        MoveObject("StartPosition3", new Vector3(-6f, 0, -38f));
+        MoveObject("StartPosition4", new Vector3(6f, 0, -38f));
 
         // 탈출 지점 이동 (산지 북쪽)
-        MoveObject("EscapePoint", new Vector3(0, 0, 90f));
+        MoveObject("EscapePoint", new Vector3(0, 0, 45f));
+
+        // 몬스터 스폰 영역 이동
+        MoveObject("Area1_Beach", new Vector3(0, 0, -35f));
+        MoveObject("Area2_Forest", new Vector3(0, 0, 0));
+        MoveObject("Area3_Mountain", new Vector3(0, 0, 30f));
     }
 
     private static void MoveObject(string _name, Vector3 _position)
@@ -258,7 +295,8 @@ public class MapGenerator : EditorWindow
 
             float x = Random.Range(_minX, _maxX);
             float z = Random.Range(_minZ, _maxZ);
-            go.transform.position = new Vector3(x, 0, z);
+            float y = GetTerrainHeight(x, z);
+            go.transform.position = new Vector3(x, y, z);
 
             float scale = Random.Range(1f, 1f + _scaleVariance);
             go.transform.localScale = Vector3.one * scale;
@@ -266,6 +304,17 @@ public class MapGenerator : EditorWindow
             float rotation = Random.Range(0f, 360f);
             go.transform.rotation = Quaternion.Euler(0, rotation, 0);
         }
+    }
+
+    private static float GetTerrainHeight(float _x, float _z)
+    {
+        // 위에서 아래로 레이캐스트하여 지형 표면 높이를 구함
+        Ray ray = new Ray(new Vector3(_x, 200f, _z), Vector3.down);
+        if (Physics.Raycast(ray, out RaycastHit hit, 400f))
+        {
+            return hit.point.y;
+        }
+        return 0f;
     }
 
     private static GameObject FindPrefab(string _name)
