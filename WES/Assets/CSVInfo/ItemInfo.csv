@@ -3,3 +3,14 @@ Id.INT,Name.STRING,Description.STRING,IsStackable.BOOL,MaxStack.INT,PrefabKey.ST
 2,돌,단단한 돌 재료,true,99,TestItem,stone_icon,0
 3,검,날카로운 검,false,1,TestItem,sword_icon,0
 4,모닥불,설치 가능한 모닥불,true,9,TestItem,campfire_icon,1
+5,약초,숲에서 채집하는 치유 허브,true,99,TestItem,herb_icon,0
+6,가죽,몬스터에서 얻는 질긴 가죽,true,99,TestItem,leather_icon,0
+7,뼈,몬스터에서 얻는 단단한 뼈,true,99,TestItem,bone_icon,0
+8,철광석,광석 바위에서 채굴,true,99,TestItem,ironore_icon,0
+101,회복 포션,HP를 30 회복하는 포션,true,10,TestItem,potion_hp_icon,0
+102,체온 포션,체온을 20 회복하는 포션,true,10,TestItem,potion_cold_icon,0
+103,붕대,HP를 15 회복하는 붕대,true,20,TestItem,bandage_icon,0
+201,나무 방패,방어력을 올려주는 방패,false,1,TestItem,shield_icon,0
+202,철검,강력한 철제 검,false,1,TestItem,ironsword_icon,0
+203,가죽 갑옷,가죽으로 만든 방어구,false,1,TestItem,leatherarmor_icon,0
+301,횃불,주변을 밝히는 횃불,true,9,TestItem,torch_icon,2

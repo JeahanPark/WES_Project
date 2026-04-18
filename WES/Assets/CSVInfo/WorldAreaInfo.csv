@@ -1,2 +1,4 @@
 Id.INT,Name.STRING,MaxCount.INT,RespawnDelay.FLOAT
-1,Test01Area,3,10.0
+1,해안가,3,10.0
+2,숲,4,15.0
+3,산지,2,30.0

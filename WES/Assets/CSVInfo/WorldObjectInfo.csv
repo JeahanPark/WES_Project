@@ -2,3 +2,5 @@ Id.INT,WorldObjectType.ENUM,Name.STRING,MaxHP.INT
 1,WorldObject,참나무,50
 2,WorldObject,소나무,80
 3,WorldObject,바위,150
+4,WorldObject,약초 덤불,30
+5,WorldObject,철광석 바위,200

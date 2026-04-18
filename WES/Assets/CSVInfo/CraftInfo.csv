@@ -1,3 +1,9 @@
 Id.INT,CategoryType.CRAFTCATEGORYTYPE,Name.STRING,Description.STRING,IconKey.STRING,Value01.INT,ResultCount.INT
 1,Building,모닥불,체온을 올려주는 모닥불입니다,campfire_icon,4,1
-2,Item,회복 포션,HP를 회복하는 포션입니다,potion_icon,101,1
+2,Item,회복 포션,HP를 30 회복하는 포션입니다,potion_hp_icon,101,1
+3,Item,체온 포션,체온을 20 회복하는 포션입니다,potion_cold_icon,102,1
+4,Item,붕대,HP를 15 회복하는 붕대입니다,bandage_icon,103,2
+5,Item,나무 방패,방어력을 올려주는 방패입니다,shield_icon,201,1
+6,Item,철검,강력한 철제 검입니다,ironsword_icon,202,1
+7,Item,가죽 갑옷,가죽으로 만든 방어구입니다,leatherarmor_icon,203,1
+8,Building,횃불,주변을 밝히는 횃불입니다,torch_icon,301,1

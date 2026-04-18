@@ -1,2 +1,4 @@
 Id.INT,Name.STRING,MaxHP.INT,PrefabKey.STRING,DropTableId.INT
 1,Test01Monster,100,Test01Monster,1001
+2,늑대,80,Test01Monster,1002
+3,골렘,250,Test01Monster,1003
