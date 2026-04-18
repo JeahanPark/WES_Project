@@ -1,9 +1,123 @@
 #if UNITY_EDITOR
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 public class TestManager : MonoSingleton<TestManager>
 {
+    // ===== 범용 입력 시뮬레이션 =====
+
+    public void SimulateKeyPress(string _keyName)
+    {
+        StartCoroutine(CoSimulateKeyPress(_keyName));
+    }
+
+    private IEnumerator CoSimulateKeyPress(string _keyName)
+    {
+        var keyboard = Keyboard.current;
+        if (keyboard == null)
+        {
+            GameDebug.LogError("[TestManager] Keyboard not found");
+            yield break;
+        }
+
+        var key = keyboard.FindKeyOnCurrentKeyboardLayout(_keyName);
+        if (key == null)
+        {
+            GameDebug.LogError($"[TestManager] Key '{_keyName}' not found");
+            yield break;
+        }
+
+        using (StateEvent.From(keyboard, out var eventPtr))
+        {
+            key.WriteValueIntoEvent(1f, eventPtr);
+            InputSystem.QueueEvent(eventPtr);
+        }
+
+        GameDebug.Log($"[TestManager] Key '{_keyName}' down");
+        yield return new WaitForSeconds(0.1f);
+
+        using (StateEvent.From(keyboard, out var eventPtr))
+        {
+            key.WriteValueIntoEvent(0f, eventPtr);
+            InputSystem.QueueEvent(eventPtr);
+        }
+
+        GameDebug.Log($"[TestManager] Key '{_keyName}' up");
+    }
+
+    public void SimulateQuickSlot(int _slotIndex)
+    {
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) return;
+
+        var objectData = controller.ObjectDataWorker;
+        if (objectData == null) return;
+
+        var quickSlot = objectData.GetQuickSlotRegistry();
+        var inventory = objectData.GetInventoryRegistry();
+
+        quickSlot.UseSlot(_slotIndex, inventory);
+        GameDebug.Log($"[TestManager] QuickSlot {_slotIndex} used");
+    }
+
+    public void SimulateInventoryToggle()
+    {
+        var popup = Managers.Popup.FindOpen<InventoryPopup>();
+        if (popup != null)
+        {
+            Managers.Popup.Close(popup);
+            GameDebug.Log("[TestManager] InventoryPopup closed");
+        }
+        else
+        {
+            Managers.Popup.Open<InventoryPopup>();
+            GameDebug.Log("[TestManager] InventoryPopup opened");
+        }
+    }
+
+    public void SimulateAddItem(int _itemId)
+    {
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) return;
+
+        var inventory = controller.ObjectDataWorker.GetInventoryRegistry();
+        inventory.AddItem(_itemId, 1);
+        GameDebug.Log($"[TestManager] Added item {_itemId}");
+    }
+
+    public void SimulateAddItems(string _args)
+    {
+        var parts = _args.Split(',');
+        if (parts.Length < 2) return;
+
+        int itemId = int.Parse(parts[0].Trim());
+        int count = int.Parse(parts[1].Trim());
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) return;
+
+        var inventory = controller.ObjectDataWorker.GetInventoryRegistry();
+        inventory.AddItem(itemId, count);
+        GameDebug.Log($"[TestManager] Added item {itemId} x{count}");
+    }
+
+    public void SimulateRegisterQuickSlot(string _args)
+    {
+        var parts = _args.Split(',');
+        if (parts.Length < 2) return;
+
+        int slotIndex = int.Parse(parts[0].Trim());
+        int itemId = int.Parse(parts[1].Trim());
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) return;
+
+        var quickSlot = controller.ObjectDataWorker.GetQuickSlotRegistry();
+        quickSlot.Register(slotIndex, itemId);
+        GameDebug.Log($"[TestManager] QuickSlot {slotIndex} = ItemId {itemId}");
+    }
     public override void Init()
     {
         base.Init();
