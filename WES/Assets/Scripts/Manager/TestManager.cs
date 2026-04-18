@@ -266,5 +266,68 @@ public class TestManager : MonoSingleton<TestManager>
 
         GameDebug.Log("[TestManager] TestGridInventoryAndQuickSlot 완료");
     }
+
+    public void TestContentExpansion()
+    {
+        StartCoroutine(CoTestContentExpansion());
+    }
+
+    private IEnumerator CoTestContentExpansion()
+    {
+        GameDebug.Log("[TestManager] TestContentExpansion 시작");
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+
+        var inventory = controller.ObjectDataWorker.GetInventoryRegistry();
+        var quickSlot = controller.ObjectDataWorker.GetQuickSlotRegistry();
+        inventory.Clear();
+
+        // 1. 신규 아이템 추가 확인
+        inventory.AddItem(5, 10);
+        inventory.AddItem(6, 5);
+        inventory.AddItem(7, 5);
+        inventory.AddItem(8, 5);
+        GameDebug.Log($"[TestManager] 약초:{inventory.GetItem(5)?.Count}, 가죽:{inventory.GetItem(6)?.Count}, 뼈:{inventory.GetItem(7)?.Count}, 철광석:{inventory.GetItem(8)?.Count}");
+
+        // 2. 소비 아이템 사용 테스트
+        inventory.AddItem(101, 1);
+        quickSlot.Register(0, 101);
+        var player = controller.PlayWorker?.LocalPlayer;
+        if (player == null) { GameDebug.LogError("[TestManager] LocalPlayer 없음"); yield break; }
+
+        int hpBefore = player.HP;
+        player.AddHP(-50);
+        yield return new WaitForSeconds(0.5f);
+        int hpAfterDamage = player.HP;
+        GameDebug.Log($"[TestManager] HP: {hpBefore} → 데미지 후 {hpAfterDamage}");
+
+        quickSlot.UseSlot(0, inventory);
+        yield return new WaitForSeconds(0.5f);
+        int hpAfterPotion = player.HP;
+        GameDebug.Log($"[TestManager] 포션 사용 후 HP: {hpAfterPotion} (+30 회복 기대)");
+        GameDebug.Log($"[TestManager] 포션 잔여: {inventory.GetItem(101)?.Count ?? 0} (0 기대)");
+
+        // 3. 장비 스탯 확인
+        inventory.AddItem(202, 1);
+        inventory.AddItem(201, 1);
+        yield return null;
+        player.RecalculateEquipmentStats();
+        GameDebug.Log($"[TestManager] 장비 후 ATK:{player.GetATK()} (18 기대), DEF:{player.GetDEF()} (8 기대)");
+
+        inventory.RemoveItem(202, 1);
+        yield return null;
+        player.RecalculateEquipmentStats();
+        GameDebug.Log($"[TestManager] 철검 제거 후 ATK:{player.GetATK()} (10 기대), DEF:{player.GetDEF()} (8 기대)");
+
+        // 4. 몬스터 정보 확인
+        var monsterList = Managers.Info.MonsterInfoList;
+        foreach (var m in monsterList)
+        {
+            GameDebug.Log($"[TestManager] 몬스터: {m.Name}, HP:{m.MaxHP}, DropTable:{m.DropTableId}");
+        }
+
+        GameDebug.Log("[TestManager] TestContentExpansion 완료");
+    }
 }
 #endif

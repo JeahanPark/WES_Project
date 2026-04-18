@@ -104,7 +104,7 @@ public class QuickSlotRegistry
 
     private bool UseConsumable(int _itemInfoId, InventoryRegistry _inventory)
     {
-        var controller = Object.FindFirstObjectByType<InGameController>();
+        var controller = UnityEngine.Object.FindFirstObjectByType<InGameController>();
         if (controller == null)
             return false;
 
