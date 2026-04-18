@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "mcp__mcp-unity__ensure_guid_table"
+      "mcp__mcp-unity__ensure_guid_table",
+      "Edit(/.claude/skills/dev-qa/**)"
     ]
   }
 }

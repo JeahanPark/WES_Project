@@ -10,13 +10,11 @@ public class PlayerCharacter : CharacterBase
 {
     public const int DEFAULT_MAX_COLD = 100;
     private const float DEFAULT_ATTACK_RANGE = 1.5f;
-    private const int DEFAULT_ATTACK_DAMAGE = 10;
     private const int DEFAULT_MAX_HIT_COUNT = 3;
     private const float COLLECT_RADIUS = 2f;
 
     [SerializeField] private PlayerAnimationComponent m_AnimationComponent;
     [SerializeField] private float m_AttackRange = DEFAULT_ATTACK_RANGE;
-    [SerializeField] private int m_AttackDamage = DEFAULT_ATTACK_DAMAGE;
     [SerializeField] private int m_MaxHitCount = DEFAULT_MAX_HIT_COUNT;
     [SerializeField] private LayerMask m_TargetLayer;
 
@@ -138,7 +136,7 @@ public class PlayerCharacter : CharacterBase
             this,
             attackPosition,
             m_AttackRange,
-            m_AttackDamage,
+            GetATK(),
             m_MaxHitCount,
             m_TargetLayer
         );

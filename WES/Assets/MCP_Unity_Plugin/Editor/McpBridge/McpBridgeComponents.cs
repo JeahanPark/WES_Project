@@ -10,6 +10,20 @@ using UnityEngine;
 
 public static partial class McpBridge
 {
+    // ---- u_editor_component 라우터 ----
+
+    private static string RouteComponent(BridgeRequest _req)
+    {
+        return (_req.subAction ?? "").ToLowerInvariant() switch
+        {
+            "add"          => AddComponent(_req),
+            "remove"       => RemoveComponent(_req),
+            "set_property" => SetProperty(_req),
+            "list"         => ListComponents(_req),
+            _              => BuildError($"u_editor_component: unknown subAction '{_req.subAction}'")
+        };
+    }
+
     private static string AddComponent(BridgeRequest _req)
     {
         if (string.IsNullOrEmpty(_req.componentType))
@@ -139,6 +153,7 @@ public static partial class McpBridge
         if (_targetType == typeof(float))   return float.Parse(_value);
         if (_targetType == typeof(bool))    return bool.Parse(_value);
         if (_targetType == typeof(double))  return double.Parse(_value);
+        if (_targetType.IsEnum)             return Enum.Parse(_targetType, _value);
         return Convert.ChangeType(_value, _targetType);
     }
 }

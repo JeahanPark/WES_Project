@@ -7,11 +7,18 @@ using UnityEngine;
 public class CharacterBase : WorldEntityBase
 {
     public const int DEFAULT_MAX_HP = 100;
+    public const int DEFAULT_ATK = 10;
+    public const int DEFAULT_DEF = 3;
+    public const float DEFAULT_HP_REGEN = 0.5f;
+    public const float DEFAULT_MOVE_SPEED = 5.0f;
 
-    private const float MOVE_SPEED = 3.5f;
     private const float ROTATION_SPEED = 15f;
 
     [SerializeField] private CharacterScriptable m_CharacterData;
+    [SerializeField] private int m_ATK = DEFAULT_ATK;
+    [SerializeField] private int m_DEF = DEFAULT_DEF;
+    [SerializeField] private float m_HPRegen = DEFAULT_HP_REGEN;
+    [SerializeField] private float m_MoveSpeed = DEFAULT_MOVE_SPEED;
 
     // HP Network Variables
     private NetworkVariable<int> m_HP = new(DEFAULT_MAX_HP, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -25,12 +32,23 @@ public class CharacterBase : WorldEntityBase
     private Vector2 m_MoveDirection;
     private Vector3 m_LookTarget;
     private bool m_HasLookTarget;
+    private float m_HPRegenAccumulator = 0f;
 
     // HP Properties
     public int HP => m_HP.Value;
     public int MaxHP => m_MaxHP.Value;
     public bool IsDead => m_HP.Value <= 0;
     public Vector3 WorldUIOffset => m_CharacterData != null ? m_CharacterData.WorldUIOffset : Vector3.up * 2f;
+
+    public int GetATK() => m_ATK;
+    public int GetDEF() => m_DEF;
+    public float GetHPRegen() => m_HPRegen;
+    public float GetMoveSpeed() => m_MoveSpeed;
+
+    public void SetATK(int _value) { m_ATK = _value; }
+    public void SetDEF(int _value) { m_DEF = _value; }
+    public void SetHPRegen(float _value) { m_HPRegen = _value; }
+    public void SetMoveSpeed(float _value) { m_MoveSpeed = _value; }
 
     public override void OnNetworkSpawn()
     {
@@ -138,7 +156,8 @@ public class CharacterBase : WorldEntityBase
         if (IsDead)
             return;
 
-        SetHP(m_HP.Value - _damage);
+        int finalDamage = Mathf.Max(1, _damage - m_DEF);
+        SetHP(m_HP.Value - finalDamage);
 
         OnDamagedClientRpc(_damage, _attackerId);
 
@@ -188,11 +207,33 @@ public class CharacterBase : WorldEntityBase
 
     protected virtual void Update()
     {
-        if (!IsSpawned || !IsOwner)
+        if (!IsSpawned)
             return;
 
-        UpdateMovement();
-        UpdateRotation();
+        if (IsServer)
+        {
+            UpdateHPRegen(Time.deltaTime);
+        }
+
+        if (IsOwner)
+        {
+            UpdateMovement();
+            UpdateRotation();
+        }
+    }
+
+    private void UpdateHPRegen(float _deltaTime)
+    {
+        if (IsDead || m_HP.Value >= m_MaxHP.Value || m_HPRegen <= 0f)
+            return;
+
+        m_HPRegenAccumulator += m_HPRegen * _deltaTime;
+        if (m_HPRegenAccumulator >= 1f)
+        {
+            int regenAmount = (int)m_HPRegenAccumulator;
+            m_HPRegenAccumulator -= regenAmount;
+            SetHP(m_HP.Value + regenAmount);
+        }
     }
 
     public void MoveWithDirection(Vector2 _direction)
@@ -227,7 +268,7 @@ public class CharacterBase : WorldEntityBase
         if (isMoving)
         {
             Vector3 moveDirection = new(m_MoveDirection.x, 0f, m_MoveDirection.y);
-            transform.position += moveDirection.normalized * (Time.deltaTime * MOVE_SPEED);
+            transform.position += moveDirection.normalized * (Time.deltaTime * m_MoveSpeed);
         }
     }
 

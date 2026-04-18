@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// 인게임 HUD 좌측에 붙는 제작 탭 버튼 묶음
@@ -6,6 +7,17 @@ using UnityEngine;
 /// </summary>
 public class CraftHUDTab : MonoBehaviour
 {
+    [SerializeField] private Button m_BuildingButton;
+    [SerializeField] private Button m_ItemButton;
+
+    private void Awake()
+    {
+        if (m_BuildingButton != null)
+            m_BuildingButton.onClick.AddListener(OnClickOpenBuilding);
+        if (m_ItemButton != null)
+            m_ItemButton.onClick.AddListener(OnClickOpenItem);
+    }
+
     public void OnClickOpenBuilding()
     {
         OpenCategory(CraftCategoryType.Building);

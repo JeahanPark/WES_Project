@@ -8,6 +8,10 @@ public class GameEnum
 public enum CharacterStat
 {
     HP,
+    HPRegen,
+    ATK,
+    DEF,
+    MoveSpeed,
     Cold
 }
 
@@ -53,4 +57,11 @@ public enum CraftConditionType
     None,
     MaxCold,
     MinCold,
+}
+
+public enum GameState
+{
+    Playing,
+    Clear,
+    GameOver,
 }

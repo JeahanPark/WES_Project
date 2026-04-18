@@ -26,6 +26,12 @@ public class InGameController : GameController<InGameController>
     private HashSet<ulong> m_ReadyClients = new();
     private bool m_IsGameStarted = false;
 
+    // Game State
+    private GameState m_GameState = GameState.Playing;
+    private int m_EscapedCount = 0;
+
+    public GameState GameState => m_GameState;
+
     public InGameCameraWorker CameraWorker => m_CameraWorker;
     public InGamePlayWorker PlayWorker => m_PlayWorker;
     public InGameHUDWorker HUDWorker => m_HUDWorker;
@@ -71,10 +77,6 @@ public class InGameController : GameController<InGameController>
         yield return CoWaitForLocalPlayer();
 
         GameDebug.Log("[InGameController] Game started! Local player is ready.");
-
-        // 테스트: 10초 뒤 데미지 50
-        yield return new WaitForSeconds(2f);
-        m_PlayWorker.LocalPlayer.AddHP(-50);
     }
 
     private IEnumerator CoWaitForLocalPlayer()
@@ -147,5 +149,63 @@ public class InGameController : GameController<InGameController>
     {
         m_IsGameStarted = true;
         GameDebug.Log("[InGameController] Received game start signal!");
+    }
+
+    /// <summary>
+    /// EscapePoint에서 플레이어가 도달했을 때 호출 (클라이언트 - 로컬 오너만)
+    /// </summary>
+    public void OnPlayerReachedEscape(PlayerCharacter _player)
+    {
+        if (m_GameState != GameState.Playing)
+            return;
+
+        GameDebug.Log($"[InGameController] Player {_player.GetPlayerIndex()} reached escape point!");
+        NotifyEscapeServerRpc();
+    }
+
+    [Rpc(SendTo.Server)]
+    private void NotifyEscapeServerRpc()
+    {
+        if (m_GameState != GameState.Playing)
+            return;
+
+        m_EscapedCount++;
+        int totalPlayers = Managers.Network.GetConnectedPlayerCount();
+        GameDebug.Log($"[InGameController] Escaped: {m_EscapedCount}/{totalPlayers}");
+
+        if (m_EscapedCount >= totalPlayers)
+        {
+            TriggerClearClientRpc();
+        }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void TriggerClearClientRpc()
+    {
+        m_GameState = GameState.Clear;
+        GameDebug.Log("[InGameController] GAME CLEAR!");
+        StartCoroutine(CoReturnToLobby(3f));
+    }
+
+    public void TriggerGameOver()
+    {
+        if (m_GameState != GameState.Playing)
+            return;
+
+        TriggerGameOverClientRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void TriggerGameOverClientRpc()
+    {
+        m_GameState = GameState.GameOver;
+        GameDebug.Log("[InGameController] GAME OVER!");
+        StartCoroutine(CoReturnToLobby(3f));
+    }
+
+    private IEnumerator CoReturnToLobby(float _delay)
+    {
+        yield return new WaitForSeconds(_delay);
+        Managers.Scene.LoadScene(GameSceneManager.SCENE_LOBBY);
     }
 }

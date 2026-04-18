@@ -1,14 +1,13 @@
 // McpBridge.cs
-// Unity Editor TCP 브릿지 코어 - TCP 서버 생명주기, 요청 라우팅, 공용 헬퍼.
+// Unity Editor Named Pipe 브릿지 코어 - 파이프 서버 생명주기, 요청 라우팅, 공용 헬퍼.
 // 기능별 핸들러는 McpBridge/ 하위 partial 파일에 분리되어 있다.
-// Tools > McpBridge 메뉴에서 수동으로 시작/중지한다.
+// [InitializeOnLoad]로 자동 시작되며, Domain Reload 후에도 자동 재연결된다.
 
 using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using UnityEditor;
@@ -18,124 +17,167 @@ using UnityEngine;
 [InitializeOnLoad]
 public static partial class McpBridge
 {
-    private const int PORT = 9876;
+    private const string PIPE_NAME = "mcp-unity-bridge";
 
-    private static TcpListener m_Listener;
+    // ---- 생명주기 상태 ----
+    // Stopped → Starting → Running → Stopping → Stopped 순환.
+    // Interlocked.CompareExchange로만 전이해 논리 상태와 자원 상태를 일치시킨다.
+    private static class S
+    {
+        public const int Stopped  = 0;
+        public const int Starting = 1;
+        public const int Running  = 2;
+        public const int Stopping = 3;
+    }
+    private static int m_State = S.Stopped;
+
     private static Thread m_ListenThread;
-    private static bool m_Running;
+    // WaitForConnection 중인 파이프 참조. Stop()에서 더미 연결 후 Dispose에 사용.
+    private static volatile NamedPipeServerStream m_CurrentPipe;
     private static readonly ConcurrentQueue<PendingRequest> m_PendingQueue = new ConcurrentQueue<PendingRequest>();
 
-    // ---- 도메인 리로드 대응 ----
-
-    private const string SESSION_KEY = "McpBridge.AutoRestart";
+    // ---- 도메인 리로드 후 자동 재시작 ----
 
     static McpBridge()
     {
-        AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
-        AssemblyReloadEvents.afterAssemblyReload  += OnAfterAssemblyReload;
-    }
-
-    private static void OnBeforeAssemblyReload()
-    {
-        SessionState.SetBool(SESSION_KEY, m_Running);
-        if (m_Running)
-            Stop();
-    }
-
-    private static void OnAfterAssemblyReload()
-    {
-        if (SessionState.GetBool(SESSION_KEY, false))
-        {
-            Start();
-            Debug.Log("[McpBridge] 도메인 리로드 후 서버 자동 재시작됨");
-        }
+        AssemblyReloadEvents.beforeAssemblyReload += Stop;
+        EditorApplication.quitting += Stop;          // Editor 종료 시에도 반드시 Stop
+        EditorApplication.delayCall += () => Start();
     }
 
     // ---- Tools 메뉴 ----
 
     [MenuItem("Tools/McpBridge/▶ 시작", priority = 1)]
-    public static void MenuStart()
-    {
-        Start();
-    }
+    public static void MenuStart() => Start();
 
     [MenuItem("Tools/McpBridge/▶ 시작", isValidateFunction: true)]
-    private static bool MenuStartValidate() => !m_Running;
+    private static bool MenuStartValidate() => m_State == S.Stopped;
 
     [MenuItem("Tools/McpBridge/■ 중지", priority = 2)]
-    public static void MenuStop()
-    {
-        Stop();
-    }
+    public static void MenuStop() => Stop();
 
     [MenuItem("Tools/McpBridge/■ 중지", isValidateFunction: true)]
-    private static bool MenuStopValidate() => m_Running;
+    private static bool MenuStopValidate() => m_State == S.Running;
 
     // ---- 서버 생명주기 ----
 
     private static void Start()
     {
+        // Stopped → Starting: 이 CAS가 성공해야만 기동 진행.
+        // Starting/Running/Stopping 상태에서는 모두 무시.
+        if (Interlocked.CompareExchange(ref m_State, S.Starting, S.Stopped) != S.Stopped) return;
+
         try
         {
-            m_Running = true;
-            m_Listener = new TcpListener(IPAddress.Loopback, PORT);
-            m_Listener.Start();
             m_ListenThread = new Thread(ListenLoop) { IsBackground = true, Name = "McpBridge" };
             m_ListenThread.Start();
+
+            // 중복 등록 원천 차단: -= 먼저 호출 후 +=
+            EditorApplication.update -= ProcessQueue;
             EditorApplication.update += ProcessQueue;
-            EditorApplication.quitting += Stop;
-            Debug.Log($"[McpBridge] TCP 서버 시작됨 (port {PORT})");
+
+            // 완전 기동 성공 → Running
+            Interlocked.Exchange(ref m_State, S.Running);
+            Debug.Log($"[McpBridge] Named Pipe 서버 시작됨 ({PIPE_NAME})");
         }
         catch (Exception e)
         {
-            m_Running = false;
+            // 기동 실패 → 자원 없으므로 바로 Stopped 복원
+            Interlocked.Exchange(ref m_State, S.Stopped);
             Debug.LogError($"[McpBridge] 서버 시작 실패: {e.Message}");
         }
     }
 
     private static void Stop()
     {
-        m_Running = false;
+        // Running → Stopping: 이 CAS가 성공해야만 정리 진행.
+        // Stopped/Starting/Stopping 상태에서는 모두 무시.
+        if (Interlocked.CompareExchange(ref m_State, S.Stopping, S.Running) != S.Running) return;
+
+        // WaitForConnection() 블로킹 해제: Dispose()만으로는 Mono에서 깨어나지 않음.
+        // 더미 클라이언트를 연결해 WaitForConnection이 반환되도록 한 뒤 Dispose.
         try
         {
-            m_Listener?.Server?.Close();
-            m_Listener?.Stop();
+            using var dummy = new NamedPipeClientStream(".", PIPE_NAME, PipeDirection.Out);
+            dummy.Connect(200);
         }
-        catch { }
-        m_Listener = null;
+        catch { /* 파이프 없거나 연결 실패 — 무시하고 진행 */ }
+
+        CleanupResources();
+
+        // 자원 정리 완료 → Stopped
+        Interlocked.Exchange(ref m_State, S.Stopped);
+        Debug.Log("[McpBridge] Named Pipe 서버 중지됨");
+    }
+
+    // Stop()과 Start() 실패 시 공통 자원 정리
+    private static void CleanupResources()
+    {
         EditorApplication.update -= ProcessQueue;
-        EditorApplication.quitting -= Stop;
-        Debug.Log("[McpBridge] TCP 서버 중지됨");
+
+        try { m_CurrentPipe?.Dispose(); } catch { }
+        m_CurrentPipe = null;
+
+        // ListenThread가 루프를 빠져나올 때까지 최대 500ms 대기
+        m_ListenThread?.Join(500);
+        m_ListenThread = null;
     }
 
     private static void ListenLoop()
     {
-        while (m_Running)
+        while (m_State == S.Running)
         {
+            NamedPipeServerStream server = null;
             try
             {
-                var client = m_Listener.AcceptTcpClient();
-                var t = new Thread(() => HandleClient(client)) { IsBackground = true };
+                server = new NamedPipeServerStream(
+                    PIPE_NAME,
+                    PipeDirection.InOut,
+                    4,
+                    PipeTransmissionMode.Byte,
+                    PipeOptions.None);
+
+                // WaitForConnection 중인 파이프를 Stop()이 참조할 수 있도록 보관
+                m_CurrentPipe = server;
+                server.WaitForConnection();
+
+                if (m_State != S.Running)
+                {
+                    server.Dispose();
+                    break;
+                }
+
+                var capturedServer = server;
+                var t = new Thread(() => HandleClient(capturedServer)) { IsBackground = true };
                 t.Start();
             }
-            catch
+            catch (ObjectDisposedException)
             {
-                break;
+                // Stop()이 Dispose한 경우 — 정상 종료 경로, 루프 탈출
+                server = null; // 중복 Dispose 방지
+                if (m_State != S.Running) break;
+            }
+            catch (Exception e)
+            {
+                // 파이프 생성/연결 중 예상치 못한 오류 — 로그 남기고 루프 유지
+                if (m_State == S.Running)
+                    Debug.LogWarning($"[McpBridge] ListenLoop 오류 (재시도): {e.GetType().Name}: {e.Message}");
+                server?.Dispose();
+                if (m_State != S.Running) break;
             }
         }
     }
 
     // ---- 클라이언트 처리 ----
 
-    private static void HandleClient(TcpClient _client)
+    private static void HandleClient(NamedPipeServerStream _pipe)
     {
-        using (_client)
+        using (_pipe)
         {
             try
             {
-                using var stream = _client.GetStream();
-                using var reader = new StreamReader(stream, Encoding.UTF8);
-                using var writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
+                using var reader = new StreamReader(_pipe, Encoding.UTF8, false, 1024, leaveOpen: true);
+                using var writer = new StreamWriter(_pipe, new UTF8Encoding(false), 1024, leaveOpen: true) { AutoFlush = true };
 
                 string json = reader.ReadLine();
                 if (string.IsNullOrEmpty(json))
@@ -146,6 +188,9 @@ public static partial class McpBridge
                 pending.WaitForCompletion(10000);
 
                 writer.WriteLine(pending.Response ?? BuildError("timeout"));
+                writer.Flush();
+
+                try { _pipe.WaitForPipeDrain(); } catch { }
             }
             catch (Exception e)
             {
@@ -154,7 +199,7 @@ public static partial class McpBridge
         }
     }
 
-    // EditorApplication.update 에서 메인 스레드로 커맨드 처리
+    // EditorApplication.update에서 메인 스레드로 커맨드 처리
     private static void ProcessQueue()
     {
         while (m_PendingQueue.TryDequeue(out var req))
@@ -186,16 +231,26 @@ public static partial class McpBridge
 
         return req.action.ToLowerInvariant() switch
         {
-            "add"                => AddComponent(req),       // McpBridgeComponents.cs
-            "remove"             => RemoveComponent(req),    // McpBridgeComponents.cs
-            "set_property"       => SetProperty(req),        // McpBridgeComponents.cs
-            "list"               => ListComponents(req),     // McpBridgeComponents.cs
-            "set_reference"      => SetReference(req),       // McpBridgeReferences.cs
-            "instantiate_prefab" => InstantiatePrefab(req),  // McpBridgeInstantiate.cs
-            "add_gameobject"     => AddGameObject(req),      // McpBridgeGameObject.cs
-            "connect_button"     => ConnectButton(req),      // McpBridgeButton.cs
-            "refresh_assets"     => RefreshAssets(req),      // McpBridgeRefresh.cs
-            _                    => BuildError($"Unknown action: '{req.action}'")
+            // Editor tools
+            "u_editor_component"      => RouteComponent(req),       // McpBridgeComponents.cs
+            "u_editor_gameobject"     => RouteGameObject(req),      // McpBridgeGameObject.cs
+            "u_editor_set_transform"  => EditorSetTransform(req),   // McpBridgeRuntime.cs
+            "u_editor_query"          => RouteQuery(req),           // McpBridgeGameObjectQuery.cs
+            "u_editor_reference"      => RouteReference(req),       // McpBridgeReferences.cs
+            "u_editor_prefab"         => InstantiatePrefab(req),    // McpBridgeInstantiate.cs
+            "u_editor_scene"          => RouteScene(req),           // McpBridgeScene.cs
+            "u_editor_asset"          => RouteAsset(req),           // McpBridgeAsset.cs
+            "u_editor_tag"            => RouteTag(req),             // McpBridgeTagLayer.cs
+            "u_editor_layer"          => RouteLayer(req),           // McpBridgeTagLayer.cs
+            // Play tools
+            "u_play_control"          => PlayModeControl(req),      // McpBridgePlayMode.cs
+            "u_play_set_transform"    => PlaySetTransform(req),     // McpBridgeRuntime.cs
+            "u_play_click"            => ClickUi(req),              // McpBridgeRuntime.cs
+            "u_play_invoke"           => InvokeRuntime(req),        // McpBridgeRuntime.cs
+            // Common tools
+            "u_console"               => ReadConsole(req),          // McpBridgeConsole.cs
+            "u_screenshot"            => Screenshot(req),           // McpBridgeScreenshot.cs
+            _                         => BuildError($"Unknown action: '{req.action}'")
         };
     }
 
@@ -203,6 +258,8 @@ public static partial class McpBridge
 
     private static (GameObject go, GameObject prefabRoot) FindTarget(BridgeRequest _req)
     {
+        bool isPath = !string.IsNullOrEmpty(_req.target) && _req.target.Contains('/');
+
         if (!string.IsNullOrEmpty(_req.prefabPath))
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(_req.prefabPath);
@@ -212,21 +269,52 @@ public static partial class McpBridge
             if (string.IsNullOrEmpty(_req.target) || _req.target == prefab.name)
                 return (prefab, prefab);
 
-            var found = FindInHierarchy(prefab.transform, _req.target);
+            var found = isPath
+                ? FindByPath(prefab.transform, _req.target)
+                : FindInHierarchy(prefab.transform, _req.target);
             return (found, prefab);
         }
 
         foreach (var root in GetAllSceneRoots())
         {
+            if (isPath)
+            {
+                var found = FindByPath(root.transform, _req.target);
+                if (found != null) return (found, null);
+                continue;
+            }
+
             if (root.name == _req.target)
                 return (root, null);
 
-            var found = FindInHierarchy(root.transform, _req.target);
-            if (found != null)
-                return (found, null);
+            var found2 = FindInHierarchy(root.transform, _req.target);
+            if (found2 != null)
+                return (found2, null);
         }
 
         return (null, null);
+    }
+
+    // '/' 구분 경로로 GameObject를 탐색한다. 예: "Parent/Child/Text"
+    private static GameObject FindByPath(Transform _root, string _path)
+    {
+        var parts = _path.Split('/');
+        Transform current = _root;
+
+        // 첫 번째 파트가 루트 이름이면 건너뜀
+        int startIndex = (current.name == parts[0]) ? 1 : 0;
+
+        for (int i = startIndex; i < parts.Length; i++)
+        {
+            Transform next = null;
+            foreach (Transform child in current)
+            {
+                if (child.name == parts[i]) { next = child; break; }
+            }
+            if (next == null) return null;
+            current = next;
+        }
+        return current == _root && startIndex == 0 ? null : current.gameObject;
     }
 
     private static GameObject FindInHierarchy(Transform _parent, string _name)
@@ -270,6 +358,16 @@ public static partial class McpBridge
         }
     }
 
+    // 특정 프리팹이 Prefab Mode로 열려 있으면 메인 스테이지로 복귀해 저장 충돌을 방지한다.
+    private static void ClosePrefabModeIfOpen(string _prefabPath)
+    {
+        var stage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+        if (stage == null) return;
+        if (!string.IsNullOrEmpty(_prefabPath) &&
+            !stage.assetPath.Equals(_prefabPath, System.StringComparison.OrdinalIgnoreCase)) return;
+        UnityEditor.SceneManagement.StageUtility.GoToMainStage();
+    }
+
     private static Type FindComponentType(string _typeName)
     {
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -298,6 +396,7 @@ public static partial class McpBridge
     private class BridgeRequest
     {
         public string action;
+        public string subAction;        // 통합 도구의 하위 액션 (예: "add", "delete", "find")
         public string target;
         public string prefabPath;
         public string parentPrefabPath;
@@ -310,6 +409,28 @@ public static partial class McpBridge
         public string listenerComponent;
         public string methodName;
         public string assetPath;
+        public string logType;          // u_console 필터: "error" | "warning" | "log" | "all"
+        public int    maxCount;         // u_console / u_editor_query 최대 항목 수
+        public string playModeAction;   // u_play_control: "enter" | "exit" | "status"
+        public float  x;               // (레거시 호환)
+        public float  y;
+        public float  z;
+        // set_transform 필드 (nullable은 Unity JsonUtility 미지원이므로 flag 방식 사용)
+        public float  posX, posY, posZ;
+        public float  rotX, rotY, rotZ;
+        public float  scaleX, scaleY, scaleZ;
+        public bool   hasPosX, hasPosY, hasPosZ;
+        public bool   hasRotX, hasRotY, hasRotZ;
+        public bool   hasScaleX, hasScaleY, hasScaleZ;
+        public string args;            // u_play_invoke 메서드 인자 (쉼표 구분)
+        public string scenePath;       // u_editor_scene 씬 경로
+        public string searchQuery;     // u_editor_query / u_editor_asset 검색어
+        public string filter;          // u_editor_asset AssetDatabase 필터
+        public string folder;          // u_editor_asset 검색 폴더
+        public string tagName;         // u_editor_tag
+        public string layerName;       // u_editor_layer
+        public int    layerIndex;      // u_editor_layer 레이어 인덱스 (8-31)
+        public string screenshotPath;  // u_screenshot 저장 경로
     }
 
     private class PendingRequest

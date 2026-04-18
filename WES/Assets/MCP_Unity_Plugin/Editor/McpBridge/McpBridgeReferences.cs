@@ -14,6 +14,18 @@ using UnityEngine;
 
 public static partial class McpBridge
 {
+    // ---- u_editor_reference 라우터 ----
+
+    private static string RouteReference(BridgeRequest _req)
+    {
+        return (_req.subAction ?? "").ToLowerInvariant() switch
+        {
+            "set_reference"  => SetReference(_req),
+            "connect_button" => ConnectButton(_req),
+            _                => BuildError($"u_editor_reference: unknown subAction '{_req.subAction}'")
+        };
+    }
+
     private static string SetReference(BridgeRequest _req)
     {
         if (string.IsNullOrEmpty(_req.componentType))
@@ -140,20 +152,34 @@ public static partial class McpBridge
         }
 
         // 이름으로 GameObject 탐색 (같은 프리팹 or 씬)
+        // referenceTarget에 '/'가 포함되면 경로 탐색 (예: "Parent/Child/Text")
         GameObject refGo = null;
+        bool isPath = _mapping.referenceTarget.Contains('/');
+
         if (_prefabRoot != null)
         {
-            refGo = _prefabRoot.name == _mapping.referenceTarget
-                ? _prefabRoot
-                : FindInHierarchy(_prefabRoot.transform, _mapping.referenceTarget);
+            if (isPath)
+                refGo = FindByPath(_prefabRoot.transform, _mapping.referenceTarget);
+            else
+                refGo = _prefabRoot.name == _mapping.referenceTarget
+                    ? _prefabRoot
+                    : FindInHierarchy(_prefabRoot.transform, _mapping.referenceTarget);
         }
         else
         {
             foreach (var root in GetAllSceneRoots())
             {
-                if (root.name == _mapping.referenceTarget) { refGo = root; break; }
-                var found = FindInHierarchy(root.transform, _mapping.referenceTarget);
-                if (found != null) { refGo = found; break; }
+                if (isPath)
+                {
+                    refGo = FindByPath(root.transform, _mapping.referenceTarget);
+                }
+                else
+                {
+                    if (root.name == _mapping.referenceTarget) { refGo = root; break; }
+                    var found = FindInHierarchy(root.transform, _mapping.referenceTarget);
+                    if (found != null) { refGo = found; break; }
+                }
+                if (refGo != null) break;
             }
         }
 

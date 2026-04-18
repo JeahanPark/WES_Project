@@ -101,6 +101,10 @@ public class Managers : MonoSingleton<Managers>
     public static ChatManager Chat => ChatManager.Instance;
     public static GameSceneManager Scene => GameSceneManager.Instance;
 
+#if UNITY_EDITOR
+    public static TestManager Test => TestManager.Instance;
+#endif
+
     public override void Init()
     {
         base.Init();
@@ -117,6 +121,10 @@ public class Managers : MonoSingleton<Managers>
         Resource.Init();
         Chat.Init();
         Scene.Init();
+
+#if UNITY_EDITOR
+        Test.Init();
+#endif
     }
 
     public override void Clear()
@@ -135,5 +143,9 @@ public class Managers : MonoSingleton<Managers>
         Resource?.Clear();
         if (Chat) Chat.Clear();
         if (Scene) Scene.Clear();
+
+#if UNITY_EDITOR
+        if (Test) Test.Clear();
+#endif
     }
 }
