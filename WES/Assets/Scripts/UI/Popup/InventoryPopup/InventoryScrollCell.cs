@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
-public class InventoryScrollCell : BaseScrollCell<ItemData>
+public class InventoryScrollCell : BaseScrollCell<ItemData>, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
     [SerializeField] private Image m_IconImage;
     [SerializeField] private TextMeshProUGUI m_CountText;
@@ -69,5 +70,45 @@ public class InventoryScrollCell : BaseScrollCell<ItemData>
 
         var scroll = GetComponentInParent<InventoryScroll>(true);
         scroll?.NotifyCellClicked(m_ItemData);
+    }
+
+    // ===== 드래그 앤 드롭 =====
+
+    public void OnBeginDrag(PointerEventData _eventData)
+    {
+        if (m_ItemData == null)
+        {
+            _eventData.pointerDrag = null;
+            return;
+        }
+
+        var popup = GetComponentInParent<InventoryPopup>(true);
+        popup?.BeginDrag(this, _eventData);
+
+        // 원래 셀 반투명 처리
+        if (m_IconImage != null)
+            m_IconImage.color = new Color(1f, 1f, 1f, 0.3f);
+    }
+
+    public void OnDrag(PointerEventData _eventData)
+    {
+        var popup = GetComponentInParent<InventoryPopup>(true);
+        popup?.UpdateDrag(_eventData);
+    }
+
+    public void OnEndDrag(PointerEventData _eventData)
+    {
+        var popup = GetComponentInParent<InventoryPopup>(true);
+        popup?.EndDrag();
+
+        // 원래 셀 불투명 복원
+        if (m_IconImage != null)
+            m_IconImage.color = Color.white;
+    }
+
+    public void OnDrop(PointerEventData _eventData)
+    {
+        var popup = GetComponentInParent<InventoryPopup>(true);
+        popup?.DropOnSlot(this);
     }
 }
