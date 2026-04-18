@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 /// <summary>
 /// 퀵슬롯 8칸 데이터 관리
@@ -91,7 +92,43 @@ public class QuickSlotRegistry
             return;
         }
 
-        // 소비 아이템: 사용 + 차감 (추후 아이템 타입별 효과 확장)
+        // 소비 아이템 (ID 101~199): 효과 적용 + 인벤토리 차감
+        if (itemInfoId >= 101 && itemInfoId <= 199)
+        {
+            if (UseConsumable(itemInfoId, _inventory))
+            {
+                OnSlotChanged?.Invoke(_slotIndex);
+            }
+        }
+    }
+
+    private bool UseConsumable(int _itemInfoId, InventoryRegistry _inventory)
+    {
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null)
+            return false;
+
+        var player = controller.PlayWorker?.LocalPlayer;
+        if (player == null)
+            return false;
+
+        switch (_itemInfoId)
+        {
+            case 101: // 회복 포션: HP +30
+                player.AddHP(30);
+                break;
+            case 102: // 체온 포션: Cold +20
+                player.AddCold(20);
+                break;
+            case 103: // 붕대: HP +15
+                player.AddHP(15);
+                break;
+            default:
+                return false;
+        }
+
+        _inventory.RemoveItem(_itemInfoId, 1);
+        return true;
     }
 
     public void Clear()
