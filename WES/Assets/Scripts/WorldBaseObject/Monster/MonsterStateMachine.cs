@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
 /// 몬스터 상태 머신
@@ -16,12 +17,20 @@ public class MonsterStateMachine : MonoBehaviour
 
     private Vector3 m_TargetPosition;
     private Vector3 m_SpawnPosition;
+    private NavMeshAgent m_Agent;
 
     public MonsterBase Owner => m_Owner;
 
     private void Awake()
     {
         m_SpawnPosition = transform.position;
+        m_Agent = GetComponent<NavMeshAgent>();
+        if (m_Agent != null)
+        {
+            m_Agent.speed = MOVE_SPEED;
+            m_Agent.angularSpeed = 360f;
+            m_Agent.stoppingDistance = 0.5f;
+        }
         InitializeStates();
     }
 
@@ -48,17 +57,40 @@ public class MonsterStateMachine : MonoBehaviour
     public void SetRandomTarget()
     {
         Vector2 randomCircle = Random.insideUnitCircle * WANDER_RADIUS;
-        m_TargetPosition = m_SpawnPosition + new Vector3(randomCircle.x, 0f, randomCircle.y);
+        Vector3 candidate = m_SpawnPosition + new Vector3(randomCircle.x, 0f, randomCircle.y);
+
+        // NavMesh 위의 유효한 위치로 보정
+        if (NavMesh.SamplePosition(candidate, out NavMeshHit hit, WANDER_RADIUS, NavMesh.AllAreas))
+        {
+            m_TargetPosition = hit.position;
+        }
+        else
+        {
+            m_TargetPosition = candidate;
+        }
     }
 
     public bool HasReachedTarget(float _threshold)
     {
+        if (m_Agent != null && m_Agent.isOnNavMesh)
+        {
+            return !m_Agent.pathPending && m_Agent.remainingDistance <= _threshold;
+        }
+
         float distance = Vector3.Distance(transform.position, m_TargetPosition);
         return distance <= _threshold;
     }
 
     public void MoveTowardsTarget()
     {
+        // NavMeshAgent 사용
+        if (m_Agent != null && m_Agent.isOnNavMesh)
+        {
+            m_Agent.SetDestination(m_TargetPosition);
+            return;
+        }
+
+        // NavMesh 없을 때 폴백: 직접 이동
         Vector3 direction = (m_TargetPosition - transform.position).normalized;
         direction.y = 0f;
 

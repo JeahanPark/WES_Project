@@ -1,6 +1,8 @@
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.AI;
+using UnityEditor.AI;
 
 /// <summary>
 /// M2 맵 자동 생성 에디터 도구
@@ -37,6 +39,29 @@ public class MapGenerator : EditorWindow
             UnityEngine.SceneManagement.SceneManager.GetActiveScene());
 
         Debug.Log("[MapGenerator] Island map generated!");
+    }
+
+    [MenuItem("Tools/Map Generator/Bake NavMesh")]
+    public static void BakeNavMesh()
+    {
+        // MapRoot의 Ground 하위 모든 오브젝트에 Static 플래그 설정
+        var ground = GameObject.Find("MapRoot/Ground");
+        if (ground != null)
+        {
+            foreach (Transform child in ground.transform)
+            {
+                GameObjectUtility.SetStaticEditorFlags(child.gameObject,
+                    StaticEditorFlags.NavigationStatic);
+            }
+        }
+
+        // NavMesh Bake
+        UnityEditor.AI.NavMeshBuilder.BuildNavMesh();
+
+        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+
+        Debug.Log("[MapGenerator] NavMesh baked!");
     }
 
     private static void GenerateGround(Transform _parent)

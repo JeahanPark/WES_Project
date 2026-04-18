@@ -118,7 +118,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 9c53bfbfaef62344ca90a418b7bb9e96, type: 2}
 --- !u!1001 &3389254
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -170,6 +170,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -380,6 +384,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -886,6 +894,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
       objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10
@@ -1062,6 +1074,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1124,6 +1140,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1185,6 +1205,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1938,6 +1962,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2000,6 +2028,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2061,6 +2093,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2272,6 +2308,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2293,6 +2333,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2429,6 +2473,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2606,6 +2654,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2627,6 +2679,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2837,6 +2893,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3532,6 +3592,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3664,6 +3728,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3685,6 +3753,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3936,6 +4008,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3957,6 +4033,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4019,6 +4099,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4364,6 +4448,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4533,6 +4621,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5603,6 +5695,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5664,6 +5760,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5799,6 +5899,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5896,6 +6000,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6551,6 +6659,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6613,6 +6725,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6674,6 +6790,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6810,6 +6930,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7243,6 +7367,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7264,6 +7392,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7620,6 +7752,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7756,6 +7892,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7817,6 +7957,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8025,6 +8169,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8324,6 +8472,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8345,6 +8497,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8448,6 +8604,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8510,6 +8670,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8520,6 +8684,52 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4008029175300419597, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
   m_PrefabInstance: {fileID: 768357682}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &768614595
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 768614596}
+  - component: {fileID: 768614597}
+  m_Layer: 0
+  m_Name: Area3_Mountain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &768614596
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768614595}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 60}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1723341988}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &768614597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768614595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07436117d73d3e7488fd005a837ff39f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AreaId: 3
+  m_SpawnRadius: 5
 --- !u!1001 &774816121
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8571,6 +8781,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8787,6 +9001,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8808,6 +9026,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8945,6 +9167,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
       objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
       value: 90
@@ -9046,6 +9272,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9328,6 +9558,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9390,6 +9624,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9451,6 +9689,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9588,6 +9830,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9609,6 +9855,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9712,6 +9962,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9807,6 +10061,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9984,6 +10242,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10076,6 +10338,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10287,6 +10553,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10348,6 +10618,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10559,6 +10833,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10674,6 +10952,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11356,6 +11638,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11566,6 +11852,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11590,23 +11880,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1111111111111111111, guid: e90201359bd511f4c82717e7409e9343, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1111111111111111111, guid: e90201359bd511f4c82717e7409e9343, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1111111111111111111, guid: e90201359bd511f4c82717e7409e9343, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 490
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1111111111111111111, guid: e90201359bd511f4c82717e7409e9343, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 250
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1111111111111111111, guid: e90201359bd511f4c82717e7409e9343, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -30
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1645150047865259628, guid: e90201359bd511f4c82717e7409e9343, type: 3}
       propertyPath: m_sharedMaterial
@@ -11622,23 +11912,23 @@ PrefabInstance:
       objectReference: {fileID: -8449383706256874020, guid: d82e40986ab84fd4fb429aca283b2f11, type: 2}
     - target: {fileID: 3571155771114996788, guid: e90201359bd511f4c82717e7409e9343, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3571155771114996788, guid: e90201359bd511f4c82717e7409e9343, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3571155771114996788, guid: e90201359bd511f4c82717e7409e9343, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 490
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3571155771114996788, guid: e90201359bd511f4c82717e7409e9343, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 250
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3571155771114996788, guid: e90201359bd511f4c82717e7409e9343, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -85
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3772544503451994593, guid: e90201359bd511f4c82717e7409e9343, type: 3}
       propertyPath: m_StatBar.Array.size
@@ -11674,7 +11964,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5572008608272935335, guid: e90201359bd511f4c82717e7409e9343, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 115
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5572008608272935335, guid: e90201359bd511f4c82717e7409e9343, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11800,6 +12090,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12058,6 +12352,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12268,6 +12566,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12329,6 +12631,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12466,6 +12772,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12601,6 +12911,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12865,6 +13179,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
       objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
       value: 30
@@ -12926,6 +13244,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -14349,6 +14671,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14410,6 +14736,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -14803,6 +15133,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
       objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
       value: 70
@@ -15013,6 +15347,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
       objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
       value: -90
@@ -15189,6 +15527,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15251,6 +15593,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15272,6 +15618,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -15334,6 +15684,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -15510,6 +15864,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -16047,6 +16405,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16057,6 +16419,52 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4008029175300419597, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
   m_PrefabInstance: {fileID: 1564650090}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1567728959
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1567728960}
+  - component: {fileID: 1567728961}
+  m_Layer: 0
+  m_Name: Area2_Forest
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1567728960
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567728959}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1723341988}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1567728961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567728959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07436117d73d3e7488fd005a837ff39f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AreaId: 2
+  m_SpawnRadius: 5
 --- !u!1001 &1573761909
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16479,6 +16887,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16541,6 +16953,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16562,6 +16978,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -16624,7 +17044,7 @@ GameObject:
   - component: {fileID: 1651607725}
   - component: {fileID: 1651607726}
   m_Layer: 0
-  m_Name: AreaTest1
+  m_Name: Area1_Beach
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16639,7 +17059,7 @@ Transform:
   m_GameObject: {fileID: 1651607724}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.32, y: 0, z: -11.8}
+  m_LocalPosition: {x: 0, y: 0, z: -70}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16903,6 +17323,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16965,6 +17389,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -17026,6 +17454,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -17156,6 +17588,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1651607725}
+  - {fileID: 1567728960}
+  - {fileID: 768614596}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1732807598
@@ -17283,6 +17717,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -17750,6 +18188,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
       objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
       value: 30
@@ -18074,6 +18516,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18243,6 +18689,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18568,6 +19018,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18663,6 +19117,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18799,6 +19257,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18976,6 +19438,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -19071,6 +19537,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -19207,6 +19677,10 @@ PrefabInstance:
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -19383,6 +19857,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -19618,6 +20096,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Dirt_01
       objectReference: {fileID: 0}
+    - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10
@@ -19719,6 +20201,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -20116,6 +20602,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
       objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -20177,6 +20667,10 @@ PrefabInstance:
     - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
       propertyPath: m_Name
       value: SM_Gen_Env_Ground_Grass_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4383323913801607863, guid: f424c7a3d926b314d8a867a7b24487bc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
