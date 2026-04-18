@@ -11,6 +11,8 @@ public class InventoryRegistry
     private ItemData[] m_Slots;
     private int m_SlotCount;
 
+    public event System.Action OnInventoryChanged;
+
     public int SlotCount => m_SlotCount;
 
     public InventoryRegistry(int _slotCount = DEFAULT_SLOT_COUNT)
@@ -32,6 +34,7 @@ public class InventoryRegistry
                 if (m_Slots[i] != null && m_Slots[i].Info.Id == _infoId)
                 {
                     m_Slots[i].AddCount(_count);
+                    OnInventoryChanged?.Invoke();
                     return;
                 }
             }
@@ -45,6 +48,7 @@ public class InventoryRegistry
         }
 
         m_Slots[emptyIndex] = new ItemData(info, _count);
+        OnInventoryChanged?.Invoke();
     }
 
     public bool RemoveItem(int _infoId, int _count = 1)
@@ -63,6 +67,7 @@ public class InventoryRegistry
                     m_Slots[i] = null;
                 }
 
+                OnInventoryChanged?.Invoke();
                 return true;
             }
         }
@@ -135,6 +140,7 @@ public class InventoryRegistry
         {
             m_Slots[i] = null;
         }
+        OnInventoryChanged?.Invoke();
     }
 
     private int FindEmptySlot()

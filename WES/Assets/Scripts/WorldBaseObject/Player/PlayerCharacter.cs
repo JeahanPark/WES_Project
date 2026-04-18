@@ -64,6 +64,44 @@ public class PlayerCharacter : CharacterBase
         m_OnColdChanged -= _callback;
     }
 
+    public void RecalculateEquipmentStats()
+    {
+        int bonusATK = 0;
+        int bonusDEF = 0;
+
+        var controller = InGameController.Instance;
+        if (controller == null) return;
+
+        var inventory = controller.ObjectDataWorker?.GetInventoryRegistry();
+        if (inventory == null) return;
+
+        var slots = inventory.GetSlots();
+        for (int i = 0; i < inventory.SlotCount; i++)
+        {
+            if (slots[i] == null) continue;
+
+            int itemId = slots[i].Info.Id;
+            switch (itemId)
+            {
+                case 3:   // 검: ATK +5
+                    bonusATK = System.Math.Max(bonusATK, 5);
+                    break;
+                case 201: // 나무 방패: DEF +5
+                    bonusDEF = System.Math.Max(bonusDEF, 5);
+                    break;
+                case 202: // 철검: ATK +8
+                    bonusATK = System.Math.Max(bonusATK, 8);
+                    break;
+                case 203: // 가죽 갑옷: DEF +3
+                    bonusDEF = System.Math.Max(bonusDEF, 3);
+                    break;
+            }
+        }
+
+        SetATK(DEFAULT_ATK + bonusATK);
+        SetDEF(DEFAULT_DEF + bonusDEF);
+    }
+
     public void SetCold(int _value)
     {
         if (!IsServer) return;
@@ -225,6 +263,7 @@ public class PlayerCharacter : CharacterBase
         }
 
         SubscribeInputEvents();
+        SubscribeInventoryEvents();
 
         GameDebug.Log($"Local Player Setup: PlayerIndex {m_PlayerIndex.Value}");
     }
@@ -246,7 +285,27 @@ public class PlayerCharacter : CharacterBase
             }
         }
 
+        UnsubscribeInventoryEvents();
+
         GameDebug.Log($"Local Player Cleanup: PlayerIndex {m_PlayerIndex.Value}");
+    }
+
+    private void SubscribeInventoryEvents()
+    {
+        var inventory = InGameController.Instance?.ObjectDataWorker?.GetInventoryRegistry();
+        if (inventory != null)
+        {
+            inventory.OnInventoryChanged += RecalculateEquipmentStats;
+        }
+    }
+
+    private void UnsubscribeInventoryEvents()
+    {
+        var inventory = InGameController.Instance?.ObjectDataWorker?.GetInventoryRegistry();
+        if (inventory != null)
+        {
+            inventory.OnInventoryChanged -= RecalculateEquipmentStats;
+        }
     }
 
     private void HandleInput()
