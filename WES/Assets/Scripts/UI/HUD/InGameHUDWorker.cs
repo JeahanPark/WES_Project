@@ -1,25 +1,24 @@
 using UnityEngine;
+using UniRx;
 
 /// <summary>
 /// 인게임 HUD를 관리하는 Worker
-/// - 플레이어 상태 HUD
 /// </summary>
 public class InGameHUDWorker : MonoBehaviour
 {
     [Header("HUD")]
     [SerializeField] private PlayerStatusHUD m_PlayerStatusHUD;
     [SerializeField] private CraftHUDTab m_CraftHUDTab;
+    [SerializeField] private QuickSlotHUD m_QuickSlotHUD;
 
     private PlayerCharacter m_LocalPlayer;
+    private System.IDisposable m_QuickSlotSubscription;
 
     private void OnDisable()
     {
         UnsubscribeEvents();
     }
 
-    /// <summary>
-    /// 로컬 플레이어 설정 및 HUD 초기화
-    /// </summary>
     public void SetLocalPlayer(PlayerCharacter _player)
     {
         UnsubscribeEvents();
@@ -28,19 +27,42 @@ public class InGameHUDWorker : MonoBehaviour
 
         SubscribeEvents();
         RefreshHUD();
+        InitializeQuickSlot();
 
         GameDebug.Log($"[InGameHUDWorker] Local player set: PlayerIndex {_player.GetPlayerIndex()}");
     }
 
-    /// <summary>
-    /// 로컬 플레이어 해제 (PlayerCharacter 파괴 시 호출)
-    /// </summary>
     public void ClearLocalPlayer()
     {
         UnsubscribeEvents();
         m_LocalPlayer = null;
+        m_QuickSlotSubscription?.Dispose();
 
         GameDebug.Log("[InGameHUDWorker] Local player cleared");
+    }
+
+    private void InitializeQuickSlot()
+    {
+        if (m_QuickSlotHUD == null)
+            return;
+
+        var objectData = InGameController.Instance?.ObjectDataWorker;
+        if (objectData == null)
+            return;
+
+        var quickSlotRegistry = objectData.GetQuickSlotRegistry();
+        var inventoryRegistry = objectData.GetInventoryRegistry();
+
+        m_QuickSlotHUD.Initialize(quickSlotRegistry, inventoryRegistry);
+
+        // 퀵슬롯 키 입력 구독
+        m_QuickSlotSubscription?.Dispose();
+        m_QuickSlotSubscription = Managers.Input.OnQuickSlotAsObservable
+            .Subscribe(_slotIndex =>
+            {
+                quickSlotRegistry.UseSlot(_slotIndex, inventoryRegistry);
+                m_QuickSlotHUD.RefreshSlot(_slotIndex);
+            });
     }
 
     private void SubscribeEvents()
