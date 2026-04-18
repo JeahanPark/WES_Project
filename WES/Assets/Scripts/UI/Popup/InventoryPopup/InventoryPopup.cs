@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryPopup : BasePopup
@@ -17,9 +18,11 @@ public class InventoryPopup : BasePopup
             return;
 
         var inventory = InGameController.Instance.ObjectDataWorker.GetInventoryRegistry();
-        var items = inventory.GetAllItems();
+        ItemData[] slots = inventory.GetSlots();
 
-        m_InventoryScroll.SetData(items);
+        // BaseScroll은 List<TData>를 받으므로, 배열을 List로 변환 (null 포함)
+        var slotList = new List<ItemData>(slots);
+        m_InventoryScroll.SetData(slotList);
 
         m_DetailPanel.gameObject.SetActive(false);
     }
@@ -31,6 +34,9 @@ public class InventoryPopup : BasePopup
 
     private void OnCellClicked(ItemData _itemData)
     {
+        if (_itemData == null)
+            return;
+
         m_DetailPanel.gameObject.SetActive(true);
         m_DetailPanel.Show(_itemData);
     }

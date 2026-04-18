@@ -4,11 +4,15 @@ using TMPro;
 
 public class InventoryScrollCell : BaseScrollCell<ItemData>
 {
-    [SerializeField] private TextMeshProUGUI m_NameText;
-    [SerializeField] private TextMeshProUGUI m_CountText;
     [SerializeField] private Image m_IconImage;
+    [SerializeField] private TextMeshProUGUI m_CountText;
+    [SerializeField] private Image m_BackgroundImage;
+    [SerializeField] private GameObject m_SelectedFrame;
 
     private ItemData m_ItemData;
+    private bool m_IsSelected;
+
+    public ItemData ItemData => m_ItemData;
 
     protected override void OnUpdateCell(int _index, ItemData _data)
     {
@@ -20,14 +24,9 @@ public class InventoryScrollCell : BaseScrollCell<ItemData>
             return;
         }
 
-        if (m_NameText != null)
-        {
-            m_NameText.text = m_ItemData.Info.Name;
-        }
-
         if (m_CountText != null)
         {
-            m_CountText.text = m_ItemData.Count.ToString();
+            m_CountText.text = m_ItemData.Count > 1 ? m_ItemData.Count.ToString() : string.Empty;
         }
 
         if (m_IconImage != null)
@@ -42,11 +41,6 @@ public class InventoryScrollCell : BaseScrollCell<ItemData>
 
     private void SetEmpty()
     {
-        if (m_NameText != null)
-        {
-            m_NameText.text = string.Empty;
-        }
-
         if (m_CountText != null)
         {
             m_CountText.text = string.Empty;
@@ -57,6 +51,15 @@ public class InventoryScrollCell : BaseScrollCell<ItemData>
             m_IconImage.sprite = null;
             m_IconImage.enabled = false;
         }
+
+        SetSelected(false);
+    }
+
+    public void SetSelected(bool _selected)
+    {
+        m_IsSelected = _selected;
+        if (m_SelectedFrame != null)
+            m_SelectedFrame.SetActive(_selected);
     }
 
     public void OnClickCell()

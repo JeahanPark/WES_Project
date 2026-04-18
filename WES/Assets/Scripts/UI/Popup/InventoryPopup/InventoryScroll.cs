@@ -26,8 +26,8 @@ public class InventoryScroll : BaseScroll<ItemData>
             return;
 
         var inventory = InGameController.Instance.ObjectDataWorker.GetInventoryRegistry();
-        var items = inventory.GetAllItems();
-
-        SetData(items);
+        ItemData[] slots = inventory.GetSlots();
+        var slotList = new List<ItemData>(slots);
+        SetData(slotList);
     }
 }
