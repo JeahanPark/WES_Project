@@ -98,7 +98,7 @@
                 {
                     "name": "QuickSlot1",
                     "type": "Button",
-                    "id": "qs000001-0000-0000-0000-000000000001",
+                    "id": "a0b1c2d3-e4f5-6789-abcd-100000000001",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -107,7 +107,7 @@
                 {
                     "name": "QuickSlot2",
                     "type": "Button",
-                    "id": "qs000001-0000-0000-0000-000000000002",
+                    "id": "a0b1c2d3-e4f5-6789-abcd-100000000002",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -116,7 +116,7 @@
                 {
                     "name": "QuickSlot3",
                     "type": "Button",
-                    "id": "qs000001-0000-0000-0000-000000000003",
+                    "id": "a0b1c2d3-e4f5-6789-abcd-100000000003",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -125,7 +125,7 @@
                 {
                     "name": "QuickSlot4",
                     "type": "Button",
-                    "id": "qs000001-0000-0000-0000-000000000004",
+                    "id": "a0b1c2d3-e4f5-6789-abcd-100000000004",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -134,7 +134,7 @@
                 {
                     "name": "QuickSlot5",
                     "type": "Button",
-                    "id": "qs000001-0000-0000-0000-000000000005",
+                    "id": "a0b1c2d3-e4f5-6789-abcd-100000000005",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -143,7 +143,7 @@
                 {
                     "name": "QuickSlot6",
                     "type": "Button",
-                    "id": "qs000001-0000-0000-0000-000000000006",
+                    "id": "a0b1c2d3-e4f5-6789-abcd-100000000006",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -152,7 +152,7 @@
                 {
                     "name": "QuickSlot7",
                     "type": "Button",
-                    "id": "qs000001-0000-0000-0000-000000000007",
+                    "id": "a0b1c2d3-e4f5-6789-abcd-100000000007",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -161,7 +161,7 @@
                 {
                     "name": "QuickSlot8",
                     "type": "Button",
-                    "id": "qs000001-0000-0000-0000-000000000008",
+                    "id": "a0b1c2d3-e4f5-6789-abcd-100000000008",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -468,7 +468,7 @@
                 },
                 {
                     "name": "",
-                    "id": "qs100001-0000-0000-0000-000000000003",
+                    "id": "a0b1c2d3-e4f5-6789-abcd-200000000003",
                     "path": "<Keyboard>/3",
                     "interactions": "",
                     "processors": "",
@@ -479,7 +479,7 @@
                 },
                 {
                     "name": "",
-                    "id": "qs100001-0000-0000-0000-000000000004",
+                    "id": "a0b1c2d3-e4f5-6789-abcd-200000000004",
                     "path": "<Keyboard>/4",
                     "interactions": "",
                     "processors": "",
@@ -490,7 +490,7 @@
                 },
                 {
                     "name": "",
-                    "id": "qs100001-0000-0000-0000-000000000005",
+                    "id": "a0b1c2d3-e4f5-6789-abcd-200000000005",
                     "path": "<Keyboard>/5",
                     "interactions": "",
                     "processors": "",
@@ -501,7 +501,7 @@
                 },
                 {
                     "name": "",
-                    "id": "qs100001-0000-0000-0000-000000000006",
+                    "id": "a0b1c2d3-e4f5-6789-abcd-200000000006",
                     "path": "<Keyboard>/6",
                     "interactions": "",
                     "processors": "",
@@ -512,7 +512,7 @@
                 },
                 {
                     "name": "",
-                    "id": "qs100001-0000-0000-0000-000000000007",
+                    "id": "a0b1c2d3-e4f5-6789-abcd-200000000007",
                     "path": "<Keyboard>/7",
                     "interactions": "",
                     "processors": "",
@@ -523,7 +523,7 @@
                 },
                 {
                     "name": "",
-                    "id": "qs100001-0000-0000-0000-000000000008",
+                    "id": "a0b1c2d3-e4f5-6789-abcd-200000000008",
                     "path": "<Keyboard>/8",
                     "interactions": "",
                     "processors": "",
