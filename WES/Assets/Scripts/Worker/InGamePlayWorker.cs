@@ -54,7 +54,9 @@ public class InGamePlayWorker : NetworkBehaviour
             return;
         }
 
-        InGameController.Instance.SpawnWorker.SpawnObject(buildingInfo.PrefabKey, _position);
+        var networkObj = InGameController.Instance.SpawnWorker.SpawnObject(buildingInfo.PrefabKey, _position);
+        var buildingObject = networkObj != null ? networkObj.GetComponent<WorldBuildingObject>() : null;
+        buildingObject?.SetBuildingInfoId(_buildingInfoId);
     }
 
     public void SpawnDropItem(int _itemInfoId, int _count, Vector3 _position)
