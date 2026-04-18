@@ -1,0 +1,402 @@
+{
+  "name": "QuickSlotHUD",
+  "type": "panel",
+  "anchor": "center",
+  "size": [700, 90],
+  "position": [0, -475],
+  "color": [0, 0, 0, 0],
+  "children": [
+    {
+      "name": "QuickSlotCell_0",
+      "type": "image",
+      "anchor": "center",
+      "size": [80, 80],
+      "position": [-287.5, 0],
+      "color": [0, 0, 0, 0.5],
+      "sprite": "UISprite",
+      "children": [
+        {
+          "name": "IconImage",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [1, 1, 1, 1],
+          "sprite": "none"
+        },
+        {
+          "name": "CountText",
+          "type": "text",
+          "anchor": "bottom-right",
+          "size": [30, 20],
+          "position": [0, 0],
+          "text": "",
+          "fontSize": 11,
+          "hAlign": 4
+        },
+        {
+          "name": "KeyNumberText",
+          "type": "text",
+          "anchor": "top-left",
+          "size": [20, 20],
+          "position": [0, 0],
+          "text": "1",
+          "fontSize": 10,
+          "hAlign": 1
+        },
+        {
+          "name": "DimOverlay",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [0, 0, 0, 0.5],
+          "sprite": "UISprite"
+        }
+      ]
+    },
+    {
+      "name": "QuickSlotCell_1",
+      "type": "image",
+      "anchor": "center",
+      "size": [80, 80],
+      "position": [-202.5, 0],
+      "color": [0, 0, 0, 0.5],
+      "sprite": "UISprite",
+      "children": [
+        {
+          "name": "IconImage",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [1, 1, 1, 1],
+          "sprite": "none"
+        },
+        {
+          "name": "CountText",
+          "type": "text",
+          "anchor": "bottom-right",
+          "size": [30, 20],
+          "position": [0, 0],
+          "text": "",
+          "fontSize": 11,
+          "hAlign": 4
+        },
+        {
+          "name": "KeyNumberText",
+          "type": "text",
+          "anchor": "top-left",
+          "size": [20, 20],
+          "position": [0, 0],
+          "text": "2",
+          "fontSize": 10,
+          "hAlign": 1
+        },
+        {
+          "name": "DimOverlay",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [0, 0, 0, 0.5],
+          "sprite": "UISprite"
+        }
+      ]
+    },
+    {
+      "name": "QuickSlotCell_2",
+      "type": "image",
+      "anchor": "center",
+      "size": [80, 80],
+      "position": [-117.5, 0],
+      "color": [0, 0, 0, 0.5],
+      "sprite": "UISprite",
+      "children": [
+        {
+          "name": "IconImage",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [1, 1, 1, 1],
+          "sprite": "none"
+        },
+        {
+          "name": "CountText",
+          "type": "text",
+          "anchor": "bottom-right",
+          "size": [30, 20],
+          "position": [0, 0],
+          "text": "",
+          "fontSize": 11,
+          "hAlign": 4
+        },
+        {
+          "name": "KeyNumberText",
+          "type": "text",
+          "anchor": "top-left",
+          "size": [20, 20],
+          "position": [0, 0],
+          "text": "3",
+          "fontSize": 10,
+          "hAlign": 1
+        },
+        {
+          "name": "DimOverlay",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [0, 0, 0, 0.5],
+          "sprite": "UISprite"
+        }
+      ]
+    },
+    {
+      "name": "QuickSlotCell_3",
+      "type": "image",
+      "anchor": "center",
+      "size": [80, 80],
+      "position": [-32.5, 0],
+      "color": [0, 0, 0, 0.5],
+      "sprite": "UISprite",
+      "children": [
+        {
+          "name": "IconImage",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [1, 1, 1, 1],
+          "sprite": "none"
+        },
+        {
+          "name": "CountText",
+          "type": "text",
+          "anchor": "bottom-right",
+          "size": [30, 20],
+          "position": [0, 0],
+          "text": "",
+          "fontSize": 11,
+          "hAlign": 4
+        },
+        {
+          "name": "KeyNumberText",
+          "type": "text",
+          "anchor": "top-left",
+          "size": [20, 20],
+          "position": [0, 0],
+          "text": "4",
+          "fontSize": 10,
+          "hAlign": 1
+        },
+        {
+          "name": "DimOverlay",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [0, 0, 0, 0.5],
+          "sprite": "UISprite"
+        }
+      ]
+    },
+    {
+      "name": "QuickSlotCell_4",
+      "type": "image",
+      "anchor": "center",
+      "size": [80, 80],
+      "position": [52.5, 0],
+      "color": [0, 0, 0, 0.5],
+      "sprite": "UISprite",
+      "children": [
+        {
+          "name": "IconImage",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [1, 1, 1, 1],
+          "sprite": "none"
+        },
+        {
+          "name": "CountText",
+          "type": "text",
+          "anchor": "bottom-right",
+          "size": [30, 20],
+          "position": [0, 0],
+          "text": "",
+          "fontSize": 11,
+          "hAlign": 4
+        },
+        {
+          "name": "KeyNumberText",
+          "type": "text",
+          "anchor": "top-left",
+          "size": [20, 20],
+          "position": [0, 0],
+          "text": "5",
+          "fontSize": 10,
+          "hAlign": 1
+        },
+        {
+          "name": "DimOverlay",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [0, 0, 0, 0.5],
+          "sprite": "UISprite"
+        }
+      ]
+    },
+    {
+      "name": "QuickSlotCell_5",
+      "type": "image",
+      "anchor": "center",
+      "size": [80, 80],
+      "position": [137.5, 0],
+      "color": [0, 0, 0, 0.5],
+      "sprite": "UISprite",
+      "children": [
+        {
+          "name": "IconImage",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [1, 1, 1, 1],
+          "sprite": "none"
+        },
+        {
+          "name": "CountText",
+          "type": "text",
+          "anchor": "bottom-right",
+          "size": [30, 20],
+          "position": [0, 0],
+          "text": "",
+          "fontSize": 11,
+          "hAlign": 4
+        },
+        {
+          "name": "KeyNumberText",
+          "type": "text",
+          "anchor": "top-left",
+          "size": [20, 20],
+          "position": [0, 0],
+          "text": "6",
+          "fontSize": 10,
+          "hAlign": 1
+        },
+        {
+          "name": "DimOverlay",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [0, 0, 0, 0.5],
+          "sprite": "UISprite"
+        }
+      ]
+    },
+    {
+      "name": "QuickSlotCell_6",
+      "type": "image",
+      "anchor": "center",
+      "size": [80, 80],
+      "position": [222.5, 0],
+      "color": [0, 0, 0, 0.5],
+      "sprite": "UISprite",
+      "children": [
+        {
+          "name": "IconImage",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [1, 1, 1, 1],
+          "sprite": "none"
+        },
+        {
+          "name": "CountText",
+          "type": "text",
+          "anchor": "bottom-right",
+          "size": [30, 20],
+          "position": [0, 0],
+          "text": "",
+          "fontSize": 11,
+          "hAlign": 4
+        },
+        {
+          "name": "KeyNumberText",
+          "type": "text",
+          "anchor": "top-left",
+          "size": [20, 20],
+          "position": [0, 0],
+          "text": "7",
+          "fontSize": 10,
+          "hAlign": 1
+        },
+        {
+          "name": "DimOverlay",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [0, 0, 0, 0.5],
+          "sprite": "UISprite"
+        }
+      ]
+    },
+    {
+      "name": "QuickSlotCell_7",
+      "type": "image",
+      "anchor": "center",
+      "size": [80, 80],
+      "position": [307.5, 0],
+      "color": [0, 0, 0, 0.5],
+      "sprite": "UISprite",
+      "children": [
+        {
+          "name": "IconImage",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [1, 1, 1, 1],
+          "sprite": "none"
+        },
+        {
+          "name": "CountText",
+          "type": "text",
+          "anchor": "bottom-right",
+          "size": [30, 20],
+          "position": [0, 0],
+          "text": "",
+          "fontSize": 11,
+          "hAlign": 4
+        },
+        {
+          "name": "KeyNumberText",
+          "type": "text",
+          "anchor": "top-left",
+          "size": [20, 20],
+          "position": [0, 0],
+          "text": "8",
+          "fontSize": 10,
+          "hAlign": 1
+        },
+        {
+          "name": "DimOverlay",
+          "type": "image",
+          "anchor": "stretch",
+          "size": [0, 0],
+          "position": [0, 0],
+          "color": [0, 0, 0, 0.5],
+          "sprite": "UISprite"
+        }
+      ]
+    }
+  ]
+}

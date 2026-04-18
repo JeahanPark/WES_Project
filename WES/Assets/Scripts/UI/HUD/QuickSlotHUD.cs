@@ -5,7 +5,7 @@ using UnityEngine;
 /// </summary>
 public class QuickSlotHUD : MonoBehaviour
 {
-    [SerializeField] private QuickSlotCell[] m_Cells;
+    private QuickSlotCell[] m_Cells;
 
     private QuickSlotRegistry m_QuickSlotRegistry;
     private InventoryRegistry m_InventoryRegistry;
@@ -14,6 +14,8 @@ public class QuickSlotHUD : MonoBehaviour
     {
         m_QuickSlotRegistry = _quickSlotRegistry;
         m_InventoryRegistry = _inventoryRegistry;
+
+        m_Cells = GetComponentsInChildren<QuickSlotCell>(true);
 
         for (int i = 0; i < m_Cells.Length; i++)
         {
