@@ -68,5 +68,89 @@ public class TestManager : MonoSingleton<TestManager>
 
         GameDebug.Log("[TestManager] TestMoveAndPopup 완료");
     }
+
+    public void TestGridInventoryAndQuickSlot()
+    {
+        StartCoroutine(CoTestGridInventoryAndQuickSlot());
+    }
+
+    private IEnumerator CoTestGridInventoryAndQuickSlot()
+    {
+        GameDebug.Log("[TestManager] TestGridInventoryAndQuickSlot 시작");
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null)
+        {
+            GameDebug.LogError("[TestManager] InGameController가 없습니다");
+            yield break;
+        }
+
+        var objectData = controller.ObjectDataWorker;
+        if (objectData == null)
+        {
+            GameDebug.LogError("[TestManager] ObjectDataWorker가 없습니다");
+            yield break;
+        }
+
+        var inventory = objectData.GetInventoryRegistry();
+        var quickSlot = objectData.GetQuickSlotRegistry();
+
+        // 1. 인벤토리 슬롯 기반 확인
+        GameDebug.Log($"[TestManager] 인벤토리 슬롯 수: {inventory.SlotCount}");
+        inventory.Clear();
+
+        // 2. 아이템 추가 테스트
+        inventory.AddItem(1, 5);  // 나무 5개
+        inventory.AddItem(2, 3);  // 돌 3개
+        inventory.AddItem(3, 1);  // 검 1개
+        inventory.AddItem(4, 2);  // 모닥불 2개
+
+        var wood = inventory.GetItem(1);
+        var stone = inventory.GetItem(2);
+        var sword = inventory.GetItem(3);
+        var campfire = inventory.GetItem(4);
+
+        GameDebug.Log($"[TestManager] 나무: {wood?.Count ?? 0}, 돌: {stone?.Count ?? 0}, 검: {sword?.Count ?? 0}, 모닥불: {campfire?.Count ?? 0}");
+
+        // 3. 슬롯 위치 확인
+        GameDebug.Log($"[TestManager] 슬롯0: {inventory.GetSlot(0)?.Info?.Name ?? "빈칸"}, 슬롯1: {inventory.GetSlot(1)?.Info?.Name ?? "빈칸"}, 슬롯2: {inventory.GetSlot(2)?.Info?.Name ?? "빈칸"}, 슬롯3: {inventory.GetSlot(3)?.Info?.Name ?? "빈칸"}");
+
+        // 4. 슬롯 스왑 테스트
+        GameDebug.Log("[TestManager] 슬롯 0 ↔ 2 스왑");
+        inventory.SwapSlots(0, 2);
+        GameDebug.Log($"[TestManager] 스왑 후 슬롯0: {inventory.GetSlot(0)?.Info?.Name ?? "빈칸"}, 슬롯2: {inventory.GetSlot(2)?.Info?.Name ?? "빈칸"}");
+
+        // 5. 퀵슬롯 등록 테스트
+        quickSlot.Register(0, 1);  // 퀵슬롯1에 나무
+        quickSlot.Register(1, 3);  // 퀵슬롯2에 검
+        quickSlot.Register(2, 4);  // 퀵슬롯3에 모닥불
+        GameDebug.Log($"[TestManager] 퀵슬롯0: ItemId={quickSlot.GetItemInfoId(0)}, 퀵슬롯1: ItemId={quickSlot.GetItemInfoId(1)}, 퀵슬롯2: ItemId={quickSlot.GetItemInfoId(2)}");
+
+        // 6. 퀵슬롯 중복 등록 방지 테스트
+        quickSlot.Register(3, 1);  // 퀵슬롯4에 나무 → 퀵슬롯1에서 자동 해제
+        GameDebug.Log($"[TestManager] 나무를 퀵슬롯4로 이동 후 → 퀵슬롯0: ItemId={quickSlot.GetItemInfoId(0)}, 퀵슬롯3: ItemId={quickSlot.GetItemInfoId(3)}");
+
+        // 7. 인벤토리 팝업 열기 (그리드 표시 확인)
+        GameDebug.Log("[TestManager] InventoryPopup 열기");
+        var popup = Managers.Popup.Open<InventoryPopup>();
+        if (popup == null)
+        {
+            GameDebug.LogError("[TestManager] InventoryPopup 열기 실패");
+            yield break;
+        }
+        GameDebug.Log("[TestManager] InventoryPopup 열림 — 그리드 표시 확인");
+
+        yield return new WaitForSeconds(2f);
+
+        // 8. 팝업 닫기
+        Managers.Popup.Close(popup);
+        GameDebug.Log("[TestManager] InventoryPopup 닫힘");
+
+        // 9. 퀵슬롯 해제 테스트
+        quickSlot.Unregister(1);
+        GameDebug.Log($"[TestManager] 퀵슬롯1 해제 후: ItemId={quickSlot.GetItemInfoId(1)}");
+
+        GameDebug.Log("[TestManager] TestGridInventoryAndQuickSlot 완료");
+    }
 }
 #endif

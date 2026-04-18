@@ -91,6 +91,16 @@ MonoBehaviour:
     m_SerializedLabels:
     - Popup
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82bdaf46420c4c44ea3c65baa84103e4
+    m_Address: campfire_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 05de108413c00d74d9d8698db1f83047
+    m_Address: sword_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: fea0d92fe5f398d48b29130fef48d979, type: 2}
   m_SchemaSet:

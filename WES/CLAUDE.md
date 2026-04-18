@@ -79,13 +79,19 @@
 - 실제 메서드 바인딩은 `Awake`에서 `m_XxxButton.onClick.AddListener(OnClickXxx);` 로 코드에서 처리한다.
 - Inspector의 Button onClick 이벤트에 직접 메서드를 Persistent Listener로 등록하는 방식은 사용하지 않는다.
 
+## Resource Rules
+- 게임에 사용되는 모든 리소스(프리팹, 이미지, 애니메이션 등)는 `Assets/GameResource/` 하위에 위치해야 한다.
+- 폴더 구조: `GameResource/UI/Popup/`, `GameResource/UI/HUD/`, `GameResource/Character/`, `GameResource/Item/`, `GameResource/Image/` 등
+- Addressable로 런타임 로드하는 에셋은 반드시 Addressable Group에 등록한다.
+- Addressable Address는 에셋 파일명(확장자 제외)을 사용한다 (예: `wood_icon`, `CraftPopup`).
+
 ## MCP Rules
 - Unity 관련 작업(프리팹, 컴포넌트, Inspector 참조 등)은 MCP 도구를 우선 사용한다.
 - 사용 가능한 도구:
-  - **에디터**: `u_editor_component` / `u_editor_gameobject` / `u_editor_set_transform` / `u_editor_query` / `u_editor_reference` / `u_editor_prefab` / `u_editor_scene` / `u_editor_asset` / `u_editor_tag` / `u_editor_layer`
-  - **플레이모드**: `u_play_control` / `u_play_set_transform` / `u_play_click` / `u_play_invoke`
+  - **에디터**: `u_editor_component` / `u_editor_gameobject` / `u_set_transform` / `u_editor_prefab` / `u_editor_scene` / `u_editor_asset` / `u_editor_tag_layer`
+  - **플레이모드**: `u_play` / `u_set_transform` (mode='play')
   - **공통**: `u_console` / `u_screenshot`
-  - **일반**: `echo` / `generate_ui_with_gpt`
+  - **일반**: `generate_ui_with_gpt`
 - 도구 사용법은 반드시 [Assets/MCP_Unity_Plugin/README.md](Assets/MCP_Unity_Plugin/README.md)를 참고한다.
 - 에셋(스크립트, CSV, 프리팹 등)을 추가/수정/삭제한 경우 작업 완료 후 반드시 `u_editor_asset(action: refresh)` 도구를 호출하여 Unity 에디터에 변경 사항을 반영한다.
 - **MCP 플러그인 수정 시**: MCP_Unity_Plugin 코드를 수정해야 할 경우, 반드시 원본 저장소(`C:\GitFork\MCP_Unity\MCP_Unity_Plugin`)에서 먼저 수정한 뒤 프로젝트(`Assets/MCP_Unity_Plugin/`)로 복사한다. 프로젝트 내 파일을 직접 수정하지 않는다.

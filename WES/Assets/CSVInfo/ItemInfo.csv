@@ -1,5 +1,5 @@
 Id.INT,Name.STRING,Description.STRING,IsStackable.BOOL,MaxStack.INT,PrefabKey.STRING,IconKey.STRING,BuildingInfoId.INT
 1,나무,나무를 가공하여 만든 재료,true,99,TestItem,wood_icon,0
 2,돌,단단한 돌 재료,true,99,TestItem,stone_icon,0
-3,검,날카로운 검,false,1,TestItem,,0
+3,검,날카로운 검,false,1,TestItem,sword_icon,0
 4,모닥불,설치 가능한 모닥불,true,9,TestItem,campfire_icon,1
