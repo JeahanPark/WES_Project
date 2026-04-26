@@ -1,28 +1,28 @@
 #if UNITY_EDITOR
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.AI;
 using UnityEditor.AI;
 
 /// <summary>
-/// M2 맵 자동 생성 에디터 도구
-/// 해안가(남) → 숲(중앙) → 산지(북) 3영역 섬 맵 구성
+/// 원형 섬 맵 자동 생성 에디터 도구
+/// 해안(남) → 숲(중앙) → 산지(북) 영역 구성
 /// </summary>
 public class MapGenerator : EditorWindow
 {
-    private const float MAP_SIZE = 100f;
-    private const float GROUND_TILE_SIZE = 4.5f;
-    private const float HALF_MAP = MAP_SIZE / 2f;
-
     private const float ISLAND_RADIUS = 75f;
     private const float PLAYABLE_RADIUS = 70f;
     private const float MAX_SLOPE_DEGREE = 60f;
     private const float STEP_HEIGHT = 0.4f;
     private const float WATER_Y = -0.3f;
     private const float DEEP_WATER_Y = -1.5f;
+    private const float GROUND_TILE_SIZE = 4.5f;
 
     private const float BEACH_Z_MAX = -10f;
     private const float FOREST_Z_MAX = 30f;
+
+    private const int RANDOM_SEED = 20260426;
 
     private enum Region { Beach, Forest, Mountain, OuterRim, Outside }
 
@@ -45,63 +45,79 @@ public class MapGenerator : EditorWindow
         Water,
     }
 
-    [MenuItem("Tools/Map Generator/Populate Forest and Mountain")]
-    public static void PopulateForestAndMountain()
-    {
-        var root = GameObject.Find("MapRoot");
-        if (root == null)
+    private static readonly Dictionary<PrefabCategory, string[]> CATEGORY_PATTERNS =
+        new()
         {
-            Debug.LogError("[MapGenerator] MapRoot not found!");
-            return;
-        }
-
-        // 기존 Area_Forest, Area_Mountain 자식 오브젝트 제거 후 재생성
-        var oldForest = root.transform.Find("Area_Forest");
-        if (oldForest != null) DestroyImmediate(oldForest.gameObject);
-
-        var oldMountain = root.transform.Find("Area_Mountain");
-        if (oldMountain != null) DestroyImmediate(oldMountain.gameObject);
-
-        // 물리 콜라이더 동기화 (에디터 레이캐스트 정확도)
-        Physics.SyncTransforms();
-
-        GenerateForestArea(root.transform);
-        GenerateMountainArea(root.transform);
-
-        // 씬 저장
-        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(
-            UnityEngine.SceneManagement.SceneManager.GetActiveScene());
-        UnityEditor.SceneManagement.EditorSceneManager.SaveOpenScenes();
-
-        Debug.Log("[MapGenerator] Forest and Mountain areas populated!");
-    }
+            { PrefabCategory.GroundFlat,        new[] { "SM_Gen_Env_Ground_Grass_", "SM_Gen_Env_Ground_Dirt_" } },
+            { PrefabCategory.GroundSlope,       new[] { "SM_Gen_Env_Ground_Slope" } },
+            { PrefabCategory.Hill,              new[] { "SM_Gen_Env_Hill_" } },
+            { PrefabCategory.MountainBackdrop,  new[] { "SM_Gen_Env_Mountain_" } },
+            { PrefabCategory.Tree,              new[] { "SM_Gen_Env_Tree_" } },
+            { PrefabCategory.Bush,              new[] { "SM_Gen_Env_Bush_", "SM_Gen_Env_Shrub_" } },
+            { PrefabCategory.Rock,              new[] { "SM_Gen_Env_Rock_" } },
+            { PrefabCategory.Grass,             new[] { "SM_Gen_Env_Grass_", "SM_Gen_Env_Fern_" } },
+            { PrefabCategory.Flower,            new[] { "SM_Gen_Env_Flowers_" } },
+            { PrefabCategory.Mushroom,          new[] { "SM_Gen_Env_Mushroom_" } },
+            { PrefabCategory.Stump,             new[] { "SM_Gen_Env_Stump_" } },
+            { PrefabCategory.Cliff,             new[] { "SM_Gen_Env_Cliff_", "SM_Gen_Env_Dirt_Cliff_" } },
+            { PrefabCategory.Skydome,           new[] { "SM_Gen_Env_Skydome_" } },
+            { PrefabCategory.Cloud,             new[] { "SM_Gen_Env_Cloud_" } },
+            { PrefabCategory.Water,             new[] { "SM_Gen_Env_Water_Plane_" } },
+        };
 
     [MenuItem("Tools/Map Generator/Generate Island Map")]
     public static void GenerateMap()
     {
-        // 기존 Plane 제거
         var oldPlane = GameObject.Find("Plane");
-        if (oldPlane != null)
-            DestroyImmediate(oldPlane);
+        if (oldPlane != null) DestroyImmediate(oldPlane);
 
-        // 기존 MapRoot 제거
-        var oldMap = GameObject.Find("MapRoot");
-        if (oldMap != null)
-            DestroyImmediate(oldMap);
+        var mapRoot = GameObject.Find("MapRoot");
+        if (mapRoot == null) mapRoot = new GameObject("MapRoot");
 
-        var root = new GameObject("MapRoot");
+        var oldGenerated = mapRoot.transform.Find("GeneratedMap");
+        if (oldGenerated != null) DestroyImmediate(oldGenerated.gameObject);
 
-        GenerateGround(root.transform);
-        GenerateBeachArea(root.transform);
-        GenerateForestArea(root.transform);
-        GenerateMountainArea(root.transform);
-        GenerateWater(root.transform);
+        var generated = new GameObject("GeneratedMap");
+        generated.transform.SetParent(mapRoot.transform);
+
+        Random.InitState(RANDOM_SEED);
+
+        GenerateGround(generated.transform);
+        GenerateSlopes(generated.transform);
+        GenerateHills(generated.transform);
+        GenerateOuterRim(generated.transform);
+
+        // 데코 배치 전에 콜라이더 동기화 (raycast 정확도)
+        Physics.SyncTransforms();
+
+        GenerateDecorations(generated.transform);
+        GenerateSkydome(generated.transform);
+        GenerateClouds(generated.transform);
+        GenerateBoundaryWall(generated.transform);
         SetupSpawnAndEscapePoints();
 
         UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(
             UnityEngine.SceneManagement.SceneManager.GetActiveScene());
 
         Debug.Log("[MapGenerator] Island map generated!");
+    }
+
+    [MenuItem("Tools/Map Generator/Bake NavMesh")]
+    public static void BakeNavMesh()
+    {
+        var ground = GameObject.Find("MapRoot/GeneratedMap/Ground");
+        if (ground != null)
+        {
+            foreach (Transform child in ground.transform)
+                GameObjectUtility.SetStaticEditorFlags(child.gameObject, StaticEditorFlags.NavigationStatic);
+        }
+
+        UnityEditor.AI.NavMeshBuilder.BuildNavMesh();
+
+        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+
+        Debug.Log("[MapGenerator] NavMesh baked!");
     }
 
     [MenuItem("Tools/Map Generator/Validate Helpers")]
@@ -136,265 +152,414 @@ public class MapGenerator : EditorWindow
         Debug.Log($"[Validate] 결과: PASS {passed}, FAIL {failed}");
     }
 
-    [MenuItem("Tools/Map Generator/Bake NavMesh")]
-    public static void BakeNavMesh()
-    {
-        // MapRoot의 Ground 하위 모든 오브젝트에 Static 플래그 설정
-        var ground = GameObject.Find("MapRoot/Ground");
-        if (ground != null)
-        {
-            foreach (Transform child in ground.transform)
-            {
-                GameObjectUtility.SetStaticEditorFlags(child.gameObject,
-                    StaticEditorFlags.NavigationStatic);
-            }
-        }
-
-        // NavMesh Bake
-        UnityEditor.AI.NavMeshBuilder.BuildNavMesh();
-
-        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(
-            UnityEngine.SceneManagement.SceneManager.GetActiveScene());
-
-        Debug.Log("[MapGenerator] NavMesh baked!");
-    }
+    // ==================== 영역별 생성 ====================
 
     private static void GenerateGround(Transform _parent)
     {
-        var groundParent = new GameObject("Ground");
-        groundParent.transform.SetParent(_parent);
+        var groundRoot = new GameObject("Ground");
+        groundRoot.transform.SetParent(_parent);
 
-        // 해안가 영역 (남쪽) — 잔디
-        PlaceGroundTiles(groundParent.transform, "SM_Gen_Env_Ground_Grass",
-            -HALF_MAP, -HALF_MAP, HALF_MAP, -HALF_MAP + 30f, GROUND_TILE_SIZE);
-
-        // 숲 영역 (중앙) — 잔디
-        PlaceGroundTiles(groundParent.transform, "SM_Gen_Env_Ground_Grass",
-            -HALF_MAP, -HALF_MAP + 30f, HALF_MAP, HALF_MAP - 30f, GROUND_TILE_SIZE);
-
-        // 산지 영역 (북쪽) — 흙
-        PlaceGroundTiles(groundParent.transform, "SM_Gen_Env_Ground_Dirt",
-            -HALF_MAP, HALF_MAP - 30f, HALF_MAP, HALF_MAP, GROUND_TILE_SIZE);
-    }
-
-    private static void PlaceGroundTiles(Transform _parent, string _prefabPrefix,
-        float _minX, float _minZ, float _maxX, float _maxZ, float _tileSize)
-    {
-        var prefab = FindPrefab($"{_prefabPrefix}_01");
-        if (prefab == null)
+        var allFlat = FindPrefabsByCategory(PrefabCategory.GroundFlat);
+        var grassPool = System.Array.FindAll(allFlat, p => p.name.Contains("Grass"));
+        var dirtPool = System.Array.FindAll(allFlat, p => p.name.Contains("Dirt"));
+        if (grassPool.Length == 0) grassPool = allFlat;
+        if (dirtPool.Length == 0) dirtPool = allFlat;
+        if (grassPool.Length == 0)
         {
-            // 프리팹 없으면 기본 Plane 생성
-            var plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
-            plane.transform.SetParent(_parent);
-            plane.transform.position = new Vector3((_minX + _maxX) / 2f, 0, (_minZ + _maxZ) / 2f);
-            plane.transform.localScale = new Vector3((_maxX - _minX) / 10f, 1, (_maxZ - _minZ) / 10f);
-            plane.name = $"Ground_{_prefabPrefix}";
+            Debug.LogWarning("[MapGenerator] GroundFlat 풀 없음");
             return;
         }
 
-        for (float x = _minX; x < _maxX; x += _tileSize)
+        int groundLayer = LayerMask.NameToLayer("Ground");
+
+        for (float x = -PLAYABLE_RADIUS; x <= PLAYABLE_RADIUS; x += GROUND_TILE_SIZE)
         {
-            for (float z = _minZ; z < _maxZ; z += _tileSize)
+            for (float z = -PLAYABLE_RADIUS; z <= PLAYABLE_RADIUS; z += GROUND_TILE_SIZE)
             {
-                var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-                go.transform.SetParent(_parent);
-                go.transform.position = new Vector3(x + _tileSize / 2f, 0, z + _tileSize / 2f);
+                if (!IsInsideIsland(x, z)) continue;
+
+                Region region = GetRegion(x, z);
+                GameObject prefab = region == Region.Mountain
+                    ? dirtPool[Random.Range(0, dirtPool.Length)]
+                    : grassPool[Random.Range(0, grassPool.Length)];
+
+                var tile = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+                tile.transform.SetParent(groundRoot.transform);
+                tile.transform.position = new Vector3(x, 0, z);
+                if (groundLayer >= 0) tile.layer = groundLayer;
             }
         }
     }
 
-    private static void GenerateBeachArea(Transform _parent)
+    private static void GenerateSlopes(Transform _parent)
     {
-        var area = new GameObject("Area_Beach");
-        area.transform.SetParent(_parent);
+        var slopeRoot = new GameObject("Slopes");
+        slopeRoot.transform.SetParent(_parent);
 
-        // 나무 (참나무) — 해안가에 듬성듬성
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Tree_01", 8,
-            -40f, -HALF_MAP, 40f, -HALF_MAP + 25f, 2f);
-
-        // 바위
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Rock_02", 6,
-            -40f, -HALF_MAP, 40f, -HALF_MAP + 25f, 1f);
-
-        // 풀
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Grass_01", 15,
-            -40f, -HALF_MAP, 40f, -HALF_MAP + 25f, 0.5f);
-
-        // 조개/작은 바위
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Rock_Pebbles_01", 10,
-            -40f, -HALF_MAP, 40f, -HALF_MAP + 15f, 0.5f);
-    }
-
-    private static void GenerateForestArea(Transform _parent)
-    {
-        var area = new GameObject("Area_Forest");
-        area.transform.SetParent(_parent);
-
-        // 소나무 — 숲 밀집
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Tree_Pine_02", 15,
-            -40f, -15f, 40f, 15f, 3f);
-
-        // 일반 나무
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Tree_02", 10,
-            -40f, -15f, 40f, 15f, 2.5f);
-
-        // 덤불 (약초 덤불 표현)
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Bush_01", 12,
-            -40f, -15f, 40f, 15f, 1f);
-
-        // 큰 덤불
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Bush_Large_01", 6,
-            -40f, -15f, 40f, 15f, 1.5f);
-
-        // 꽃
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Flowers_05", 10,
-            -30f, -10f, 30f, 10f, 0.5f);
-
-        // 버섯
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Mushroom_01", 6,
-            -30f, -10f, 30f, 10f, 0.5f);
-
-        // 언덕
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Hill_04", 2,
-            -25f, -10f, 25f, 10f, 8f);
-    }
-
-    private static void GenerateMountainArea(Transform _parent)
-    {
-        var area = new GameObject("Area_Mountain");
-        area.transform.SetParent(_parent);
-
-        // 큰 바위
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Rock_07", 8,
-            -40f, 20f, 40f, 45f, 3f);
-
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Rock_10", 4,
-            -40f, 20f, 40f, 45f, 4f);
-
-        // 절벽
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Dirt_Cliff_06", 3,
-            -30f, 30f, 30f, 43f, 10f);
-
-        // 산 배경
-        var mountainPrefab = FindPrefab("SM_Gen_Env_Mountain_02");
-        if (mountainPrefab != null)
+        var slopePool = FindPrefabsByCategory(PrefabCategory.GroundSlope);
+        if (slopePool.Length == 0)
         {
-            var m1 = (GameObject)PrefabUtility.InstantiatePrefab(mountainPrefab);
-            m1.transform.SetParent(area.transform);
-            m1.transform.position = new Vector3(-20f, 0, 48f);
-            m1.transform.localScale = Vector3.one * 2f;
-
-            var m2 = (GameObject)PrefabUtility.InstantiatePrefab(mountainPrefab);
-            m2.transform.SetParent(area.transform);
-            m2.transform.position = new Vector3(20f, 0, 48f);
-            m2.transform.localScale = Vector3.one * 1.5f;
+            Debug.LogWarning("[MapGenerator] Slope 프리팹 없음");
+            return;
         }
 
-        // 죽은 나무
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Tree_Dead_01", 4,
-            -35f, 20f, 35f, 43f, 2f);
+        int groundLayer = LayerMask.NameToLayer("Ground");
 
-        // 철광석 바위
-        PlaceRandomObjects(area.transform, "SM_Gen_Env_Rock_05", 4,
-            -30f, 25f, 30f, 40f, 3f);
+        // 숲: 15%, 산지: 50%
+        PlaceSlopesInRegion(slopeRoot.transform, slopePool, BEACH_Z_MAX, FOREST_Z_MAX,
+            Mathf.RoundToInt(GetRegionTileApproxCount(Region.Forest) * 0.15f), groundLayer);
+        PlaceSlopesInRegion(slopeRoot.transform, slopePool, FOREST_Z_MAX, PLAYABLE_RADIUS,
+            Mathf.RoundToInt(GetRegionTileApproxCount(Region.Mountain) * 0.5f), groundLayer);
     }
 
-    private static void GenerateWater(Transform _parent)
+    private static void PlaceSlopesInRegion(Transform _root, GameObject[] _pool, float _zMin, float _zMax, int _count, int _groundLayer)
     {
-        var waterPrefab = FindPrefab("SM_Gen_Env_Water_Dip_01");
-        if (waterPrefab == null) return;
-
-        var waterParent = new GameObject("Water");
-        waterParent.transform.SetParent(_parent);
-
-        // 해안가 주변 물
-        for (float x = -HALF_MAP; x < HALF_MAP; x += 15f)
+        int placed = 0;
+        int attempts = 0;
+        while (placed < _count && attempts < _count * 8)
         {
-            var water = (GameObject)PrefabUtility.InstantiatePrefab(waterPrefab);
-            water.transform.SetParent(waterParent.transform);
-            water.transform.position = new Vector3(x, -0.5f, -HALF_MAP - 10f);
-            water.transform.localScale = Vector3.one * 3f;
+            attempts++;
+            float x = Random.Range(-PLAYABLE_RADIUS, PLAYABLE_RADIUS);
+            float z = Random.Range(_zMin, _zMax);
+            if (!IsInsideIsland(x, z)) continue;
+
+            var prefab = _pool[Random.Range(0, _pool.Length)];
+            var slope = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+            slope.transform.SetParent(_root);
+            slope.transform.position = new Vector3(x, 0.05f, z);
+            slope.transform.rotation = Quaternion.Euler(0, Random.Range(0, 4) * 90f, 0);
+            if (_groundLayer >= 0) slope.layer = _groundLayer;
+            placed++;
         }
     }
+
+    private static void GenerateHills(Transform _parent)
+    {
+        var hillRoot = new GameObject("Hills");
+        hillRoot.transform.SetParent(_parent);
+
+        var hillPool = FindPrefabsByCategory(PrefabCategory.Hill);
+        if (hillPool.Length == 0) return;
+
+        int groundLayer = LayerMask.NameToLayer("Ground");
+
+        PlaceHills(hillRoot.transform, hillPool, BEACH_Z_MAX, FOREST_Z_MAX, Random.Range(1, 3), groundLayer);
+        PlaceHills(hillRoot.transform, hillPool, FOREST_Z_MAX, PLAYABLE_RADIUS, Random.Range(3, 5), groundLayer);
+    }
+
+    private static void PlaceHills(Transform _root, GameObject[] _pool, float _zMin, float _zMax, int _count, int _groundLayer)
+    {
+        int placed = 0;
+        int attempts = 0;
+        while (placed < _count && attempts < _count * 12)
+        {
+            attempts++;
+            float x = Random.Range(-PLAYABLE_RADIUS + 10f, PLAYABLE_RADIUS - 10f);
+            float z = Random.Range(_zMin, _zMax);
+            if (!IsInsideIsland(x, z)) continue;
+
+            var prefab = _pool[Random.Range(0, _pool.Length)];
+            var hill = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+            hill.transform.SetParent(_root);
+            hill.transform.position = new Vector3(x, 0, z);
+            hill.transform.rotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
+            hill.transform.localScale = Vector3.one * Random.Range(0.9f, 1.4f);
+            if (_groundLayer >= 0) hill.layer = _groundLayer;
+            placed++;
+        }
+    }
+
+    private static void GenerateOuterRim(Transform _parent)
+    {
+        var rimRoot = new GameObject("OuterRim");
+        rimRoot.transform.SetParent(_parent);
+
+        var allFlat = FindPrefabsByCategory(PrefabCategory.GroundFlat);
+        var sandPool = System.Array.FindAll(allFlat, p => p.name.Contains("Dirt"));
+        if (sandPool.Length == 0) sandPool = allFlat;
+        var cliffPool = FindPrefabsByCategory(PrefabCategory.Cliff);
+        var waterPool = FindPrefabsByCategory(PrefabCategory.Water);
+        var mountainPool = FindPrefabsByCategory(PrefabCategory.MountainBackdrop);
+
+        int groundLayer = LayerMask.NameToLayer("Ground");
+
+        for (float angle = 0; angle < 360f; angle += 6f)
+        {
+            float rad = angle * Mathf.Deg2Rad;
+            float x = Mathf.Cos(rad) * (PLAYABLE_RADIUS + 2f);
+            float z = Mathf.Sin(rad) * (PLAYABLE_RADIUS + 2f);
+
+            if (z < BEACH_Z_MAX)
+            {
+                if (sandPool.Length > 0)
+                {
+                    var sand = (GameObject)PrefabUtility.InstantiatePrefab(sandPool[Random.Range(0, sandPool.Length)]);
+                    sand.transform.SetParent(rimRoot.transform);
+                    sand.transform.position = new Vector3(x, -0.1f, z);
+                    if (groundLayer >= 0) sand.layer = groundLayer;
+                }
+            }
+            else if (z > FOREST_Z_MAX)
+            {
+                if (cliffPool.Length > 0)
+                {
+                    var cliff = (GameObject)PrefabUtility.InstantiatePrefab(cliffPool[Random.Range(0, cliffPool.Length)]);
+                    cliff.transform.SetParent(rimRoot.transform);
+                    cliff.transform.position = new Vector3(x, 0, z);
+                    cliff.transform.rotation = Quaternion.LookRotation(new Vector3(-x, 0, -z));
+                }
+            }
+            else
+            {
+                if (cliffPool.Length > 0)
+                {
+                    var cliff = (GameObject)PrefabUtility.InstantiatePrefab(cliffPool[Random.Range(0, cliffPool.Length)]);
+                    cliff.transform.SetParent(rimRoot.transform);
+                    cliff.transform.position = new Vector3(x, -0.5f, z);
+                    cliff.transform.localScale = Vector3.one * 0.7f;
+                    cliff.transform.rotation = Quaternion.LookRotation(new Vector3(-x, 0, -z));
+                }
+            }
+        }
+
+        // 깊은 물 평면
+        if (waterPool.Length > 0)
+        {
+            var deepWater = (GameObject)PrefabUtility.InstantiatePrefab(waterPool[0]);
+            deepWater.transform.SetParent(rimRoot.transform);
+            deepWater.transform.position = new Vector3(0, DEEP_WATER_Y, 0);
+            deepWater.transform.localScale = Vector3.one * 30f;
+            deepWater.name = "DeepWater";
+        }
+
+        // 산 배경 (북쪽)
+        if (mountainPool.Length > 0)
+        {
+            var bg1 = (GameObject)PrefabUtility.InstantiatePrefab(mountainPool[Random.Range(0, mountainPool.Length)]);
+            bg1.transform.SetParent(rimRoot.transform);
+            bg1.transform.position = new Vector3(-25f, 0, ISLAND_RADIUS + 15f);
+            bg1.transform.localScale = Vector3.one * 1.8f;
+            bg1.name = "MountainBackdrop_Left";
+
+            var bg2 = (GameObject)PrefabUtility.InstantiatePrefab(mountainPool[Random.Range(0, mountainPool.Length)]);
+            bg2.transform.SetParent(rimRoot.transform);
+            bg2.transform.position = new Vector3(25f, 0, ISLAND_RADIUS + 12f);
+            bg2.transform.localScale = Vector3.one * 1.5f;
+            bg2.name = "MountainBackdrop_Right";
+        }
+    }
+
+    // ==================== 데코 ====================
+
+    private static void GenerateDecorations(Transform _parent)
+    {
+        var decoRoot = new GameObject("Decorations");
+        decoRoot.transform.SetParent(_parent);
+
+        PlaceTreesByRegion(decoRoot.transform);
+        PlaceBushesByRegion(decoRoot.transform);
+        PlaceRocksByRegion(decoRoot.transform);
+        PlaceGrassByRegion(decoRoot.transform);
+        PlaceFlowersByRegion(decoRoot.transform);
+        PlaceMushroomsAndStumps(decoRoot.transform);
+    }
+
+    private static void PlaceTreesByRegion(Transform _root)
+    {
+        var treePool = FindPrefabsByCategory(PrefabCategory.Tree);
+        if (treePool.Length == 0) return;
+
+        var deadPool = System.Array.FindAll(treePool, p => p.name.Contains("Dead"));
+        var nonDeadPool = System.Array.FindAll(treePool, p => !p.name.Contains("Dead"));
+        if (nonDeadPool.Length == 0) nonDeadPool = treePool;
+
+        PlaceCluster(_root, nonDeadPool, -PLAYABLE_RADIUS + 10f, BEACH_Z_MAX, 9, 5f, "Tree_Beach", 0.9f, 1.3f);
+        PlaceCluster(_root, nonDeadPool, BEACH_Z_MAX, FOREST_Z_MAX, 28, 3.5f, "Tree_Forest", 0.9f, 1.4f);
+        if (deadPool.Length > 0)
+            PlaceCluster(_root, deadPool, FOREST_Z_MAX, PLAYABLE_RADIUS, 5, 4f, "Tree_Mountain", 0.8f, 1.2f);
+    }
+
+    private static void PlaceBushesByRegion(Transform _root)
+    {
+        var pool = FindPrefabsByCategory(PrefabCategory.Bush);
+        if (pool.Length == 0) return;
+        PlaceCluster(_root, pool, BEACH_Z_MAX, FOREST_Z_MAX, 18, 2f, "Bush_Forest", 0.9f, 1.3f);
+    }
+
+    private static void PlaceRocksByRegion(Transform _root)
+    {
+        var pool = FindPrefabsByCategory(PrefabCategory.Rock);
+        if (pool.Length == 0) return;
+        PlaceCluster(_root, pool, -PLAYABLE_RADIUS, BEACH_Z_MAX, 8, 3f, "Rock_Beach", 0.7f, 1.4f);
+        PlaceCluster(_root, pool, FOREST_Z_MAX, PLAYABLE_RADIUS, 12, 3f, "Rock_Mountain", 0.9f, 1.6f);
+    }
+
+    private static void PlaceGrassByRegion(Transform _root)
+    {
+        var pool = FindPrefabsByCategory(PrefabCategory.Grass);
+        if (pool.Length == 0) return;
+        PlaceCluster(_root, pool, -PLAYABLE_RADIUS, FOREST_Z_MAX, 50, 1.2f, "Grass_All", 0.8f, 1.2f);
+    }
+
+    private static void PlaceFlowersByRegion(Transform _root)
+    {
+        var pool = FindPrefabsByCategory(PrefabCategory.Flower);
+        if (pool.Length == 0) return;
+        PlaceCluster(_root, pool, BEACH_Z_MAX, FOREST_Z_MAX, 18, 1.5f, "Flower_Forest", 0.9f, 1.2f);
+    }
+
+    private static void PlaceMushroomsAndStumps(Transform _root)
+    {
+        var mushPool = FindPrefabsByCategory(PrefabCategory.Mushroom);
+        if (mushPool.Length > 0)
+            PlaceCluster(_root, mushPool, -10f, 25f, 8, 1.2f, "Mush_Forest", 0.9f, 1.3f);
+        var stumpPool = FindPrefabsByCategory(PrefabCategory.Stump);
+        if (stumpPool.Length > 0)
+            PlaceCluster(_root, stumpPool, BEACH_Z_MAX, FOREST_Z_MAX, 3, 8f, "Stump_Forest", 0.9f, 1.2f);
+    }
+
+    private static void PlaceCluster(Transform _root, GameObject[] _pool, float _zMin, float _zMax,
+        int _count, float _minDist, string _label, float _scaleMin, float _scaleMax)
+    {
+        var pts = PickPoissonPoints(_zMin, _zMax, _minDist, _count);
+        int i = 0;
+        foreach (var p in pts)
+        {
+            var prefab = _pool[Random.Range(0, _pool.Length)];
+            var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+            go.transform.SetParent(_root);
+            go.transform.position = new Vector3(p.x, GetTerrainHeight(p.x, p.y), p.y);
+            go.transform.rotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
+            go.transform.localScale = Vector3.one * Random.Range(_scaleMin, _scaleMax);
+            go.name = $"{_label}_{i:D2}";
+            i++;
+        }
+    }
+
+    private static List<Vector2> PickPoissonPoints(float _zMin, float _zMax, float _minDistance, int _maxCount, int _attempts = 30)
+    {
+        var points = new List<Vector2>();
+        int tries = 0;
+        while (points.Count < _maxCount && tries < _maxCount * _attempts)
+        {
+            tries++;
+            float x = Random.Range(-PLAYABLE_RADIUS, PLAYABLE_RADIUS);
+            float z = Random.Range(_zMin, _zMax);
+            if (!IsInsideIsland(x, z)) continue;
+
+            bool tooClose = false;
+            foreach (var p in points)
+            {
+                if ((p.x - x) * (p.x - x) + (p.y - z) * (p.y - z) < _minDistance * _minDistance)
+                { tooClose = true; break; }
+            }
+            if (!tooClose) points.Add(new Vector2(x, z));
+        }
+        return points;
+    }
+
+    private static int GetRegionTileApproxCount(Region _region)
+    {
+        return _region switch
+        {
+            Region.Beach => 130,
+            Region.Forest => 180,
+            Region.Mountain => 130,
+            _ => 0,
+        };
+    }
+
+    // ==================== Skydome / Cloud / Boundary ====================
+
+    private static void GenerateSkydome(Transform _parent)
+    {
+        var pool = FindPrefabsByCategory(PrefabCategory.Skydome);
+        if (pool.Length == 0) return;
+
+        var sky = (GameObject)PrefabUtility.InstantiatePrefab(pool[0]);
+        sky.transform.SetParent(_parent);
+        sky.transform.position = Vector3.zero;
+        sky.transform.localScale = Vector3.one * 4f;
+        sky.name = "Skydome";
+    }
+
+    private static void GenerateClouds(Transform _parent)
+    {
+        var pool = FindPrefabsByCategory(PrefabCategory.Cloud);
+        if (pool.Length == 0) return;
+
+        var cloudRoot = new GameObject("Clouds");
+        cloudRoot.transform.SetParent(_parent);
+
+        const int CLOUD_COUNT = 4;
+        for (int i = 0; i < CLOUD_COUNT; i++)
+        {
+            float angle = (360f / CLOUD_COUNT) * i + Random.Range(-20f, 20f);
+            float rad = angle * Mathf.Deg2Rad;
+            float radius = Random.Range(35f, 60f);
+            float x = Mathf.Cos(rad) * radius;
+            float z = Mathf.Sin(rad) * radius;
+            float y = Random.Range(35f, 50f);
+
+            var prefab = pool[Random.Range(0, pool.Length)];
+            var cloud = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+            cloud.transform.SetParent(cloudRoot.transform);
+            cloud.transform.position = new Vector3(x, y, z);
+            cloud.transform.localScale = Vector3.one * Random.Range(1.5f, 2.5f);
+            cloud.name = $"Cloud_{i}";
+        }
+    }
+
+    private static void GenerateBoundaryWall(Transform _parent)
+    {
+        var wallRoot = new GameObject("BoundaryWall");
+        wallRoot.transform.SetParent(_parent);
+
+        const int SEGMENTS = 48;
+        const float WALL_HEIGHT = 5f;
+        const float WALL_THICKNESS = 2f;
+        float wallRadius = ISLAND_RADIUS + WALL_THICKNESS / 2f;
+
+        for (int i = 0; i < SEGMENTS; i++)
+        {
+            float angle = (360f / SEGMENTS) * i;
+            float rad = angle * Mathf.Deg2Rad;
+            float x = Mathf.Cos(rad) * wallRadius;
+            float z = Mathf.Sin(rad) * wallRadius;
+
+            var seg = new GameObject($"WallSeg_{i:D2}");
+            seg.transform.SetParent(wallRoot.transform);
+            seg.transform.position = new Vector3(x, WALL_HEIGHT / 2f, z);
+            seg.transform.rotation = Quaternion.LookRotation(new Vector3(-x, 0, -z));
+
+            var box = seg.AddComponent<BoxCollider>();
+            float segLen = 2f * Mathf.PI * wallRadius / SEGMENTS + 0.5f;
+            box.size = new Vector3(segLen, WALL_HEIGHT, WALL_THICKNESS);
+        }
+    }
+
+    // ==================== Spawn / Escape / Area ====================
 
     private static void SetupSpawnAndEscapePoints()
     {
-        // 스폰 지점 이동 (해안가 남쪽)
-        MoveObject("StartPosition1", new Vector3(-3f, 0, -42f));
-        MoveObject("StartPosition2", new Vector3(3f, 0, -42f));
-        MoveObject("StartPosition3", new Vector3(-6f, 0, -38f));
-        MoveObject("StartPosition4", new Vector3(6f, 0, -38f));
+        MoveObject("StartPosition1", new Vector3(-3f, 0f, -42f));
+        MoveObject("StartPosition2", new Vector3(3f, 0f, -42f));
+        MoveObject("StartPosition3", new Vector3(-6f, 0f, -38f));
+        MoveObject("StartPosition4", new Vector3(6f, 0f, -38f));
+        MoveObject("EscapePoint",    new Vector3(0f, 8f, 60f));
 
-        // 탈출 지점 이동 (산지 북쪽)
-        MoveObject("EscapePoint", new Vector3(0, 0, 45f));
-
-        // 몬스터 스폰 영역 이동
-        MoveObject("Area1_Beach", new Vector3(0, 0, -35f));
-        MoveObject("Area2_Forest", new Vector3(0, 0, 0));
-        MoveObject("Area3_Mountain", new Vector3(0, 0, 30f));
+        MoveObject("Area1_Beach",    new Vector3(0f, 0f, -35f));
+        MoveObject("Area2_Forest",   new Vector3(0f, 0f, 10f));
+        MoveObject("Area3_Mountain", new Vector3(0f, 0f, 50f));
     }
 
     private static void MoveObject(string _name, Vector3 _position)
     {
         var go = GameObject.Find(_name);
-        if (go != null)
-            go.transform.position = _position;
+        if (go != null) go.transform.position = _position;
     }
 
-    private static void PlaceRandomObjects(Transform _parent, string _prefabName, int _count,
-        float _minX, float _minZ, float _maxX, float _maxZ, float _scaleVariance)
-    {
-        var prefab = FindPrefab(_prefabName);
-        if (prefab == null)
-        {
-            Debug.LogWarning($"[MapGenerator] Prefab not found: {_prefabName}");
-            return;
-        }
-
-        for (int i = 0; i < _count; i++)
-        {
-            var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-            go.transform.SetParent(_parent);
-
-            float x = Random.Range(_minX, _maxX);
-            float z = Random.Range(_minZ, _maxZ);
-            float y = GetTerrainHeight(x, z);
-            go.transform.position = new Vector3(x, y, z);
-
-            float scale = Random.Range(1f, 1f + _scaleVariance);
-            go.transform.localScale = Vector3.one * scale;
-
-            float rotation = Random.Range(0f, 360f);
-            go.transform.rotation = Quaternion.Euler(0, rotation, 0);
-        }
-    }
-
-    private static float GetTerrainHeight(float _x, float _z)
-    {
-        // 위에서 아래로 레이캐스트하여 지형 표면 높이를 구함
-        Ray ray = new Ray(new Vector3(_x, 200f, _z), Vector3.down);
-        if (Physics.Raycast(ray, out RaycastHit hit, 400f))
-        {
-            return hit.point.y;
-        }
-        return 0f;
-    }
-
-    private static GameObject FindPrefab(string _name)
-    {
-        string[] guids = AssetDatabase.FindAssets($"{_name} t:Prefab",
-            new[] { "Assets/Synty/PolygonGeneric/Prefabs" });
-
-        foreach (var guid in guids)
-        {
-            string path = AssetDatabase.GUIDToAssetPath(guid);
-            if (path.Contains(_name))
-            {
-                return AssetDatabase.LoadAssetAtPath<GameObject>(path);
-            }
-        }
-        return null;
-    }
+    // ==================== 헬퍼 ====================
 
     private static bool IsInsideIsland(float _x, float _z)
     {
@@ -417,32 +582,12 @@ public class MapGenerator : EditorWindow
         return Region.Mountain;
     }
 
-    private static readonly System.Collections.Generic.Dictionary<PrefabCategory, string[]> CATEGORY_PATTERNS =
-        new()
-        {
-            { PrefabCategory.GroundFlat,        new[] { "SM_Gen_Env_Ground_Grass_", "SM_Gen_Env_Ground_Dirt_" } },
-            { PrefabCategory.GroundSlope,       new[] { "SM_Gen_Env_Ground_Slope" } },
-            { PrefabCategory.Hill,              new[] { "SM_Gen_Env_Hill_" } },
-            { PrefabCategory.MountainBackdrop,  new[] { "SM_Gen_Env_Mountain_" } },
-            { PrefabCategory.Tree,              new[] { "SM_Gen_Env_Tree_" } },
-            { PrefabCategory.Bush,              new[] { "SM_Gen_Env_Bush_", "SM_Gen_Env_Shrub_" } },
-            { PrefabCategory.Rock,              new[] { "SM_Gen_Env_Rock_" } },
-            { PrefabCategory.Grass,             new[] { "SM_Gen_Env_Grass_", "SM_Gen_Env_Fern_" } },
-            { PrefabCategory.Flower,            new[] { "SM_Gen_Env_Flowers_" } },
-            { PrefabCategory.Mushroom,          new[] { "SM_Gen_Env_Mushroom_" } },
-            { PrefabCategory.Stump,             new[] { "SM_Gen_Env_Stump_" } },
-            { PrefabCategory.Cliff,             new[] { "SM_Gen_Env_Cliff_", "SM_Gen_Env_Dirt_Cliff_" } },
-            { PrefabCategory.Skydome,           new[] { "SM_Gen_Env_Skydome_" } },
-            { PrefabCategory.Cloud,             new[] { "SM_Gen_Env_Cloud_" } },
-            { PrefabCategory.Water,             new[] { "SM_Gen_Env_Water_Plane_" } },
-        };
-
     private static GameObject[] FindPrefabsByCategory(PrefabCategory _category)
     {
         if (!CATEGORY_PATTERNS.TryGetValue(_category, out var patterns))
             return System.Array.Empty<GameObject>();
 
-        var results = new System.Collections.Generic.List<GameObject>();
+        var results = new List<GameObject>();
         string[] guids = AssetDatabase.FindAssets("t:Prefab",
             new[] { "Assets/Synty/PolygonGeneric/Prefabs" });
 
@@ -469,6 +614,30 @@ public class MapGenerator : EditorWindow
         var pool = FindPrefabsByCategory(_category);
         if (pool.Length == 0) return null;
         return pool[Random.Range(0, pool.Length)];
+    }
+
+    private static float GetTerrainHeight(float _x, float _z)
+    {
+        int groundLayer = LayerMask.NameToLayer("Ground");
+        int mask = groundLayer >= 0 ? (1 << groundLayer) : ~0;
+        Ray ray = new Ray(new Vector3(_x, 200f, _z), Vector3.down);
+        if (Physics.Raycast(ray, out RaycastHit hit, 400f, mask))
+            return hit.point.y;
+        return 0f;
+    }
+
+    private static GameObject FindPrefab(string _name)
+    {
+        string[] guids = AssetDatabase.FindAssets($"{_name} t:Prefab",
+            new[] { "Assets/Synty/PolygonGeneric/Prefabs" });
+
+        foreach (var guid in guids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            if (path.Contains(_name))
+                return AssetDatabase.LoadAssetAtPath<GameObject>(path);
+        }
+        return null;
     }
 }
 #endif
