@@ -14,6 +14,37 @@ public class MapGenerator : EditorWindow
     private const float GROUND_TILE_SIZE = 4.5f;
     private const float HALF_MAP = MAP_SIZE / 2f;
 
+    private const float ISLAND_RADIUS = 75f;
+    private const float PLAYABLE_RADIUS = 70f;
+    private const float MAX_SLOPE_DEGREE = 60f;
+    private const float STEP_HEIGHT = 0.4f;
+    private const float WATER_Y = -0.3f;
+    private const float DEEP_WATER_Y = -1.5f;
+
+    private const float BEACH_Z_MAX = -10f;
+    private const float FOREST_Z_MAX = 30f;
+
+    private enum Region { Beach, Forest, Mountain, OuterRim, Outside }
+
+    private enum PrefabCategory
+    {
+        GroundFlat,
+        GroundSlope,
+        Hill,
+        MountainBackdrop,
+        Tree,
+        Bush,
+        Rock,
+        Grass,
+        Flower,
+        Mushroom,
+        Stump,
+        Cliff,
+        Skydome,
+        Cloud,
+        Water,
+    }
+
     [MenuItem("Tools/Map Generator/Populate Forest and Mountain")]
     public static void PopulateForestAndMountain()
     {
@@ -71,6 +102,38 @@ public class MapGenerator : EditorWindow
             UnityEngine.SceneManagement.SceneManager.GetActiveScene());
 
         Debug.Log("[MapGenerator] Island map generated!");
+    }
+
+    [MenuItem("Tools/Map Generator/Validate Helpers")]
+    public static void ValidateHelpers()
+    {
+        int passed = 0;
+        int failed = 0;
+
+        void Assert(bool _condition, string _label)
+        {
+            if (_condition) { passed++; Debug.Log($"[Validate] PASS: {_label}"); }
+            else { failed++; Debug.LogError($"[Validate] FAIL: {_label}"); }
+        }
+
+        Assert(IsInsideIsland(0, 0), "원점은 섬 안");
+        Assert(IsInsideIsland(60, 0), "(60, 0)은 섬 안 (PLAYABLE_RADIUS=70)");
+        Assert(!IsInsideIsland(80, 0), "(80, 0)은 섬 밖");
+        Assert(!IsInsideIsland(50, 50), "(50, 50)은 거리 70.7로 섬 밖");
+
+        Assert(GetRegion(0, -50) == Region.Beach, "(0, -50)은 Beach");
+        Assert(GetRegion(0, 0) == Region.Forest, "(0, 0)은 Forest");
+        Assert(GetRegion(0, 50) == Region.Mountain, "(0, 50)은 Mountain");
+        Assert(GetRegion(0, 72) == Region.OuterRim, "(0, 72)는 OuterRim");
+        Assert(GetRegion(0, 80) == Region.Outside, "(0, 80)은 Outside");
+
+        Assert(FindPrefabsByCategory(PrefabCategory.GroundFlat).Length > 0, "GroundFlat 풀 비어있지 않음");
+        Assert(FindPrefabsByCategory(PrefabCategory.GroundSlope).Length >= 2, "GroundSlope 2종 이상");
+        Assert(FindPrefabsByCategory(PrefabCategory.Hill).Length >= 2, "Hill 2종 이상");
+        Assert(FindPrefabsByCategory(PrefabCategory.Tree).Length > 0, "Tree 풀 비어있지 않음");
+        Assert(FindPrefabsByCategory(PrefabCategory.Skydome).Length > 0, "Skydome 1종 이상");
+
+        Debug.Log($"[Validate] 결과: PASS {passed}, FAIL {failed}");
     }
 
     [MenuItem("Tools/Map Generator/Bake NavMesh")]
@@ -331,6 +394,81 @@ public class MapGenerator : EditorWindow
             }
         }
         return null;
+    }
+
+    private static bool IsInsideIsland(float _x, float _z)
+    {
+        return (_x * _x + _z * _z) <= (PLAYABLE_RADIUS * PLAYABLE_RADIUS);
+    }
+
+    private static float GetDistanceFromCenter(float _x, float _z)
+    {
+        return Mathf.Sqrt(_x * _x + _z * _z);
+    }
+
+    private static Region GetRegion(float _x, float _z)
+    {
+        float dist = GetDistanceFromCenter(_x, _z);
+        if (dist > ISLAND_RADIUS) return Region.Outside;
+        if (dist > PLAYABLE_RADIUS) return Region.OuterRim;
+
+        if (_z < BEACH_Z_MAX) return Region.Beach;
+        if (_z < FOREST_Z_MAX) return Region.Forest;
+        return Region.Mountain;
+    }
+
+    private static readonly System.Collections.Generic.Dictionary<PrefabCategory, string[]> CATEGORY_PATTERNS =
+        new()
+        {
+            { PrefabCategory.GroundFlat,        new[] { "SM_Gen_Env_Ground_Grass_", "SM_Gen_Env_Ground_Dirt_" } },
+            { PrefabCategory.GroundSlope,       new[] { "SM_Gen_Env_Ground_Slope" } },
+            { PrefabCategory.Hill,              new[] { "SM_Gen_Env_Hill_" } },
+            { PrefabCategory.MountainBackdrop,  new[] { "SM_Gen_Env_Mountain_" } },
+            { PrefabCategory.Tree,              new[] { "SM_Gen_Env_Tree_" } },
+            { PrefabCategory.Bush,              new[] { "SM_Gen_Env_Bush_", "SM_Gen_Env_Shrub_" } },
+            { PrefabCategory.Rock,              new[] { "SM_Gen_Env_Rock_" } },
+            { PrefabCategory.Grass,             new[] { "SM_Gen_Env_Grass_", "SM_Gen_Env_Fern_" } },
+            { PrefabCategory.Flower,            new[] { "SM_Gen_Env_Flowers_" } },
+            { PrefabCategory.Mushroom,          new[] { "SM_Gen_Env_Mushroom_" } },
+            { PrefabCategory.Stump,             new[] { "SM_Gen_Env_Stump_" } },
+            { PrefabCategory.Cliff,             new[] { "SM_Gen_Env_Cliff_", "SM_Gen_Env_Dirt_Cliff_" } },
+            { PrefabCategory.Skydome,           new[] { "SM_Gen_Env_Skydome_" } },
+            { PrefabCategory.Cloud,             new[] { "SM_Gen_Env_Cloud_" } },
+            { PrefabCategory.Water,             new[] { "SM_Gen_Env_Water_Plane_" } },
+        };
+
+    private static GameObject[] FindPrefabsByCategory(PrefabCategory _category)
+    {
+        if (!CATEGORY_PATTERNS.TryGetValue(_category, out var patterns))
+            return System.Array.Empty<GameObject>();
+
+        var results = new System.Collections.Generic.List<GameObject>();
+        string[] guids = AssetDatabase.FindAssets("t:Prefab",
+            new[] { "Assets/Synty/PolygonGeneric/Prefabs" });
+
+        foreach (var guid in guids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+
+            foreach (var pattern in patterns)
+            {
+                if (fileName.StartsWith(pattern))
+                {
+                    var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                    if (prefab != null) results.Add(prefab);
+                    break;
+                }
+            }
+        }
+        return results.ToArray();
+    }
+
+    private static GameObject GetRandomPrefab(PrefabCategory _category)
+    {
+        var pool = FindPrefabsByCategory(_category);
+        if (pool.Length == 0) return null;
+        return pool[Random.Range(0, pool.Length)];
     }
 }
 #endif
