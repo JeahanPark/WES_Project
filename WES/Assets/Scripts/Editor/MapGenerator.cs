@@ -105,19 +105,46 @@ public class MapGenerator : EditorWindow
     [MenuItem("Tools/Map Generator/Bake NavMesh")]
     public static void BakeNavMesh()
     {
-        var ground = GameObject.Find("MapRoot/GeneratedMap/Ground");
-        if (ground != null)
+        var generated = GameObject.Find("MapRoot/GeneratedMap");
+        if (generated == null)
         {
-            foreach (Transform child in ground.transform)
-                GameObjectUtility.SetStaticEditorFlags(child.gameObject, StaticEditorFlags.NavigationStatic);
+            Debug.LogError("[MapGenerator] GeneratedMap 없음. Generate Island Map 먼저 실행.");
+            return;
         }
 
+        // NavigationStatic 마킹 — Ground / Slopes / Hills + OuterRim의 모래
+        MarkNavStaticRecursively(generated.transform.Find("Ground"));
+        MarkNavStaticRecursively(generated.transform.Find("Slopes"));
+        MarkNavStaticRecursively(generated.transform.Find("Hills"));
+        var rim = generated.transform.Find("OuterRim");
+        if (rim != null)
+        {
+            foreach (Transform child in rim)
+            {
+                if (child.name.Contains("Ground_Dirt") || child.name.Contains("Ground_Grass"))
+                    GameObjectUtility.SetStaticEditorFlags(child.gameObject, StaticEditorFlags.NavigationStatic);
+            }
+        }
+
+        // Max Slope / Step Height 적용
+        var settings = NavMesh.GetSettingsByID(0);
+        settings.agentSlope = MAX_SLOPE_DEGREE;
+        settings.agentClimb = STEP_HEIGHT;
+
+        NavMesh.RemoveAllNavMeshData();
         UnityEditor.AI.NavMeshBuilder.BuildNavMesh();
 
         UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(
             UnityEngine.SceneManagement.SceneManager.GetActiveScene());
 
-        Debug.Log("[MapGenerator] NavMesh baked!");
+        Debug.Log($"[MapGenerator] NavMesh baked (Max Slope {MAX_SLOPE_DEGREE}°, Step {STEP_HEIGHT})");
+    }
+
+    private static void MarkNavStaticRecursively(Transform _root)
+    {
+        if (_root == null) return;
+        foreach (Transform child in _root)
+            GameObjectUtility.SetStaticEditorFlags(child.gameObject, StaticEditorFlags.NavigationStatic);
     }
 
     [MenuItem("Tools/Map Generator/Validate Helpers")]
