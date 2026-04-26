@@ -17,6 +17,7 @@ public class PlayerCharacter : CharacterBase
     [SerializeField] private float m_AttackRange = DEFAULT_ATTACK_RANGE;
     [SerializeField] private int m_MaxHitCount = DEFAULT_MAX_HIT_COUNT;
     [SerializeField] private LayerMask m_TargetLayer;
+    [SerializeField] private LayerMask m_GroundLayerMask;
 
     // Network Variables
     private readonly NetworkVariable<int> m_PlayerIndex = new();
@@ -347,12 +348,10 @@ public class PlayerCharacter : CharacterBase
             return;
 
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        Plane groundPlane = new(Vector3.up, Vector3.zero);
-
-        if (groundPlane.Raycast(ray, out float distance))
+        int mask = m_GroundLayerMask.value != 0 ? m_GroundLayerMask.value : (1 << LayerMask.NameToLayer("Ground"));
+        if (Physics.Raycast(ray, out RaycastHit hit, 200f, mask))
         {
-            Vector3 hitPoint = ray.GetPoint(distance);
-            LookAtPosition(hitPoint);
+            LookAtPosition(hit.point);
         }
     }
 
