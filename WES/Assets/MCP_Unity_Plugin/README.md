@@ -1,29 +1,13 @@
 # MCP Unity Plugin
 
 Claude와 Unity Editor를 실시간으로 연동하는 에디터 플러그인.
-MCP 서버로부터 TCP 명령을 수신해 Unity Editor 내에서 직접 실행한다.
+MCP 서버로부터 Named Pipe 명령을 수신해 Unity Editor 내에서 직접 실행한다.
 
 ---
 
 ## 설치
 
 `MCP_Unity_Plugin/Editor/` 폴더를 Unity 프로젝트의 `Assets/` 안에 복사.
-
-```
-Assets/
-└── Editor/
-    ├── McpBridge.cs
-    └── McpBridge/
-        ├── McpBridgeComponents.cs
-        ├── McpBridgeReferences.cs
-        ├── McpBridgeInstantiate.cs
-        ├── McpBridgeGameObject.cs
-        ├── McpBridgeDuplicate.cs
-        ├── McpBridgeButton.cs
-        ├── McpBridgeRefresh.cs
-        ├── McpBridgeHierarchy.cs
-        └── McpBridgeConsole.cs
-```
 
 ## McpBridge 활성화
 
@@ -41,20 +25,18 @@ Unity Editor 메뉴에서:
 
 | 도구 | 설명 | Unity Editor 필요 |
 |------|------|:-----------------:|
-| `echo` | MCP 서버 연결 상태 확인 | X |
 | `generate_ui_with_gpt` | 자연어로 UGUI 프리팹 파일 생성 | X |
-| `get_hierarchy` | 씬/프리팹 계층 구조 JSON 반환 | O |
-| `read_console` | Unity 콘솔 로그 읽기 (error/warning/log 필터) | O |
-| `manage_components` | GameObject에 컴포넌트 추가/제거/설정/목록 | O |
-| `set_reference` | Inspector SerializeField 참조 연결 | O |
-| `instantiate_prefab` | 씬/프리팹 하위에 프리팹 인스턴스 배치 | O |
-| `add_gameobject` | 씬/프리팹 하위에 새 빈 GameObject 추가 | O |
-| `set_active` | GameObject 활성화/비활성화 | O |
-| `delete_gameobject` | GameObject 삭제 | O |
-| `rename_gameobject` | GameObject 이름 변경 | O |
-| `duplicate` | 씬/프리팹 내 GameObject 복제 | O |
-| `connect_button` | Button onClick에 메서드 연결 | O |
-| `refresh_assets` | AssetDatabase 전체 갱신 또는 특정 에셋 reimport | O |
+| `u_editor_gameobject` | GameObject 관리 및 조회 | O |
+| `u_editor_component` | 컴포넌트/참조/버튼 관리 | O |
+| `u_editor_prefab` | 프리팹 인스턴스 배치 | O |
+| `u_editor_asset` | 에셋 검색/정보/갱신 | O |
+| `u_editor_scene` | 씬 열기/저장/생성 | O |
+| `u_editor_tag_layer` | 태그/레이어 관리 | O |
+| `u_set_transform` | Transform 위치/회전/스케일 설정 | O |
+| `u_screenshot` | Game View 스크린샷 캡처 | O |
+| `u_editor_sceneview` | Scene View 캡처 + 카메라 시점 제어 | O |
+| `u_play` | Play 모드 제어/UI 클릭/런타임 호출 | O |
+| `u_console` | Unity 콘솔 로그 읽기 | O |
 
 > **경로 문법**: `target` 파라미터에 `Parent/Child/GrandChild` 형식의 경로를 사용하면 동일 이름 오브젝트를 정확히 지정할 수 있다.
 
@@ -62,123 +44,52 @@ Unity Editor 메뉴에서:
 
 ## 도구 상세
 
-### get_hierarchy
+### u_editor_gameobject
 
-씬 전체 또는 특정 프리팹의 GameObject 계층 구조를 JSON으로 반환한다.
-각 노드에는 `name`, `active`, `path`(전체 경로), `components`, `children`이 포함된다.
-`path` 값을 다른 도구의 `target`에 그대로 사용할 수 있다.
+GameObject를 관리하고 조회한다.
 
 | 파라미터 | 필수 | 설명 |
 |---------|:----:|------|
-| `prefabPath` | X | 프리팹 에셋 경로. 생략 시 현재 씬 전체 반환. |
-| `maxCount`   | X | 최대 노드 수 (기본값 500). 대형 씬 보호용. |
-
-```
-# 현재 씬 전체 계층 조회
-(파라미터 없음)
-
-# 특정 프리팹 계층 조회
-prefabPath: "Assets/Prefabs/UI/MyPopup.prefab"
-```
-
----
-
-### read_console
-
-Unity Editor 콘솔의 로그 항목을 읽어 반환한다.
-각 항목에는 `type`(error/warning/log), `message`(첫 줄, 최대 300자), `file`, `line`이 포함된다.
-
-| 파라미터 | 필수 | 설명 |
-|---------|:----:|------|
-| `logType`  | X | `"error"` / `"warning"` / `"log"` / `"all"` (기본값: `"all"`) |
-| `maxCount` | X | 반환할 최대 항목 수 (기본값: 50, 최신 항목부터) |
-
-```
-# 에러만 최신 20개
-logType: "error",  maxCount: 20
-
-# 전체 최신 50개
-(파라미터 없음)
-```
-
----
-
-### set_active
-
-GameObject를 활성화하거나 비활성화한다.
-
-| 파라미터 | 필수 | 설명 |
-|---------|:----:|------|
-| `target`        | O | 대상 GameObject 이름 또는 `Parent/Child` 경로 |
-| `active`        | O | `true` = 활성화, `false` = 비활성화 |
-| `prefabPath`    | X | 프리팹 에셋 경로. 생략 시 현재 씬에서 검색. |
-
-```
-# 예시
-target: "DebugPanel", active: false
-target: "Canvas/Popup/CloseButton", active: true, prefabPath: "Assets/Prefabs/UI/MyPopup.prefab"
-```
-
----
-
-### delete_gameobject
-
-GameObject를 삭제한다. 프리팹 루트는 삭제할 수 없다.
-
-| 파라미터 | 필수 | 설명 |
-|---------|:----:|------|
-| `target`     | O | 삭제할 GameObject 이름 또는 `Parent/Child` 경로 |
+| `action` | O | `add` / `delete` / `rename` / `set_active` / `duplicate` / `find` / `get` / `hierarchy` |
+| `target` | O | 대상 GameObject 이름 또는 경로 (find 시 검색 키워드) |
+| `gameObjectName` | X | 새 이름 (`add` / `rename` / `duplicate` 전용) |
+| `active` | X | `true` / `false` (`set_active` 전용, 기본값: true) |
 | `prefabPath` | X | 프리팹 에셋 경로. 생략 시 현재 씬에서 검색. |
-
----
-
-### rename_gameobject
-
-GameObject의 이름을 변경한다.
-
-| 파라미터 | 필수 | 설명 |
-|---------|:----:|------|
-| `target`         | O | 이름을 바꿀 GameObject 이름 또는 `Parent/Child` 경로 |
-| `gameObjectName` | O | 새 이름 |
-| `prefabPath`     | X | 프리팹 에셋 경로. 생략 시 현재 씬에서 검색. |
-
----
-
-### manage_components
-
-GameObject에 컴포넌트를 추가/제거하거나 필드 값을 설정한다.
-
-| 파라미터 | 필수 | 설명 |
-|---------|:----:|------|
-| `action`        | O | `add` / `remove` / `set_property` / `list` |
-| `target`        | O | 대상 GameObject 이름 |
-| `componentType` | X | 컴포넌트 타입 이름 (예: `BoxCollider`) |
-| `prefabPath`    | X | 프리팹 에셋 경로. 생략 시 현재 씬에서 검색. |
-| `propertyName`  | X | 설정할 필드 이름 (`set_property` 전용) |
-| `propertyValue` | X | 설정할 값 (`set_property` 전용) |
+| `maxCount` | X | 최대 노드 수 (`hierarchy` 전용, 기본값: 500) |
 
 ```
 # 예시
-action: "list",         target: "MyObject", prefabPath: "Assets/Prefabs/MyObject.prefab"
-action: "add",          target: "Player",   componentType: "BoxCollider"
-action: "set_property", target: "Player",   componentType: "HealthComponent", propertyName: "m_MaxHp", propertyValue: "100"
+action: "add",        target: "Canvas",  gameObjectName: "NewPanel"
+action: "delete",     target: "OldPanel"
+action: "rename",     target: "Panel",   gameObjectName: "MainPanel"
+action: "set_active", target: "Popup",   active: false
+action: "duplicate",  target: "ItemSlot", gameObjectName: "ItemSlot_Copy"
+action: "find",       target: "Button"
+action: "get",        target: "Canvas/Panel/Title"
+action: "hierarchy"   (target 생략 시 전체 씬)
+action: "hierarchy",  prefabPath: "Assets/Prefabs/UI/MyPopup.prefab"
 ```
 
 ---
 
-### set_reference
+### u_editor_component
 
-Inspector 필드에 다른 컴포넌트 또는 에셋 참조를 연결한다.
-한 번의 호출로 여러 필드를 동시에 매핑할 수 있다.
+컴포넌트 관리, Inspector 참조 연결, 버튼 onClick 연결을 처리한다.
 
 | 파라미터 | 필수 | 설명 |
 |---------|:----:|------|
-| `target`        | O | 필드를 가진 컴포넌트가 붙은 GameObject 이름 |
-| `componentType` | O | 필드를 가진 컴포넌트 타입 |
-| `mappingsJson`  | O | 매핑 목록 JSON 배열 문자열 |
-| `prefabPath`    | X | 프리팹 에셋 경로. 생략 시 현재 씬에서 검색. |
+| `action` | O | `add` / `remove` / `set_property` / `list` / `set_reference` / `connect_button` |
+| `target` | O | 대상 GameObject 이름 |
+| `componentType` | X | 컴포넌트 타입 이름 (예: `BoxCollider`) |
+| `prefabPath` | X | 프리팹 에셋 경로 |
+| `propertyName` | X | 필드 이름 (`set_property` 전용) |
+| `propertyValue` | X | 필드 값 (`set_property` 전용) |
+| `mappingsJson` | X | 참조 매핑 JSON 배열 (`set_reference` 전용) |
+| `listenerTarget` | X | 리스너 GameObject (`connect_button` 전용) |
+| `listenerComponent` | X | 리스너 컴포넌트 타입 (`connect_button` 전용) |
+| `methodName` | X | 메서드 이름 (`connect_button` 전용) |
 
-**mappingsJson 형식:**
+**set_reference mappingsJson 형식:**
 ```json
 [
   {"propertyName": "m_CloseButton",  "referenceTarget": "CloseButton"},
@@ -187,103 +98,210 @@ Inspector 필드에 다른 컴포넌트 또는 에셋 참조를 연결한다.
 ]
 ```
 
-| 매핑 필드 | 필수 | 설명 |
-|---------|:----:|------|
-| `propertyName`           | O | 연결할 필드 이름 |
-| `referenceTarget`        | O | 연결할 GameObject 이름 또는 `Assets/`로 시작하는 에셋 경로 |
-| `referenceComponentType` | X | 생략 시 필드 타입 자동 추론 |
+```
+# 예시
+action: "list",           target: "MyObject"
+action: "add",            target: "Player",    componentType: "BoxCollider"
+action: "set_property",   target: "Player",    componentType: "HealthComponent", propertyName: "m_MaxHp", propertyValue: "100"
+action: "set_reference",  target: "MyPopup",   componentType: "MyPopup", mappingsJson: "[...]", prefabPath: "Assets/Prefabs/UI/MyPopup.prefab"
+action: "connect_button", target: "CloseButton", listenerTarget: "MyPopup", listenerComponent: "MyPopup", methodName: "OnClickClose"
+```
 
 ---
 
-### instantiate_prefab
+### u_editor_prefab
 
 씬 또는 프리팹의 특정 GameObject 하위에 프리팹 인스턴스를 배치한다.
 
 | 파라미터 | 필수 | 설명 |
 |---------|:----:|------|
-| `prefabPath`       | O | 배치할 프리팹 에셋 경로 |
-| `parentTarget`     | O | 부모로 사용할 GameObject 이름 |
+| `prefabPath` | O | 배치할 프리팹 에셋 경로 |
+| `parentTarget` | O | 부모로 사용할 GameObject 이름 |
 | `parentPrefabPath` | X | 부모가 프리팹 내부에 있을 경우 해당 프리팹 경로 |
 
 ---
 
-### add_gameobject
+### u_editor_asset
 
-씬 또는 프리팹 하위에 새 빈 GameObject를 추가한다.
+에셋을 검색하거나 정보를 조회하고, AssetDatabase를 갱신한다.
 
 | 파라미터 | 필수 | 설명 |
 |---------|:----:|------|
-| `parentTarget`   | O | 부모로 사용할 GameObject 이름 |
-| `gameObjectName` | O | 새로 생성할 GameObject 이름 |
-| `prefabPath`     | X | 부모가 프리팹 내부에 있을 경우 해당 프리팹 경로 |
+| `action` | O | `find` / `get_info` / `refresh` |
+| `filter` | X | 검색 필터 (`find` 전용, 예: `"t:Prefab Button"`) |
+| `folder` | X | 검색 폴더 (`find` 전용, 예: `"Assets/Prefabs"`) |
+| `assetPath` | X | 에셋 경로 (`get_info` / `refresh` 전용) |
 
 ```
 # 예시
-parentTarget: "ContentArea"
-gameObjectName: "ItemSlot"
-prefabPath: "Assets/Prefabs/UI/MyPopup.prefab"
+action: "find",     filter: "t:Prefab", folder: "Assets/Prefabs/UI"
+action: "get_info", assetPath: "Assets/Scripts/MyScript.cs"
+action: "refresh"
+action: "refresh",  assetPath: "Assets/Scripts/MyScript.cs"
 ```
 
 ---
 
-### duplicate
+### u_editor_scene
 
-씬 또는 프리팹 내 기존 GameObject를 복제하여 같은 부모 하위에 추가한다.
-컴포넌트, 자식 오브젝트, Inspector 참조 등 원본의 모든 구조가 복사된다.
+씬을 열거나 저장하거나 새로 생성한다.
 
 | 파라미터 | 필수 | 설명 |
 |---------|:----:|------|
-| `target`         | O | 복제할 원본 GameObject 이름 |
-| `gameObjectName` | X | 복제본 이름. 생략 시 `원본이름 (Copy)` |
-| `prefabPath`     | X | 프리팹 에셋 경로. 생략 시 현재 씬에서 검색. |
+| `action` | O | `open` / `save` / `create` |
+| `scenePath` | X | 씬 경로 (`save` 시 생략하면 현재 씬 저장) |
 
 ```
-# 예시: Limit_EnterCount_Add 복제 후 MonadGate_EntryCount 로 이름 변경
-target: "Limit_EnterCount_Add"
-gameObjectName: "MonadGate_EntryCount"
-prefabPath: "Assets/Editor/Resources/Prefabs/UI/CUITopMenu.prefab"
+# 예시
+action: "open",   scenePath: "Assets/Scenes/Main.unity"
+action: "save"
+action: "create", scenePath: "Assets/Scenes/NewScene.unity"
 ```
 
 ---
 
-### connect_button
+### u_editor_tag_layer
 
-Button 컴포넌트의 onClick 이벤트에 메서드를 Persistent Listener로 연결한다.
-파라미터 없는 `void` 메서드만 지원한다.
+태그와 레이어를 관리한다.
 
 | 파라미터 | 필수 | 설명 |
 |---------|:----:|------|
-| `target`            | O | Button이 붙은 GameObject 이름 |
-| `listenerTarget`    | O | 메서드를 가진 컴포넌트의 GameObject 이름 |
-| `listenerComponent` | O | 메서드를 가진 컴포넌트 타입 이름 |
-| `methodName`        | O | 연결할 메서드 이름 |
-| `prefabPath`        | X | 프리팹 에셋 경로. 생략 시 현재 씬에서 검색. |
+| `type` | O | `tag` / `layer` |
+| `action` | O | tag: `list` / `add` / `remove` / `set`, layer: `list` / `set` / `remove` / `set_object` |
+| `tagName` | X | 태그 이름 (tag 전용) |
+| `layerIndex` | X | 레이어 인덱스 (layer 전용, 기본값: 0) |
+| `layerName` | X | 레이어 이름 (layer 전용) |
+| `target` | X | GameObject 이름 (`set` / `set_object` 전용) |
 
 ```
-# 예시: CloseButton.onClick → MyPopup.OnClickClose
-target: "CloseButton"
-listenerTarget: "MyPopup"
-listenerComponent: "MyPopup"
-methodName: "OnClickClose"
-prefabPath: "Assets/Prefabs/UI/MyPopup.prefab"
+# 예시
+type: "tag",   action: "list"
+type: "tag",   action: "add",  tagName: "Enemy"
+type: "tag",   action: "set",  tagName: "Player", target: "Hero"
+type: "layer", action: "list"
+type: "layer", action: "set",  layerIndex: 8, layerName: "Interactive"
+type: "layer", action: "set_object", target: "Hero", layerName: "Player"
 ```
 
 ---
 
-### refresh_assets
+### u_set_transform
 
-AssetDatabase를 전체 갱신하거나 특정 에셋을 reimport한다.
+GameObject의 Transform(위치/회전/스케일)을 설정한다.
 
 | 파라미터 | 필수 | 설명 |
 |---------|:----:|------|
-| `assetPath` | X | reimport할 에셋 경로. 생략 시 전체 AssetDatabase.Refresh() 실행. |
+| `target` | O | 대상 GameObject 이름 |
+| `mode` | X | `editor` (기본값) / `play` |
+| `posX`, `posY`, `posZ` | X | 위치 좌표 |
+| `rotX`, `rotY`, `rotZ` | X | 회전 (Euler) |
+| `scaleX`, `scaleY`, `scaleZ` | X | 스케일 |
 
 ```
-# 전체 갱신 (파라미터 없음)
-
-# 특정 에셋 reimport
-assetPath: "Assets/Scripts/MyScript.cs"
+# 예시
+target: "Player", posX: 0, posY: 1, posZ: 0
+target: "Camera", rotX: 30, rotY: 45, rotZ: 0, mode: "play"
+target: "Item",   scaleX: 2, scaleY: 2, scaleZ: 2
 ```
+
+---
+
+### u_screenshot
+
+Game View 스크린샷을 파일로 저장한다.
+
+| 파라미터 | 필수 | 설명 |
+|---------|:----:|------|
+| `u_screenshotPath` | X | 출력 경로. 생략 시 프로젝트 루트에 저장. |
+
+---
+
+### u_editor_sceneview
+
+Scene View(씬뷰) 캡처 및 카메라 시점 제어를 통합 처리한다.
+
+| 파라미터 | 필수 | 설명 |
+|---------|:----:|------|
+| `subAction` | O | `screenshot` / `focus` / `preset` / `get` |
+| `target` | △ | `focus` 대상 GameObject 이름/경로 (`focus` 필수) |
+| `view` | △ | 시점 (`top` / `front` / `side` / `persp`) — `preset` 필수 |
+| `angle` | X | `focus` 각도 — 동일 enum, 기본값 `persp` |
+| `size` | X | `preset` 거리 (생략 시 현재 size 유지) |
+| `screenshotPath` | X | `screenshot` 저장 경로 (생략 시 프로젝트 루트의 `screenshot_sceneview.png`) |
+
+```
+# 예시
+subAction: "screenshot"
+subAction: "screenshot",  screenshotPath: "C:/temp/sceneview.png"
+subAction: "focus",       target: "Player"
+subAction: "focus",       target: "Player",          angle: "top"
+subAction: "preset",      view: "top",               size: 100
+subAction: "get"
+```
+
+**시점 매핑:**
+- `top` — 위에서 아래
+- `front` — 정면 (-Z 응시)
+- `side` — 측면 (-X 응시)
+- `persp` — 일반 원근 (Euler 30, 45, 0)
+
+`focus`는 대상의 Renderer bounds로 자동 거리를 계산해 카메라를 정렬한다.
+`preset`은 현재 pivot을 유지하며 시점만 전환한다.
+`get`은 현재 씬뷰의 pivot/rotation/size 등 상태를 JSON으로 반환한다.
+
+---
+
+### u_play
+
+Play 모드 제어, UI 버튼 클릭, 런타임 메서드 호출을 처리한다.
+
+| 파라미터 | 필수 | 설명 |
+|---------|:----:|------|
+| `action` | O | `control` / `click` / `invoke` |
+| `sub_action` | X | `enter` / `exit` / `status` (`control` 전용) |
+| `target` | X | GameObject/Button 이름 (`click` / `invoke` 전용) |
+| `componentType` | X | 컴포넌트 타입 (`invoke` 전용) |
+| `methodName` | X | 메서드 이름 (`invoke` 전용) |
+| `args` | X | 메서드 인자 (`invoke` 전용) |
+
+```
+# 예시
+action: "control", sub_action: "enter"
+action: "control", sub_action: "status"
+action: "click",   target: "StartButton"
+action: "invoke",  target: "GameManager", componentType: "GameManager", methodName: "ResetScore"
+```
+
+---
+
+### u_console
+
+Unity 콘솔 로그를 읽어 반환한다.
+
+| 파라미터 | 필수 | 설명 |
+|---------|:----:|------|
+| `logType` | X | `error` / `warning` / `log` / `all` (기본값: `all`) |
+| `maxCount` | X | 최대 항목 수 (기본값: 50, 최신 항목부터) |
+
+```
+# 예시
+logType: "error", maxCount: 20
+```
+
+---
+
+### generate_ui_with_gpt
+
+자연어 프롬프트로 UGUI 프리팹 파일을 생성한다. Unity Editor 연결 불필요.
+
+| 파라미터 | 필수 | 설명 |
+|---------|:----:|------|
+| `unityProjectRoot` | O | Unity 프로젝트 루트 경로 (Assets/ 포함 폴더) |
+| `outputPrefabPath` | O | 출력 프리팹 경로 (예: `Assets/UI/Generated/Test.prefab`) |
+| `guidTablePath` | O | guidTable.json 경로 |
+| `prompt` | O | UI 설명 (자연어) |
+| `referenceWidth` | X | 레퍼런스 해상도 너비 (기본값: 1920) |
+| `referenceHeight` | X | 레퍼런스 해상도 높이 (기본값: 1080) |
 
 ---
 

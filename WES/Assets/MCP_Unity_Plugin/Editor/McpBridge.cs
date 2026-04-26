@@ -268,6 +268,7 @@ public static partial class McpBridge
             // Common tools
             "u_console"               => ReadConsole(req),          // McpBridgeConsole.cs
             "u_screenshot"            => Screenshot(req),           // McpBridgeScreenshot.cs
+            "u_editor_sceneview"      => RouteSceneView(req),       // McpBridgeSceneView.cs
             _                         => BuildError($"Unknown action: '{req.action}'")
         };
     }
@@ -484,6 +485,10 @@ public static partial class McpBridge
         public string actionName;      // u_editor_input 액션 이름
         public string actionType;      // u_editor_input 액션 타입 (Button, Value, PassThrough)
         public string bindingPath;     // u_editor_input 바인딩 경로 (예: "<Keyboard>/1")
+        public string view;            // u_editor_sceneview preset 시점 (top/front/side/persp)
+        public string angle;           // u_editor_sceneview focus 각도 (top/front/side/persp)
+        public float  size;            // u_editor_sceneview preset size 명시값
+        public bool   hasSize;         // u_editor_sceneview size 명시 여부
     }
 
     private class PendingRequest
