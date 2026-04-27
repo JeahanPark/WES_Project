@@ -59,6 +59,15 @@
 - [x] 모닥불 체온 회복 효과 (5m 내 Cold+2/초)
 - [x] 통합 QA 테스트 통과
 
+### Week 2 보강 — 지형 경사 이동 (2026-04-26 ~ 2026-04-28)
+
+- [x] MapGenerator: 원형 섬(지름 150u) 자동 생성 + 영역별 슬로프/언덕 배치
+- [x] NavMesh 재베이크 (Max Slope 60°, Step 0.4)
+- [x] Mountain_02 랜드마크 손배치 (시각 포인트)
+- [x] PlayerCharacter 마우스 시점을 Plane → `Physics.Raycast`로 전환
+- [x] Ground 레이어 신규 (인덱스 8)
+- [x] TestManager.TestTerrainSlope QA 시나리오 (자동 6개 중 5 PASS)
+
 ---
 
 ## M3. 완성도 (5/5 ~ 5/25 / 주 15h × 3주)
