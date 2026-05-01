@@ -712,5 +712,100 @@ public class TestManager : MonoSingleton<TestManager>
 
         GameDebug.Log($"[TestManager] TestBuilding 결과: PASS {passed}, FAIL {failed}");
     }
+
+    public void TestDamageNumber()
+    {
+        StartCoroutine(CoTestDamageNumber());
+    }
+
+    private IEnumerator CoTestDamageNumber()
+    {
+        GameDebug.Log("[TestManager] TestDamageNumber 시작");
+
+        int passed = 0;
+        int failed = 0;
+        void Mark(bool _condition, string _label)
+        {
+            if (_condition) { passed++; GameDebug.Log($"[TestManager] PASS: {_label}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+
+        var worldUIWorker = controller.WorldUIWorker;
+        var player = controller.PlayWorker?.LocalPlayer;
+        if (worldUIWorker == null || player == null)
+        {
+            GameDebug.LogError("[TestManager] 의존성 없음");
+            yield break;
+        }
+
+        // 시나리오 1: 플레이어 자가 피격 → 자기 머리 위에 데미지 숫자 노출
+        GameDebug.Log("[TestManager] 시나리오 1: 플레이어 자가 피격");
+        int beforeCount = Object.FindObjectsByType<DamageNumberWorldUI>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).Length;
+        player.TakeDamage(5, player);
+        yield return new WaitForSeconds(0.1f);
+        int afterCount = Object.FindObjectsByType<DamageNumberWorldUI>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).Length;
+        Mark(afterCount > beforeCount, $"피격 직후 활성 데미지 숫자 증가 ({beforeCount} → {afterCount})");
+
+        // 시나리오 2: 0.6초 후 자동 사라짐 (풀 반환)
+        yield return new WaitForSeconds(0.7f);
+        int afterLifetime = Object.FindObjectsByType<DamageNumberWorldUI>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).Length;
+        Mark(afterLifetime <= beforeCount, $"수명 종료 후 활성 데미지 숫자 회수 ({afterLifetime} <= {beforeCount})");
+
+        // 시나리오 3: 동시 다발 피격 — 좌우 분산 (오프셋 적용 확인)
+        GameDebug.Log("[TestManager] 시나리오 3: 연속 피격 3회");
+        for (int i = 0; i < 3; i++)
+        {
+            player.TakeDamage(3, player);
+            yield return new WaitForSeconds(0.05f);
+        }
+        yield return new WaitForSeconds(0.1f);
+        var actives = Object.FindObjectsByType<DamageNumberWorldUI>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        Mark(actives.Length >= 3, $"동시 활성 인스턴스 수 ({actives.Length} >= 3)");
+
+        if (actives.Length >= 2)
+        {
+            float xSpread = 0f;
+            float refX = actives[0].GetComponent<RectTransform>().localPosition.x;
+            for (int i = 1; i < actives.Length; i++)
+            {
+                xSpread = Mathf.Max(xSpread, Mathf.Abs(actives[i].GetComponent<RectTransform>().localPosition.x - refX));
+            }
+            Mark(xSpread > 0f, $"좌우 분산 오프셋 적용 (최대 X 편차 {xSpread:F1})");
+        }
+
+        // 정리: 모두 사라질 때까지 대기
+        yield return new WaitForSeconds(0.7f);
+
+        // 시나리오 4: 몬스터 피격 → 몬스터 머리 위에 노출
+        GameDebug.Log("[TestManager] 시나리오 4: 몬스터 피격");
+        var monsters = Object.FindObjectsByType<MonsterStateMachine>(FindObjectsSortMode.None);
+        if (monsters.Length > 0)
+        {
+            var monster = monsters[0].GetComponent<CharacterBase>();
+            if (monster != null && !monster.IsDead)
+            {
+                int beforeMonster = Object.FindObjectsByType<DamageNumberWorldUI>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).Length;
+                monster.TakeDamage(2, player);
+                yield return new WaitForSeconds(0.1f);
+                int afterMonster = Object.FindObjectsByType<DamageNumberWorldUI>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).Length;
+                Mark(afterMonster > beforeMonster, $"몬스터 피격 시 데미지 숫자 노출 ({beforeMonster} → {afterMonster})");
+            }
+            else
+            {
+                GameDebug.LogWarning("[TestManager] 첫 몬스터가 없거나 사망 상태 — 시나리오 4 SKIP");
+            }
+        }
+        else
+        {
+            GameDebug.LogWarning("[TestManager] 몬스터 미스폰 — 시나리오 4 SKIP");
+        }
+
+        yield return new WaitForSeconds(0.7f);
+
+        GameDebug.Log($"[TestManager] TestDamageNumber 결과: PASS {passed}, FAIL {failed}");
+    }
 }
 #endif

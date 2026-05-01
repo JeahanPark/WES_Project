@@ -74,7 +74,7 @@ public class InGameWorldUIWorker : MonoBehaviour
         if (worldUI == null)
             return null;
 
-        Vector2 screenOffset = new Vector2(Random.Range(-20f, 20f), 0f);
+        Vector2 screenOffset = new Vector2(UnityEngine.Random.Range(-20f, 20f), 0f);
         worldUI.SetData(_damage, _worldPosition, screenOffset, m_Camera, m_UICamera, m_CanvasRectTransform, Color.white);
 
         return worldUI;
