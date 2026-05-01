@@ -20,6 +20,7 @@ public class DamageNumberWorldUI : BaseWorldUI
     private Camera m_UICamera;
     private RectTransform m_CanvasRectTransform;
     private Coroutine m_AnimationCoroutine;
+    private float m_CurrentRiseY;
 
     public void SetData(
         int _damage,
@@ -45,6 +46,8 @@ public class DamageNumberWorldUI : BaseWorldUI
         if (m_CanvasGroup != null)
             m_CanvasGroup.alpha = 1f;
 
+        m_CurrentRiseY = 0f;
+
         StopAnimation();
         m_AnimationCoroutine = StartCoroutine(CoPlayAnimation());
     }
@@ -55,11 +58,12 @@ public class DamageNumberWorldUI : BaseWorldUI
         m_Camera = null;
         m_UICamera = null;
         m_CanvasRectTransform = null;
+        m_CurrentRiseY = 0f;
     }
 
     private void LateUpdate()
     {
-        UpdatePosition(0f);
+        UpdatePosition(m_CurrentRiseY);
     }
 
     private IEnumerator CoPlayAnimation()
@@ -71,9 +75,7 @@ public class DamageNumberWorldUI : BaseWorldUI
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / LIFETIME);
             float eased = 1f - (1f - t) * (1f - t); // EaseOutQuad
-            float riseY = eased * RISE_DISTANCE;
-
-            UpdatePosition(riseY);
+            m_CurrentRiseY = eased * RISE_DISTANCE;
 
             if (m_CanvasGroup != null)
             {
@@ -92,6 +94,9 @@ public class DamageNumberWorldUI : BaseWorldUI
         }
 
         m_AnimationCoroutine = null;
+
+        if (!IsActive)
+            yield break;
 
         if (InGameController.Instance != null && InGameController.Instance.WorldUIWorker != null)
             InGameController.Instance.WorldUIWorker.ReleaseWorldUI(this);
