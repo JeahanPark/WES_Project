@@ -348,11 +348,8 @@ public class TestManager : MonoSingleton<TestManager>
             else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
         }
 
-        var controller = Object.FindFirstObjectByType<InGameController>();
-        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
-
-        var player = controller.PlayWorker?.LocalPlayer;
-        if (player == null) { GameDebug.LogError("[TestManager] LocalPlayer 없음"); yield break; }
+        var player = Object.FindFirstObjectByType<PlayerCharacter>();
+        if (player == null) { GameDebug.LogError("[TestManager] PlayerCharacter 없음"); yield break; }
 
         // 시나리오 1: 슬로프 위 Y 자연 보정
         GameDebug.Log("[TestManager] 시나리오 1: 슬로프 위 이동");
@@ -362,8 +359,14 @@ public class TestManager : MonoSingleton<TestManager>
             agent.Warp(nh1.position);
             yield return new WaitForSeconds(0.3f);
             Vector3 startPos = player.transform.position;
-            player.MoveWithDirection(new Vector2(0, 1));
-            yield return new WaitForSeconds(2f);
+            float moveDuration = 2f;
+            float elapsed = 0f;
+            while (elapsed < moveDuration)
+            {
+                player.MoveWithDirection(new Vector2(0, 1));
+                yield return null;
+                elapsed += Time.deltaTime;
+            }
             player.MoveWithDirection(Vector2.zero);
             Vector3 endPos = player.transform.position;
             GameDebug.Log($"[TestManager] 시작 Y={startPos.y:F2}, 종료 Y={endPos.y:F2}, ΔZ={endPos.z - startPos.z:F2}");
@@ -395,8 +398,14 @@ public class TestManager : MonoSingleton<TestManager>
         {
             agent.Warp(nh3.position);
             yield return new WaitForSeconds(0.3f);
-            player.MoveWithDirection(new Vector2(1, 0));
-            yield return new WaitForSeconds(3f);
+            float outerDuration = 3f;
+            float outerElapsed = 0f;
+            while (outerElapsed < outerDuration)
+            {
+                player.MoveWithDirection(new Vector2(1, 0));
+                yield return null;
+                outerElapsed += Time.deltaTime;
+            }
             player.MoveWithDirection(Vector2.zero);
             float dist = Mathf.Sqrt(player.transform.position.x * player.transform.position.x +
                                     player.transform.position.z * player.transform.position.z);
@@ -445,6 +454,39 @@ public class TestManager : MonoSingleton<TestManager>
         else
         {
             GameDebug.LogWarning("[TestManager] 몬스터 미스폰 — 시나리오 6 SKIP");
+        }
+
+        yield return new WaitForSeconds(0.3f);
+
+        // 시나리오 7: 나무 NavMesh carving 검증
+        // 나무 양쪽 1.5m에서 NavMesh.Raycast로 직선 통과성 검사 — 막히면 carving 작동
+        GameDebug.Log("[TestManager] 시나리오 7: 나무 NavMesh carving");
+        var decoRoot = GameObject.Find("MapRoot/GeneratedMap/Decorations");
+        if (decoRoot != null)
+        {
+            int treeTotal = 0;
+            int treeBlocked = 0;
+            foreach (Transform child in decoRoot.transform)
+            {
+                if (!child.name.StartsWith("Tree_")) continue;
+                Vector3 treePos = child.position;
+                Vector3 from = treePos + new Vector3(-1.5f, 0, 0);
+                Vector3 to = treePos + new Vector3(1.5f, 0, 0);
+                if (!UnityEngine.AI.NavMesh.SamplePosition(from, out var fh, 2f, UnityEngine.AI.NavMesh.AllAreas))
+                    continue;
+                treeTotal++;
+                // NavMesh.Raycast: 시작점에서 끝점까지 NavMesh가 끊기면 hit=true
+                if (UnityEngine.AI.NavMesh.Raycast(fh.position, to, out _, UnityEngine.AI.NavMesh.AllAreas))
+                    treeBlocked++;
+            }
+            GameDebug.Log($"[TestManager] 나무 NavMesh 차단: {treeBlocked}/{treeTotal}");
+            // 나무의 절반 이상이 NavMesh를 차단해야 carving 작동으로 판정
+            Mark(treeTotal > 0 && treeBlocked * 2 >= treeTotal,
+                $"나무 NavMesh carving ({treeBlocked}/{treeTotal} 차단, 50% 이상 기대)");
+        }
+        else
+        {
+            Mark(false, "Decorations 루트 없음");
         }
 
         GameDebug.Log($"[TestManager] TestTerrainSlope 결과: PASS {passed}, FAIL {failed}");

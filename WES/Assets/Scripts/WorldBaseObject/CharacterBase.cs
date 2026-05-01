@@ -286,7 +286,13 @@ public class CharacterBase : WorldEntityBase
             if (isMoving)
             {
                 Vector3 moveDirection = new Vector3(m_MoveDirection.x, 0f, m_MoveDirection.y).normalized;
-                m_NavAgent.Move(moveDirection * (Time.deltaTime * m_MoveSpeed));
+                Vector3 delta = moveDirection * (Time.deltaTime * m_MoveSpeed);
+                Vector3 nextPos = transform.position + delta;
+                // NavMesh 경계 차단: 다음 위치가 NavMesh 위가 아니면 이동 무시
+                if (NavMesh.SamplePosition(nextPos, out NavMeshHit nh, 0.5f, NavMesh.AllAreas))
+                {
+                    m_NavAgent.Move(delta);
+                }
             }
         }
         else

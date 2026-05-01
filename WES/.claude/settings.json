@@ -12,7 +12,8 @@
       "mcp__mcp-unity__u_set_transform",
       "Edit(/.claude/skills/ui-review/**)",
       "mcp__mcp-unity__u_editor_sceneview",
-      "mcp__mcp-unity__u_editor_tag_layer"
+      "mcp__mcp-unity__u_editor_tag_layer",
+      "mcp__mcp-unity__u_editor_menu"
     ],
     "additionalDirectories": [
       "C:\\GitFork\\WES_Project\\WES\\.claude\\skills",

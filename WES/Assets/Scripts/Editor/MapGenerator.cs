@@ -112,19 +112,22 @@ public class MapGenerator : EditorWindow
             return;
         }
 
-        // NavigationStatic 마킹 — Ground / Slopes / Hills + OuterRim의 모래
+        // NavigationStatic 마킹 전략:
+        // - Walkable: Ground/Slopes/Hills (PLAYABLE_RADIUS 안쪽 평면)
+        // - Non-Walkable (자동 carving): BoundaryWall(외곽 차단), Decorations(나무/바위 등)
+        // - 제외: OuterRim (sand가 walkable로 잡혀 NavMesh 외곽 확장 유발)
+        // 1) GeneratedMap 전체에서 기존 NavigationStatic 플래그 해제 (이전 베이크 잔재 제거)
+        ClearNavStaticRecursively(generated);
+        // 2) Walkable 영역
         MarkNavStaticRecursively(generated.transform.Find("Ground"));
         MarkNavStaticRecursively(generated.transform.Find("Slopes"));
         MarkNavStaticRecursively(generated.transform.Find("Hills"));
-        var rim = generated.transform.Find("OuterRim");
-        if (rim != null)
-        {
-            foreach (Transform child in rim)
-            {
-                if (child.name.Contains("Ground_Dirt") || child.name.Contains("Ground_Grass"))
-                    GameObjectUtility.SetStaticEditorFlags(child.gameObject, StaticEditorFlags.NavigationStatic);
-            }
-        }
+        // 3) Non-Walkable 정적 장애물 (베이크가 메시 형상으로 자동 carving)
+        // BoundaryWall은 메시 없는 BoxCollider라 NavStatic으로 carving 안 됨 → NavMeshObstacle 주입
+        EnsureBoundaryWallObstacles(generated.transform.Find("BoundaryWall"));
+        // Decorations: 큰 장애물(나무/바위/그루터기)만 carve 대상. 풀/꽃/덤불/버섯은 통과 가능
+        MarkNavStaticByPrefix(generated.transform.Find("Decorations"),
+            new[] { "Tree_", "Rock_", "Stump_" });
 
         // Max Slope / Step Height 적용
         var settings = NavMesh.GetSettingsByID(0);
@@ -145,6 +148,52 @@ public class MapGenerator : EditorWindow
         if (_root == null) return;
         foreach (Transform child in _root)
             GameObjectUtility.SetStaticEditorFlags(child.gameObject, StaticEditorFlags.NavigationStatic);
+    }
+
+    // 자식 이름이 prefix로 시작하는 것만 NavStatic 마킹 (선택적 carving)
+    private static void MarkNavStaticByPrefix(Transform _root, string[] _prefixes)
+    {
+        if (_root == null || _prefixes == null) return;
+        foreach (Transform child in _root)
+        {
+            foreach (var prefix in _prefixes)
+            {
+                if (child.name.StartsWith(prefix))
+                {
+                    GameObjectUtility.SetStaticEditorFlags(child.gameObject, StaticEditorFlags.NavigationStatic);
+                    break;
+                }
+            }
+        }
+    }
+
+    // BoundaryWall 자식 세그먼트에 NavMeshObstacle(carving=true) 보장 — 기존 베이크된 NavMesh 깎기 위함
+    private static void EnsureBoundaryWallObstacles(Transform _root)
+    {
+        if (_root == null) return;
+        foreach (Transform seg in _root)
+        {
+            var box = seg.GetComponent<BoxCollider>();
+            if (box == null) continue;
+            var obstacle = seg.GetComponent<NavMeshObstacle>();
+            if (obstacle == null) obstacle = seg.gameObject.AddComponent<NavMeshObstacle>();
+            obstacle.shape = NavMeshObstacleShape.Box;
+            obstacle.center = box.center;
+            obstacle.size = box.size;
+            obstacle.carving = true;
+            obstacle.carveOnlyStationary = true;
+        }
+    }
+
+    // 자식 트리 전체에서 NavigationStatic 플래그만 해제 (기존 정적 플래그는 보존)
+    private static void ClearNavStaticRecursively(GameObject _root)
+    {
+        if (_root == null) return;
+        var flags = GameObjectUtility.GetStaticEditorFlags(_root);
+        if ((flags & StaticEditorFlags.NavigationStatic) != 0)
+            GameObjectUtility.SetStaticEditorFlags(_root, flags & ~StaticEditorFlags.NavigationStatic);
+        foreach (Transform child in _root.transform)
+            ClearNavStaticRecursively(child.gameObject);
     }
 
     [MenuItem("Tools/Map Generator/Validate Helpers")]
@@ -562,6 +611,14 @@ public class MapGenerator : EditorWindow
             var box = seg.AddComponent<BoxCollider>();
             float segLen = 2f * Mathf.PI * wallRadius / SEGMENTS + 0.5f;
             box.size = new Vector3(segLen, WALL_HEIGHT, WALL_THICKNESS);
+
+            // NavMesh carving — 빈 GameObject라 NavStatic으론 carving 안 됨, NavMeshObstacle로 처리
+            var obstacle = seg.AddComponent<NavMeshObstacle>();
+            obstacle.shape = NavMeshObstacleShape.Box;
+            obstacle.center = box.center;
+            obstacle.size = box.size;
+            obstacle.carving = true;
+            obstacle.carveOnlyStationary = true;
         }
     }
 

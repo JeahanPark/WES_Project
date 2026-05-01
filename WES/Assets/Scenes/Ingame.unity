@@ -551,6 +551,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flower_Forest_13
       objectReference: {fileID: 0}
+    - target: {fileID: 8574806489409145097, guid: aa35f0d597b8d974ea145589b1b16031, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9057871067242173363, guid: aa35f0d597b8d974ea145589b1b16031, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.94750684
@@ -2756,6 +2760,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_25
       objectReference: {fileID: 0}
+    - target: {fileID: 4896451603243524774, guid: 256298740a6c77c4f8af89c39ad73925, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5240044161902098460, guid: 256298740a6c77c4f8af89c39ad73925, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.8103258
@@ -3108,6 +3116,7 @@ GameObject:
   m_Component:
   - component: {fileID: 82480186}
   - component: {fileID: 82480187}
+  - component: {fileID: 82480188}
   m_Layer: 0
   m_Name: WallSeg_12
   m_TagString: Untagged
@@ -3151,6 +3160,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &82480188
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 82480185}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &83091769
 GameObject:
   m_ObjectHideFlags: 0
@@ -3161,6 +3186,7 @@ GameObject:
   m_Component:
   - component: {fileID: 83091770}
   - component: {fileID: 83091771}
+  - component: {fileID: 83091772}
   m_Layer: 0
   m_Name: WallSeg_14
   m_TagString: Untagged
@@ -3204,6 +3230,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &83091772
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83091769}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &83534338
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3540,6 +3582,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flower_Forest_06
       objectReference: {fileID: 0}
+    - target: {fileID: 633974890544936375, guid: c5005a01098ba4d48be66025accd40c3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3638,7 +3684,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4466,6 +4512,7 @@ GameObject:
   m_Component:
   - component: {fileID: 114059089}
   - component: {fileID: 114059090}
+  - component: {fileID: 114059091}
   m_Layer: 0
   m_Name: WallSeg_13
   m_TagString: Untagged
@@ -4509,6 +4556,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &114059091
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 114059088}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &114505328
 GameObject:
   m_ObjectHideFlags: 0
@@ -4519,6 +4582,7 @@ GameObject:
   m_Component:
   - component: {fileID: 114505329}
   - component: {fileID: 114505330}
+  - component: {fileID: 114505331}
   m_Layer: 0
   m_Name: WallSeg_24
   m_TagString: Untagged
@@ -4562,6 +4626,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &114505331
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 114505328}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &115749250
 GameObject:
   m_ObjectHideFlags: 0
@@ -5584,6 +5664,7 @@ GameObject:
   m_Component:
   - component: {fileID: 135717661}
   - component: {fileID: 135717662}
+  - component: {fileID: 135717663}
   m_Layer: 0
   m_Name: WallSeg_23
   m_TagString: Untagged
@@ -5627,6 +5708,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &135717663
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135717660}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &139101182
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5760,6 +5857,10 @@ PrefabInstance:
     - target: {fileID: 4223259034308783785, guid: f3eb9ea900899d340a38cf8b4fc2c8de, type: 3}
       propertyPath: m_Name
       value: Bush_Forest_00
+      objectReference: {fileID: 0}
+    - target: {fileID: 4223259034308783785, guid: f3eb9ea900899d340a38cf8b4fc2c8de, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6675,6 +6776,7 @@ GameObject:
   m_Component:
   - component: {fileID: 165542253}
   - component: {fileID: 165542254}
+  - component: {fileID: 165542255}
   m_Layer: 0
   m_Name: WallSeg_10
   m_TagString: Untagged
@@ -6718,6 +6820,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &165542255
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165542252}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &166382094
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7009,6 +7127,10 @@ PrefabInstance:
     - target: {fileID: 6131553767378768855, guid: ae12f1ba847c6f74281e7a9a7b0ac7fd, type: 3}
       propertyPath: m_Name
       value: Tree_Forest_12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6131553767378768855, guid: ae12f1ba847c6f74281e7a9a7b0ac7fd, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6799440408756717933, guid: ae12f1ba847c6f74281e7a9a7b0ac7fd, type: 3}
       propertyPath: m_LocalScale.x
@@ -7626,6 +7748,7 @@ GameObject:
   m_Component:
   - component: {fileID: 195279980}
   - component: {fileID: 195279981}
+  - component: {fileID: 195279982}
   m_Layer: 0
   m_Name: WallSeg_15
   m_TagString: Untagged
@@ -7669,6 +7792,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &195279982
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195279979}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &195323782
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8239,6 +8378,7 @@ GameObject:
   m_Component:
   - component: {fileID: 210893771}
   - component: {fileID: 210893772}
+  - component: {fileID: 210893773}
   m_Layer: 0
   m_Name: WallSeg_33
   m_TagString: Untagged
@@ -8282,6 +8422,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &210893773
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 210893770}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &211839522
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8444,7 +8600,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7108630899420453476, guid: 1e0c08bf09b1111458c92d464f747140, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7632825728804978910, guid: 1e0c08bf09b1111458c92d464f747140, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8708,6 +8864,7 @@ GameObject:
   m_Component:
   - component: {fileID: 218924372}
   - component: {fileID: 218924373}
+  - component: {fileID: 218924374}
   m_Layer: 0
   m_Name: WallSeg_31
   m_TagString: Untagged
@@ -8751,6 +8908,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &218924374
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 218924371}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &222563349
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9038,6 +9211,10 @@ PrefabInstance:
     - target: {fileID: 472023531885247532, guid: 23d1a7dd3d1c2dd4888ad8183a624ebb, type: 3}
       propertyPath: m_Name
       value: Tree_Forest_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 472023531885247532, guid: 23d1a7dd3d1c2dd4888ad8183a624ebb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 992804342750078614, guid: 23d1a7dd3d1c2dd4888ad8183a624ebb, type: 3}
       propertyPath: m_LocalScale.x
@@ -9511,6 +9688,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_01
       objectReference: {fileID: 0}
+    - target: {fileID: 2137760205200772258, guid: 49091280d622b904f96e72e71fe4e877, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9925,7 +10106,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 859769695833280911, guid: 211a6b107915d714ba6ae6805e025710, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10837,6 +11018,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_00
       objectReference: {fileID: 0}
+    - target: {fileID: 8674194441469524833, guid: 446d4b0c8ec16d14ba36df018594296c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11139,6 +11324,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bush_Forest_05
       objectReference: {fileID: 0}
+    - target: {fileID: 1619753892308080442, guid: d3b2ebfd4513b154daf464919b8c497e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2103556207819361664, guid: d3b2ebfd4513b154daf464919b8c497e, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9347011
@@ -11281,6 +11470,7 @@ GameObject:
   m_Component:
   - component: {fileID: 283556148}
   - component: {fileID: 283556149}
+  - component: {fileID: 283556150}
   m_Layer: 0
   m_Name: WallSeg_32
   m_TagString: Untagged
@@ -11324,6 +11514,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &283556150
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283556147}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &284466553
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11593,6 +11799,10 @@ PrefabInstance:
     - target: {fileID: 2137760205200772258, guid: 49091280d622b904f96e72e71fe4e877, type: 3}
       propertyPath: m_Name
       value: Tree_Beach_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 2137760205200772258, guid: 49091280d622b904f96e72e71fe4e877, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12168,6 +12378,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rock_Beach_07
       objectReference: {fileID: 0}
+    - target: {fileID: 315675889818940899, guid: 256212dab9cb9d040bdae30d4f256a44, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 1092775057578553177, guid: 256212dab9cb9d040bdae30d4f256a44, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.8150449
@@ -12241,6 +12455,10 @@ PrefabInstance:
     - target: {fileID: 8202731649550764293, guid: d67c6edfceeb6fc468ead41526729645, type: 3}
       propertyPath: m_Name
       value: Rock_Mountain_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 8202731649550764293, guid: d67c6edfceeb6fc468ead41526729645, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8835539467342418879, guid: d67c6edfceeb6fc468ead41526729645, type: 3}
       propertyPath: m_LocalScale.x
@@ -12590,6 +12808,7 @@ GameObject:
   m_Component:
   - component: {fileID: 314325036}
   - component: {fileID: 314325037}
+  - component: {fileID: 314325038}
   m_Layer: 0
   m_Name: WallSeg_11
   m_TagString: Untagged
@@ -12633,6 +12852,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &314325038
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 314325035}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &315589552
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12905,7 +13140,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 859769695833280911, guid: 211a6b107915d714ba6ae6805e025710, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -13138,6 +13373,10 @@ PrefabInstance:
     - target: {fileID: 2308869840000360606, guid: 37c84c10bc09ad14eb8854f863ea5b82, type: 3}
       propertyPath: m_Name
       value: Bush_Forest_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 2308869840000360606, guid: 37c84c10bc09ad14eb8854f863ea5b82, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3116790346179541540, guid: 37c84c10bc09ad14eb8854f863ea5b82, type: 3}
       propertyPath: m_LocalScale.x
@@ -13471,6 +13710,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Beach_03
       objectReference: {fileID: 0}
+    - target: {fileID: 1880130991530675682, guid: 6b5cd3b0c50436a4db8637775a75d6ad, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13628,6 +13871,10 @@ PrefabInstance:
     - target: {fileID: 1168210563750090145, guid: daad3195a405192409324b56eec44e2b, type: 3}
       propertyPath: m_Name
       value: Rock_Mountain_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 1168210563750090145, guid: daad3195a405192409324b56eec44e2b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1980882338524860187, guid: daad3195a405192409324b56eec44e2b, type: 3}
       propertyPath: m_LocalScale.x
@@ -13824,6 +14071,10 @@ PrefabInstance:
     - target: {fileID: 2166530208138196212, guid: 37c2994d3a827184593e4bf8f8e836b5, type: 3}
       propertyPath: m_Name
       value: Grass_All_31
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166530208138196212, guid: 37c2994d3a827184593e4bf8f8e836b5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -14747,6 +14998,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Beach_00
       objectReference: {fileID: 0}
+    - target: {fileID: 1880130991530675682, guid: 6b5cd3b0c50436a4db8637775a75d6ad, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14919,7 +15174,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7108630899420453476, guid: 1e0c08bf09b1111458c92d464f747140, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7632825728804978910, guid: 1e0c08bf09b1111458c92d464f747140, type: 3}
       propertyPath: m_LocalPosition.x
@@ -15121,6 +15376,7 @@ GameObject:
   m_Component:
   - component: {fileID: 357053596}
   - component: {fileID: 357053597}
+  - component: {fileID: 357053598}
   m_Layer: 0
   m_Name: WallSeg_19
   m_TagString: Untagged
@@ -15164,6 +15420,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &357053598
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357053595}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &359490370
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15244,6 +15516,7 @@ GameObject:
   m_Component:
   - component: {fileID: 359757641}
   - component: {fileID: 359757642}
+  - component: {fileID: 359757643}
   m_Layer: 0
   m_Name: WallSeg_28
   m_TagString: Untagged
@@ -15287,6 +15560,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &359757643
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 359757640}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &360339919
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15647,6 +15936,7 @@ GameObject:
   m_Component:
   - component: {fileID: 369524693}
   - component: {fileID: 369524694}
+  - component: {fileID: 369524695}
   m_Layer: 0
   m_Name: WallSeg_00
   m_TagString: Untagged
@@ -15690,6 +15980,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &369524695
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 369524692}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &371285695
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15889,6 +16195,10 @@ PrefabInstance:
     - target: {fileID: 4492788140253398761, guid: 814fca2ada463e34d8f0430280c2f116, type: 3}
       propertyPath: m_Name
       value: Tree_Forest_15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492788140253398761, guid: 814fca2ada463e34d8f0430280c2f116, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -16184,6 +16494,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mush_Forest_04
       objectReference: {fileID: 0}
+    - target: {fileID: 7443722364286002489, guid: 3c6bb21a626820d41b35588998620340, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7784114210288811907, guid: 3c6bb21a626820d41b35588998620340, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.1620121
@@ -16257,6 +16571,10 @@ PrefabInstance:
     - target: {fileID: 7001493443700725908, guid: dba3a83229940fb4aa5dc5b215b125bd, type: 3}
       propertyPath: m_Name
       value: Rock_Mountain_07
+      objectReference: {fileID: 0}
+    - target: {fileID: 7001493443700725908, guid: dba3a83229940fb4aa5dc5b215b125bd, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7665581340874654254, guid: dba3a83229940fb4aa5dc5b215b125bd, type: 3}
       propertyPath: m_LocalScale.x
@@ -16594,6 +16912,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flower_Forest_12
       objectReference: {fileID: 0}
+    - target: {fileID: 633974890544936375, guid: c5005a01098ba4d48be66025accd40c3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16821,6 +17143,10 @@ PrefabInstance:
     - target: {fileID: 1487672732027152291, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
       propertyPath: m_Name
       value: Tree_Forest_21
+      objectReference: {fileID: 0}
+    - target: {fileID: 1487672732027152291, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2300942327582244121, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
       propertyPath: m_LocalScale.x
@@ -17112,6 +17438,7 @@ GameObject:
   m_Component:
   - component: {fileID: 403097872}
   - component: {fileID: 403097873}
+  - component: {fileID: 403097874}
   m_Layer: 0
   m_Name: WallSeg_25
   m_TagString: Untagged
@@ -17155,6 +17482,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &403097874
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403097871}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &404104533
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17497,7 +17840,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5388214276094364910, guid: 41a52686721349748946e63dfcf775e0, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -17519,6 +17862,7 @@ GameObject:
   m_Component:
   - component: {fileID: 409018555}
   - component: {fileID: 409018556}
+  - component: {fileID: 409018557}
   m_Layer: 0
   m_Name: WallSeg_37
   m_TagString: Untagged
@@ -17562,6 +17906,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &409018557
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409018554}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &409790128
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18274,6 +18634,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_33
       objectReference: {fileID: 0}
+    - target: {fileID: 4896451603243524774, guid: 256298740a6c77c4f8af89c39ad73925, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5240044161902098460, guid: 256298740a6c77c4f8af89c39ad73925, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.1589124
@@ -18358,7 +18722,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7108630899420453476, guid: 1e0c08bf09b1111458c92d464f747140, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7632825728804978910, guid: 1e0c08bf09b1111458c92d464f747140, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18473,6 +18837,10 @@ PrefabInstance:
     - target: {fileID: 4492788140253398761, guid: 814fca2ada463e34d8f0430280c2f116, type: 3}
       propertyPath: m_Name
       value: Tree_Beach_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492788140253398761, guid: 814fca2ada463e34d8f0430280c2f116, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -18618,6 +18986,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_27
       objectReference: {fileID: 0}
+    - target: {fileID: 2137760205200772258, guid: 49091280d622b904f96e72e71fe4e877, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18710,6 +19082,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flower_Forest_03
       objectReference: {fileID: 0}
+    - target: {fileID: 192261410605543902, guid: c0ed83dfc21045745a1961016df3cb8a, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 711810734104308580, guid: c0ed83dfc21045745a1961016df3cb8a, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9769325
@@ -18794,7 +19170,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4746882214181053407, guid: 79294eae57510404bb94695b64127bf6, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5380535560959031653, guid: 79294eae57510404bb94695b64127bf6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -19318,6 +19694,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flower_Forest_01
       objectReference: {fileID: 0}
+    - target: {fileID: 633974890544936375, guid: c5005a01098ba4d48be66025accd40c3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -19470,6 +19850,7 @@ GameObject:
   m_Component:
   - component: {fileID: 459669616}
   - component: {fileID: 459669617}
+  - component: {fileID: 459669618}
   m_Layer: 0
   m_Name: WallSeg_22
   m_TagString: Untagged
@@ -19513,6 +19894,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &459669618
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 459669615}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &461448899
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20361,6 +20758,7 @@ GameObject:
   m_Component:
   - component: {fileID: 488572401}
   - component: {fileID: 488572402}
+  - component: {fileID: 488572403}
   m_Layer: 0
   m_Name: WallSeg_42
   m_TagString: Untagged
@@ -20404,6 +20802,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &488572403
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 488572400}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &489808666
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20467,6 +20881,10 @@ PrefabInstance:
     - target: {fileID: 2137760205200772258, guid: 49091280d622b904f96e72e71fe4e877, type: 3}
       propertyPath: m_Name
       value: Tree_Forest_07
+      objectReference: {fileID: 0}
+    - target: {fileID: 2137760205200772258, guid: 49091280d622b904f96e72e71fe4e877, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -20681,6 +21099,10 @@ PrefabInstance:
     - target: {fileID: 633974890544936375, guid: c5005a01098ba4d48be66025accd40c3, type: 3}
       propertyPath: m_Name
       value: Flower_Forest_14
+      objectReference: {fileID: 0}
+    - target: {fileID: 633974890544936375, guid: c5005a01098ba4d48be66025accd40c3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -20990,6 +21412,7 @@ GameObject:
   m_Component:
   - component: {fileID: 501509181}
   - component: {fileID: 501509182}
+  - component: {fileID: 501509183}
   m_Layer: 0
   m_Name: WallSeg_34
   m_TagString: Untagged
@@ -21033,6 +21456,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &501509183
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 501509180}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &501763432
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21458,6 +21897,10 @@ PrefabInstance:
     - target: {fileID: 5965284952787518018, guid: 57568ffb4135a5d4bbe66802d0c9519b, type: 3}
       propertyPath: m_Name
       value: Tree_Mountain_00
+      objectReference: {fileID: 0}
+    - target: {fileID: 5965284952787518018, guid: 57568ffb4135a5d4bbe66802d0c9519b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6450038277403728120, guid: 57568ffb4135a5d4bbe66802d0c9519b, type: 3}
       propertyPath: m_LocalScale.x
@@ -22151,6 +22594,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_03
       objectReference: {fileID: 0}
+    - target: {fileID: 472023531885247532, guid: 23d1a7dd3d1c2dd4888ad8183a624ebb, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 992804342750078614, guid: 23d1a7dd3d1c2dd4888ad8183a624ebb, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.3549402
@@ -22575,6 +23022,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_08
       objectReference: {fileID: 0}
+    - target: {fileID: 4868929504715483026, guid: 661772e08dd28f04098b3402501a8901, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5249571240788393256, guid: 661772e08dd28f04098b3402501a8901, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.1236558
@@ -22789,6 +23240,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flower_Forest_09
       objectReference: {fileID: 0}
+    - target: {fileID: 4924576800014285052, guid: 880d11450f7f8be4e84a47d9b20805aa, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5700514991133385286, guid: 880d11450f7f8be4e84a47d9b20805aa, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0004299
@@ -22914,6 +23369,10 @@ PrefabInstance:
     - target: {fileID: 6791717390955216362, guid: c04794bce9d79814b98d598aa5269b64, type: 3}
       propertyPath: m_Name
       value: Grass_All_43
+      objectReference: {fileID: 0}
+    - target: {fileID: 6791717390955216362, guid: c04794bce9d79814b98d598aa5269b64, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -23765,7 +24224,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 859769695833280911, guid: 211a6b107915d714ba6ae6805e025710, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -24113,6 +24572,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_21
       objectReference: {fileID: 0}
+    - target: {fileID: 5684114389060801868, guid: 4f3460e4939cc0544abce02e9458020c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -24270,6 +24733,10 @@ PrefabInstance:
     - target: {fileID: 1619753892308080442, guid: d3b2ebfd4513b154daf464919b8c497e, type: 3}
       propertyPath: m_Name
       value: Bush_Forest_12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1619753892308080442, guid: d3b2ebfd4513b154daf464919b8c497e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2103556207819361664, guid: d3b2ebfd4513b154daf464919b8c497e, type: 3}
       propertyPath: m_LocalScale.x
@@ -24577,7 +25044,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 52144190322191893, guid: c7291645b957c444b8e4bfc1d41aaf80, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 860909298080904367, guid: c7291645b957c444b8e4bfc1d41aaf80, type: 3}
       propertyPath: m_LocalPosition.x
@@ -24919,6 +25386,7 @@ GameObject:
   m_Component:
   - component: {fileID: 577325826}
   - component: {fileID: 577325827}
+  - component: {fileID: 577325828}
   m_Layer: 0
   m_Name: WallSeg_45
   m_TagString: Untagged
@@ -24962,6 +25430,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &577325828
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577325825}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &577848109
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25606,6 +26090,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_08
       objectReference: {fileID: 0}
+    - target: {fileID: 4492788140253398761, guid: 814fca2ada463e34d8f0430280c2f116, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -25838,6 +26326,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_05
       objectReference: {fileID: 0}
+    - target: {fileID: 6131553767378768855, guid: ae12f1ba847c6f74281e7a9a7b0ac7fd, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6799440408756717933, guid: ae12f1ba847c6f74281e7a9a7b0ac7fd, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9539391
@@ -25963,6 +26455,10 @@ PrefabInstance:
     - target: {fileID: 2137760205200772258, guid: 49091280d622b904f96e72e71fe4e877, type: 3}
       propertyPath: m_Name
       value: Tree_Forest_20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2137760205200772258, guid: 49091280d622b904f96e72e71fe4e877, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -26195,6 +26691,10 @@ PrefabInstance:
     - target: {fileID: 5902764790594275027, guid: 2f00aca702acedc49b75c613a9691051, type: 3}
       propertyPath: m_Name
       value: Flower_Forest_07
+      objectReference: {fileID: 0}
+    - target: {fileID: 5902764790594275027, guid: 2f00aca702acedc49b75c613a9691051, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6530507398904175721, guid: 2f00aca702acedc49b75c613a9691051, type: 3}
       propertyPath: m_LocalScale.x
@@ -26701,6 +27201,10 @@ PrefabInstance:
     - target: {fileID: 8294394904559025366, guid: 259516b1bf743f84aba64a77847b9d06, type: 3}
       propertyPath: m_Name
       value: Rock_Beach_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 8294394904559025366, guid: 259516b1bf743f84aba64a77847b9d06, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8669513484510996076, guid: 259516b1bf743f84aba64a77847b9d06, type: 3}
       propertyPath: m_LocalScale.x
@@ -27314,6 +27818,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rock_Mountain_10
       objectReference: {fileID: 0}
+    - target: {fileID: 934139093418113451, guid: 084badf5d29d3dc49961929d9db7f722, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -27877,6 +28385,10 @@ PrefabInstance:
     - target: {fileID: 6551663106355943591, guid: 4938a8fb6b665c24d8d6f44a454494b1, type: 3}
       propertyPath: m_Name
       value: Rock_Mountain_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 6551663106355943591, guid: 4938a8fb6b665c24d8d6f44a454494b1, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -29094,6 +29606,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Mountain_04
       objectReference: {fileID: 0}
+    - target: {fileID: 5965284952787518018, guid: 57568ffb4135a5d4bbe66802d0c9519b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6450038277403728120, guid: 57568ffb4135a5d4bbe66802d0c9519b, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0191139
@@ -29376,6 +29892,7 @@ GameObject:
   m_Component:
   - component: {fileID: 665426495}
   - component: {fileID: 665426496}
+  - component: {fileID: 665426497}
   m_Layer: 0
   m_Name: WallSeg_04
   m_TagString: Untagged
@@ -29419,6 +29936,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &665426497
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 665426494}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &666022650
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30131,6 +30664,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_44
       objectReference: {fileID: 0}
+    - target: {fileID: 6791717390955216362, guid: c04794bce9d79814b98d598aa5269b64, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -30410,6 +30947,10 @@ PrefabInstance:
     - target: {fileID: 5220026605064631487, guid: 4bb24cb54403d5f4ba033d88ded5aea3, type: 3}
       propertyPath: m_Name
       value: Grass_All_09
+      objectReference: {fileID: 0}
+    - target: {fileID: 5220026605064631487, guid: 4bb24cb54403d5f4ba033d88ded5aea3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -30792,6 +31333,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bush_Forest_04
       objectReference: {fileID: 0}
+    - target: {fileID: 604268759970066691, guid: 054af16520a205046909a44096cd96a5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -30812,6 +31357,7 @@ GameObject:
   m_Component:
   - component: {fileID: 703313868}
   - component: {fileID: 703313869}
+  - component: {fileID: 703313870}
   m_Layer: 0
   m_Name: WallSeg_06
   m_TagString: Untagged
@@ -30855,6 +31401,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &703313870
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703313867}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &704424696
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31340,6 +31902,10 @@ PrefabInstance:
     - target: {fileID: 5162523033389567373, guid: f7efb658b10cbe14c9fbd0e5ae4b8a1a, type: 3}
       propertyPath: m_Name
       value: Tree_Mountain_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 5162523033389567373, guid: f7efb658b10cbe14c9fbd0e5ae4b8a1a, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5543693595900729143, guid: f7efb658b10cbe14c9fbd0e5ae4b8a1a, type: 3}
       propertyPath: m_LocalScale.x
@@ -31899,6 +32465,7 @@ GameObject:
   m_Component:
   - component: {fileID: 720973020}
   - component: {fileID: 720973021}
+  - component: {fileID: 720973022}
   m_Layer: 0
   m_Name: WallSeg_20
   m_TagString: Untagged
@@ -31942,6 +32509,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &720973022
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 720973019}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &723266929
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32440,6 +33023,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Beach_02
       objectReference: {fileID: 0}
+    - target: {fileID: 1487672732027152291, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2300942327582244121, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0630722
@@ -32653,6 +33240,10 @@ PrefabInstance:
     - target: {fileID: 1487672732027152291, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
       propertyPath: m_Name
       value: Tree_Beach_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 1487672732027152291, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2300942327582244121, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
       propertyPath: m_LocalScale.x
@@ -33054,7 +33645,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8890560095366816334, guid: b29f790137fbc384492d6fa83ec92f54, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -33659,6 +34250,10 @@ PrefabInstance:
     - target: {fileID: 6509933743064751742, guid: 46e026a974292cb479015cc7012d91ab, type: 3}
       propertyPath: m_Name
       value: Rock_Beach_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 6509933743064751742, guid: 46e026a974292cb479015cc7012d91ab, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -34566,7 +35161,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 52144190322191893, guid: c7291645b957c444b8e4bfc1d41aaf80, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 860909298080904367, guid: c7291645b957c444b8e4bfc1d41aaf80, type: 3}
       propertyPath: m_LocalPosition.x
@@ -34699,6 +35294,10 @@ PrefabInstance:
     - target: {fileID: 6023436046305576043, guid: 04cbf97186e53974080d2abf877ed606, type: 3}
       propertyPath: m_Name
       value: Rock_Mountain_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023436046305576043, guid: 04cbf97186e53974080d2abf877ed606, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6403093406429716177, guid: 04cbf97186e53974080d2abf877ed606, type: 3}
       propertyPath: m_LocalScale.x
@@ -34933,7 +35532,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 52144190322191893, guid: c7291645b957c444b8e4bfc1d41aaf80, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 860909298080904367, guid: c7291645b957c444b8e4bfc1d41aaf80, type: 3}
       propertyPath: m_LocalPosition.x
@@ -35391,6 +35990,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_24
       objectReference: {fileID: 0}
+    - target: {fileID: 2166530208138196212, guid: 37c2994d3a827184593e4bf8f8e836b5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -35815,6 +36418,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rock_Mountain_09
       objectReference: {fileID: 0}
+    - target: {fileID: 6873938577213127126, guid: a9a82dc7a09f37741916c33cc3483e7c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -35971,6 +36578,7 @@ GameObject:
   m_Component:
   - component: {fileID: 813395798}
   - component: {fileID: 813395799}
+  - component: {fileID: 813395800}
   m_Layer: 0
   m_Name: WallSeg_29
   m_TagString: Untagged
@@ -36014,6 +36622,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &813395800
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 813395797}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &813737373
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36490,6 +37114,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_13
       objectReference: {fileID: 0}
+    - target: {fileID: 2137760205200772258, guid: 49091280d622b904f96e72e71fe4e877, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -36646,6 +37274,7 @@ GameObject:
   m_Component:
   - component: {fileID: 833241824}
   - component: {fileID: 833241825}
+  - component: {fileID: 833241826}
   m_Layer: 0
   m_Name: WallSeg_03
   m_TagString: Untagged
@@ -36689,6 +37318,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &833241826
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 833241823}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &834227707
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37102,7 +37747,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5388214276094364910, guid: 41a52686721349748946e63dfcf775e0, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -37610,6 +38255,7 @@ GameObject:
   m_Component:
   - component: {fileID: 854678272}
   - component: {fileID: 854678273}
+  - component: {fileID: 854678274}
   m_Layer: 0
   m_Name: WallSeg_05
   m_TagString: Untagged
@@ -37653,6 +38299,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &854678274
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854678271}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &857915101
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37857,6 +38519,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_10
       objectReference: {fileID: 0}
+    - target: {fileID: 4492788140253398761, guid: 814fca2ada463e34d8f0430280c2f116, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -37930,6 +38596,10 @@ PrefabInstance:
     - target: {fileID: 1060840157749525307, guid: 443b419ea1ffdb042be6ed8eac6f153c, type: 3}
       propertyPath: m_Name
       value: Mush_Forest_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1060840157749525307, guid: 443b419ea1ffdb042be6ed8eac6f153c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -38231,6 +38901,7 @@ GameObject:
   m_Component:
   - component: {fileID: 867667267}
   - component: {fileID: 867667268}
+  - component: {fileID: 867667269}
   m_Layer: 0
   m_Name: WallSeg_30
   m_TagString: Untagged
@@ -38274,6 +38945,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &867667269
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867667266}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &868332789
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39116,6 +39803,7 @@ GameObject:
   m_Component:
   - component: {fileID: 889650366}
   - component: {fileID: 889650367}
+  - component: {fileID: 889650368}
   m_Layer: 0
   m_Name: WallSeg_21
   m_TagString: Untagged
@@ -39159,6 +39847,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &889650368
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 889650365}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &891533212
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39447,6 +40151,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bush_Forest_16
       objectReference: {fileID: 0}
+    - target: {fileID: 1619753892308080442, guid: d3b2ebfd4513b154daf464919b8c497e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2103556207819361664, guid: d3b2ebfd4513b154daf464919b8c497e, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0515221
@@ -39642,6 +40350,10 @@ PrefabInstance:
     - target: {fileID: 7803592360295843284, guid: b7c758d6e67b0c047a67ddd2f5ef0022, type: 3}
       propertyPath: m_Name
       value: Bush_Forest_17
+      objectReference: {fileID: 0}
+    - target: {fileID: 7803592360295843284, guid: b7c758d6e67b0c047a67ddd2f5ef0022, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -39926,6 +40638,10 @@ PrefabInstance:
     - target: {fileID: 633974890544936375, guid: c5005a01098ba4d48be66025accd40c3, type: 3}
       propertyPath: m_Name
       value: Flower_Forest_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 633974890544936375, guid: c5005a01098ba4d48be66025accd40c3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -40281,6 +40997,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_40
       objectReference: {fileID: 0}
+    - target: {fileID: 984033382794011341, guid: 6be8e9010233523468254ec42d49af70, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -40372,6 +41092,10 @@ PrefabInstance:
     - target: {fileID: 4896451603243524774, guid: 256298740a6c77c4f8af89c39ad73925, type: 3}
       propertyPath: m_Name
       value: Grass_All_17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4896451603243524774, guid: 256298740a6c77c4f8af89c39ad73925, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5240044161902098460, guid: 256298740a6c77c4f8af89c39ad73925, type: 3}
       propertyPath: m_LocalScale.x
@@ -40639,6 +41363,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_05
       objectReference: {fileID: 0}
+    - target: {fileID: 6791717390955216362, guid: c04794bce9d79814b98d598aa5269b64, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -40811,7 +41539,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 52144190322191893, guid: c7291645b957c444b8e4bfc1d41aaf80, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 860909298080904367, guid: c7291645b957c444b8e4bfc1d41aaf80, type: 3}
       propertyPath: m_LocalPosition.x
@@ -41615,6 +42343,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rock_Beach_06
       objectReference: {fileID: 0}
+    - target: {fileID: 6509933743064751742, guid: 46e026a974292cb479015cc7012d91ab, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -41994,6 +42726,10 @@ PrefabInstance:
     - target: {fileID: 7196810933511123041, guid: 29cecbe5f22b8f248abca9b49e8fe3ef, type: 3}
       propertyPath: m_Name
       value: Stump_Forest_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 7196810933511123041, guid: 29cecbe5f22b8f248abca9b49e8fe3ef, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7542374637332835035, guid: 29cecbe5f22b8f248abca9b49e8fe3ef, type: 3}
       propertyPath: m_LocalScale.x
@@ -42829,6 +43565,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mush_Forest_03
       objectReference: {fileID: 0}
+    - target: {fileID: 7443722364286002489, guid: 3c6bb21a626820d41b35588998620340, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7784114210288811907, guid: 3c6bb21a626820d41b35588998620340, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0620496
@@ -43523,7 +44263,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7108630899420453476, guid: 1e0c08bf09b1111458c92d464f747140, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7632825728804978910, guid: 1e0c08bf09b1111458c92d464f747140, type: 3}
       propertyPath: m_LocalPosition.x
@@ -44346,6 +45086,7 @@ GameObject:
   m_Component:
   - component: {fileID: 991171481}
   - component: {fileID: 991171482}
+  - component: {fileID: 991171483}
   m_Layer: 0
   m_Name: WallSeg_39
   m_TagString: Untagged
@@ -44389,6 +45130,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &991171483
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991171480}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &998142901
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44411,7 +45168,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4746882214181053407, guid: 79294eae57510404bb94695b64127bf6, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5380535560959031653, guid: 79294eae57510404bb94695b64127bf6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -44819,6 +45576,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1008020245}
   - component: {fileID: 1008020246}
+  - component: {fileID: 1008020247}
   m_Layer: 0
   m_Name: WallSeg_08
   m_TagString: Untagged
@@ -44862,6 +45620,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1008020247
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1008020244}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1011362810
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45548,6 +46322,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_38
       objectReference: {fileID: 0}
+    - target: {fileID: 2166530208138196212, guid: 37c2994d3a827184593e4bf8f8e836b5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -45568,6 +46346,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1021827917}
   - component: {fileID: 1021827918}
+  - component: {fileID: 1021827919}
   m_Layer: 0
   m_Name: WallSeg_17
   m_TagString: Untagged
@@ -45611,6 +46390,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1021827919
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1021827916}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1022412785
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45673,7 +46468,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8890560095366816334, guid: b29f790137fbc384492d6fa83ec92f54, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -45766,6 +46561,10 @@ PrefabInstance:
     - target: {fileID: 274166536403621637, guid: a2e8aab815313704cb0cc67a12f9bd9c, type: 3}
       propertyPath: m_Name
       value: Rock_Beach_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 274166536403621637, guid: a2e8aab815313704cb0cc67a12f9bd9c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 614136272953494975, guid: a2e8aab815313704cb0cc67a12f9bd9c, type: 3}
       propertyPath: m_LocalScale.x
@@ -46213,6 +47012,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Mountain_01
       objectReference: {fileID: 0}
+    - target: {fileID: 6443395740361465152, guid: 7b82e04a27c74dc41b25b85279da1a13, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -46651,6 +47454,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_04
       objectReference: {fileID: 0}
+    - target: {fileID: 4793119948349038809, guid: f23eb5d5e8ed26040af442ae0970e8b6, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5318546230754589283, guid: f23eb5d5e8ed26040af442ae0970e8b6, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.123847
@@ -46776,6 +47583,10 @@ PrefabInstance:
     - target: {fileID: 5684114389060801868, guid: 4f3460e4939cc0544abce02e9458020c, type: 3}
       propertyPath: m_Name
       value: Grass_All_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 5684114389060801868, guid: 4f3460e4939cc0544abce02e9458020c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -47007,6 +47818,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1040591654}
   - component: {fileID: 1040591655}
+  - component: {fileID: 1040591656}
   m_Layer: 0
   m_Name: WallSeg_18
   m_TagString: Untagged
@@ -47050,6 +47862,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1040591656
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040591653}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1041821334
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -47249,6 +48077,10 @@ PrefabInstance:
     - target: {fileID: 8674194441469524833, guid: 446d4b0c8ec16d14ba36df018594296c, type: 3}
       propertyPath: m_Name
       value: Grass_All_48
+      objectReference: {fileID: 0}
+    - target: {fileID: 8674194441469524833, guid: 446d4b0c8ec16d14ba36df018594296c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -47600,6 +48432,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rock_Beach_00
       objectReference: {fileID: 0}
+    - target: {fileID: 934139093418113451, guid: 084badf5d29d3dc49961929d9db7f722, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -47691,6 +48527,10 @@ PrefabInstance:
     - target: {fileID: 7443722364286002489, guid: 3c6bb21a626820d41b35588998620340, type: 3}
       propertyPath: m_Name
       value: Mush_Forest_00
+      objectReference: {fileID: 0}
+    - target: {fileID: 7443722364286002489, guid: 3c6bb21a626820d41b35588998620340, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7784114210288811907, guid: 3c6bb21a626820d41b35588998620340, type: 3}
       propertyPath: m_LocalScale.x
@@ -47817,6 +48657,10 @@ PrefabInstance:
     - target: {fileID: 6791717390955216362, guid: c04794bce9d79814b98d598aa5269b64, type: 3}
       propertyPath: m_Name
       value: Grass_All_18
+      objectReference: {fileID: 0}
+    - target: {fileID: 6791717390955216362, guid: c04794bce9d79814b98d598aa5269b64, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -48584,6 +49428,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_41
       objectReference: {fileID: 0}
+    - target: {fileID: 6791717390955216362, guid: c04794bce9d79814b98d598aa5269b64, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -48726,7 +49574,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8890560095366816334, guid: b29f790137fbc384492d6fa83ec92f54, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -49769,7 +50617,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7108630899420453476, guid: 1e0c08bf09b1111458c92d464f747140, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7632825728804978910, guid: 1e0c08bf09b1111458c92d464f747140, type: 3}
       propertyPath: m_LocalPosition.x
@@ -49950,6 +50798,10 @@ PrefabInstance:
     - target: {fileID: 6873938577213127126, guid: a9a82dc7a09f37741916c33cc3483e7c, type: 3}
       propertyPath: m_Name
       value: Rock_Mountain_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 6873938577213127126, guid: a9a82dc7a09f37741916c33cc3483e7c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -50156,6 +51008,10 @@ PrefabInstance:
     - target: {fileID: 8674194441469524833, guid: 446d4b0c8ec16d14ba36df018594296c, type: 3}
       propertyPath: m_Name
       value: Grass_All_34
+      objectReference: {fileID: 0}
+    - target: {fileID: 8674194441469524833, guid: 446d4b0c8ec16d14ba36df018594296c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -50370,6 +51226,10 @@ PrefabInstance:
     - target: {fileID: 984033382794011341, guid: 6be8e9010233523468254ec42d49af70, type: 3}
       propertyPath: m_Name
       value: Grass_All_27
+      objectReference: {fileID: 0}
+    - target: {fileID: 984033382794011341, guid: 6be8e9010233523468254ec42d49af70, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -51051,6 +51911,10 @@ PrefabInstance:
     - target: {fileID: 5220026605064631487, guid: 4bb24cb54403d5f4ba033d88ded5aea3, type: 3}
       propertyPath: m_Name
       value: Grass_All_16
+      objectReference: {fileID: 0}
+    - target: {fileID: 5220026605064631487, guid: 4bb24cb54403d5f4ba033d88ded5aea3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -52374,6 +53238,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_19
       objectReference: {fileID: 0}
+    - target: {fileID: 1880130991530675682, guid: 6b5cd3b0c50436a4db8637775a75d6ad, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -52535,6 +53403,10 @@ PrefabInstance:
     - target: {fileID: 1487672732027152291, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
       propertyPath: m_Name
       value: Tree_Beach_08
+      objectReference: {fileID: 0}
+    - target: {fileID: 1487672732027152291, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2300942327582244121, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
       propertyPath: m_LocalScale.x
@@ -52820,6 +53692,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flower_Forest_16
       objectReference: {fileID: 0}
+    - target: {fileID: 8219387034375519183, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8744565892573503861, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9108444
@@ -52893,6 +53769,10 @@ PrefabInstance:
     - target: {fileID: 6131553767378768855, guid: ae12f1ba847c6f74281e7a9a7b0ac7fd, type: 3}
       propertyPath: m_Name
       value: Tree_Beach_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 6131553767378768855, guid: ae12f1ba847c6f74281e7a9a7b0ac7fd, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6799440408756717933, guid: ae12f1ba847c6f74281e7a9a7b0ac7fd, type: 3}
       propertyPath: m_LocalScale.x
@@ -53444,6 +54324,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1166802639}
   - component: {fileID: 1166802640}
+  - component: {fileID: 1166802641}
   m_Layer: 0
   m_Name: WallSeg_02
   m_TagString: Untagged
@@ -53487,6 +54368,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1166802641
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166802638}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1170433469
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53760,6 +54657,10 @@ PrefabInstance:
     - target: {fileID: 2166530208138196212, guid: 37c2994d3a827184593e4bf8f8e836b5, type: 3}
       propertyPath: m_Name
       value: Grass_All_42
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166530208138196212, guid: 37c2994d3a827184593e4bf8f8e836b5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -54305,6 +55206,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rock_Mountain_00
       objectReference: {fileID: 0}
+    - target: {fileID: 6509933743064751742, guid: 46e026a974292cb479015cc7012d91ab, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -54378,6 +55283,10 @@ PrefabInstance:
     - target: {fileID: 6791717390955216362, guid: c04794bce9d79814b98d598aa5269b64, type: 3}
       propertyPath: m_Name
       value: Grass_All_47
+      objectReference: {fileID: 0}
+    - target: {fileID: 6791717390955216362, guid: c04794bce9d79814b98d598aa5269b64, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -55058,6 +55967,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_28
       objectReference: {fileID: 0}
+    - target: {fileID: 7424801524984937579, guid: a25dfe0a7afa444499605d59689b3287, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7800763464966809297, guid: a25dfe0a7afa444499605d59689b3287, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.1692679
@@ -55272,6 +56185,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_35
       objectReference: {fileID: 0}
+    - target: {fileID: 1471158863065593529, guid: 7628db9a16bdf3b4d8aedab590c9f226, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2243157229698116611, guid: 7628db9a16bdf3b4d8aedab590c9f226, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0322211
@@ -55345,6 +56262,10 @@ PrefabInstance:
     - target: {fileID: 4898165125848569875, guid: 5a02f7b4c6953fc4d8f4eedc6d4da30c, type: 3}
       propertyPath: m_Name
       value: Bush_Forest_10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4898165125848569875, guid: 5a02f7b4c6953fc4d8f4eedc6d4da30c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5238275251273024169, guid: 5a02f7b4c6953fc4d8f4eedc6d4da30c, type: 3}
       propertyPath: m_LocalScale.x
@@ -56534,6 +57455,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1253267582}
   - component: {fileID: 1253267583}
+  - component: {fileID: 1253267584}
   m_Layer: 0
   m_Name: WallSeg_43
   m_TagString: Untagged
@@ -56577,6 +57499,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1253267584
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1253267581}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1255819297
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -56776,6 +57714,10 @@ PrefabInstance:
     - target: {fileID: 2166530208138196212, guid: 37c2994d3a827184593e4bf8f8e836b5, type: 3}
       propertyPath: m_Name
       value: Grass_All_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 2166530208138196212, guid: 37c2994d3a827184593e4bf8f8e836b5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -57126,6 +58068,10 @@ PrefabInstance:
     - target: {fileID: 7526140038480319387, guid: 1bb7c04abb892e54e86a1e9b09a244a9, type: 3}
       propertyPath: m_Name
       value: Mush_Forest_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 7526140038480319387, guid: 1bb7c04abb892e54e86a1e9b09a244a9, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -57967,6 +58913,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_12
       objectReference: {fileID: 0}
+    - target: {fileID: 5684114389060801868, guid: 4f3460e4939cc0544abce02e9458020c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -57988,6 +58938,10 @@ PrefabInstance:
     - target: {fileID: 8219387034375519183, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
       propertyPath: m_Name
       value: Flower_Forest_11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219387034375519183, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8744565892573503861, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
       propertyPath: m_LocalScale.x
@@ -58128,6 +59082,10 @@ PrefabInstance:
     - target: {fileID: 4896451603243524774, guid: 256298740a6c77c4f8af89c39ad73925, type: 3}
       propertyPath: m_Name
       value: Grass_All_23
+      objectReference: {fileID: 0}
+    - target: {fileID: 4896451603243524774, guid: 256298740a6c77c4f8af89c39ad73925, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5240044161902098460, guid: 256298740a6c77c4f8af89c39ad73925, type: 3}
       propertyPath: m_LocalScale.x
@@ -59058,6 +60016,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bush_Forest_08
       objectReference: {fileID: 0}
+    - target: {fileID: 2491540900960312439, guid: aca2c515abe7d65458fb9fcbafb26568, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3015278230495610573, guid: aca2c515abe7d65458fb9fcbafb26568, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.2349031
@@ -59233,6 +60195,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1325031862}
   - component: {fileID: 1325031863}
+  - component: {fileID: 1325031864}
   m_Layer: 0
   m_Name: WallSeg_35
   m_TagString: Untagged
@@ -59276,6 +60239,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1325031864
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325031861}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &1327178205
 GameObject:
   m_ObjectHideFlags: 0
@@ -59286,6 +60265,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1327178206}
   - component: {fileID: 1327178207}
+  - component: {fileID: 1327178208}
   m_Layer: 0
   m_Name: WallSeg_07
   m_TagString: Untagged
@@ -59329,6 +60309,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1327178208
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327178205}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1327461503
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -60107,6 +61103,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_11
       objectReference: {fileID: 0}
+    - target: {fileID: 4868929504715483026, guid: 661772e08dd28f04098b3402501a8901, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5249571240788393256, guid: 661772e08dd28f04098b3402501a8901, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0731368
@@ -60443,6 +61443,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_19
       objectReference: {fileID: 0}
+    - target: {fileID: 6791717390955216362, guid: c04794bce9d79814b98d598aa5269b64, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -60745,6 +61749,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bush_Forest_11
       objectReference: {fileID: 0}
+    - target: {fileID: 8332555351576632476, guid: 07da5fd21f5083a4c8c43dbed5751810, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8712493155887416870, guid: 07da5fd21f5083a4c8c43dbed5751810, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.1069336
@@ -60870,6 +61878,10 @@ PrefabInstance:
     - target: {fileID: 4492788140253398761, guid: 814fca2ada463e34d8f0430280c2f116, type: 3}
       propertyPath: m_Name
       value: Tree_Forest_16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492788140253398761, guid: 814fca2ada463e34d8f0430280c2f116, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -61494,7 +62506,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7108630899420453476, guid: 1e0c08bf09b1111458c92d464f747140, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7632825728804978910, guid: 1e0c08bf09b1111458c92d464f747140, type: 3}
       propertyPath: m_LocalPosition.x
@@ -61885,6 +62897,10 @@ PrefabInstance:
     - target: {fileID: 1060840157749525307, guid: 443b419ea1ffdb042be6ed8eac6f153c, type: 3}
       propertyPath: m_Name
       value: Mush_Forest_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 1060840157749525307, guid: 443b419ea1ffdb042be6ed8eac6f153c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -62310,6 +63326,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_30
       objectReference: {fileID: 0}
+    - target: {fileID: 3016793139068439016, guid: ca285bbe344593746ad838255e5fa0bf, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -62524,6 +63544,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mush_Forest_07
       objectReference: {fileID: 0}
+    - target: {fileID: 7526140038480319387, guid: 1bb7c04abb892e54e86a1e9b09a244a9, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -62615,6 +63639,10 @@ PrefabInstance:
     - target: {fileID: 1290837552235159865, guid: 3354b9dcbee056449bf9844dc3ba2bc1, type: 3}
       propertyPath: m_Name
       value: Grass_All_49
+      objectReference: {fileID: 0}
+    - target: {fileID: 1290837552235159865, guid: 3354b9dcbee056449bf9844dc3ba2bc1, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1919141774941911939, guid: 3354b9dcbee056449bf9844dc3ba2bc1, type: 3}
       propertyPath: m_LocalScale.x
@@ -63109,6 +64137,10 @@ PrefabInstance:
     - target: {fileID: 4793119948349038809, guid: f23eb5d5e8ed26040af442ae0970e8b6, type: 3}
       propertyPath: m_Name
       value: Grass_All_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 4793119948349038809, guid: f23eb5d5e8ed26040af442ae0970e8b6, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5318546230754589283, guid: f23eb5d5e8ed26040af442ae0970e8b6, type: 3}
       propertyPath: m_LocalScale.x
@@ -64016,6 +65048,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_26
       objectReference: {fileID: 0}
+    - target: {fileID: 1290837552235159865, guid: 3354b9dcbee056449bf9844dc3ba2bc1, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1919141774941911939, guid: 3354b9dcbee056449bf9844dc3ba2bc1, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0123074
@@ -64500,6 +65536,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_22
       objectReference: {fileID: 0}
+    - target: {fileID: 3016793139068439016, guid: ca285bbe344593746ad838255e5fa0bf, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -64520,6 +65560,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1441345604}
   - component: {fileID: 1441345605}
+  - component: {fileID: 1441345606}
   m_Layer: 0
   m_Name: WallSeg_36
   m_TagString: Untagged
@@ -64563,6 +65604,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1441345606
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1441345603}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1441728184
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -65183,6 +66240,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_10
       objectReference: {fileID: 0}
+    - target: {fileID: 5684114389060801868, guid: 4f3460e4939cc0544abce02e9458020c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -65625,6 +66686,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Beach_07
       objectReference: {fileID: 0}
+    - target: {fileID: 6131553767378768855, guid: ae12f1ba847c6f74281e7a9a7b0ac7fd, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6799440408756717933, guid: ae12f1ba847c6f74281e7a9a7b0ac7fd, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.1262907
@@ -65767,6 +66832,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1468010357}
   - component: {fileID: 1468010358}
+  - component: {fileID: 1468010359}
   m_Layer: 0
   m_Name: WallSeg_46
   m_TagString: Untagged
@@ -65810,6 +66876,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1468010359
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1468010356}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1471400311
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -65972,7 +67054,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 52144190322191893, guid: c7291645b957c444b8e4bfc1d41aaf80, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 860909298080904367, guid: c7291645b957c444b8e4bfc1d41aaf80, type: 3}
       propertyPath: m_LocalPosition.x
@@ -66525,6 +67607,10 @@ PrefabInstance:
     - target: {fileID: 1487672732027152291, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
       propertyPath: m_Name
       value: Tree_Forest_23
+      objectReference: {fileID: 0}
+    - target: {fileID: 1487672732027152291, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2300942327582244121, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
       propertyPath: m_LocalScale.x
@@ -67708,6 +68794,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_36
       objectReference: {fileID: 0}
+    - target: {fileID: 7424801524984937579, guid: a25dfe0a7afa444499605d59689b3287, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7800763464966809297, guid: a25dfe0a7afa444499605d59689b3287, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.1722169
@@ -68114,6 +69204,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_14
       objectReference: {fileID: 0}
+    - target: {fileID: 4492788140253398761, guid: 814fca2ada463e34d8f0430280c2f116, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -68258,6 +69352,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bush_Forest_02
       objectReference: {fileID: 0}
+    - target: {fileID: 6810348402670925573, guid: d96062693eb9daa46af30926687c83d5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -68279,6 +69377,10 @@ PrefabInstance:
     - target: {fileID: 7251943758774493481, guid: 5de91b71dc1698644b51f75f1521f6ea, type: 3}
       propertyPath: m_Name
       value: Rock_Mountain_11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7251943758774493481, guid: 5de91b71dc1698644b51f75f1521f6ea, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8065881793039776659, guid: 5de91b71dc1698644b51f75f1521f6ea, type: 3}
       propertyPath: m_LocalScale.x
@@ -68405,6 +69507,10 @@ PrefabInstance:
     - target: {fileID: 8674194441469524833, guid: 446d4b0c8ec16d14ba36df018594296c, type: 3}
       propertyPath: m_Name
       value: Grass_All_37
+      objectReference: {fileID: 0}
+    - target: {fileID: 8674194441469524833, guid: 446d4b0c8ec16d14ba36df018594296c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -68582,7 +69688,6 @@ RectTransform:
   m_Children:
   - {fileID: 979404607}
   - {fileID: 752214838}
-  - {fileID: 166497569651284060}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -68999,6 +70104,10 @@ PrefabInstance:
     - target: {fileID: 9182598066857695359, guid: 9ec90620d213a2242b16c74c5a7a385f, type: 3}
       propertyPath: m_Name
       value: Flower_Forest_08
+      objectReference: {fileID: 0}
+    - target: {fileID: 9182598066857695359, guid: 9ec90620d213a2242b16c74c5a7a385f, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -69559,6 +70668,10 @@ PrefabInstance:
     - target: {fileID: 5329577460968038239, guid: 38d257c588f863747bd31ff57651e099, type: 3}
       propertyPath: m_Name
       value: Stump_Forest_00
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329577460968038239, guid: 38d257c588f863747bd31ff57651e099, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -70530,6 +71643,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_22
       objectReference: {fileID: 0}
+    - target: {fileID: 1487672732027152291, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2300942327582244121, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.91250795
@@ -70812,6 +71929,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1589748112}
   - component: {fileID: 1589748113}
+  - component: {fileID: 1589748114}
   m_Layer: 0
   m_Name: WallSeg_38
   m_TagString: Untagged
@@ -70855,6 +71973,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1589748114
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589748111}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1591887436
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -71075,6 +72209,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1595652096}
   - component: {fileID: 1595652097}
+  - component: {fileID: 1595652098}
   m_Layer: 0
   m_Name: WallSeg_16
   m_TagString: Untagged
@@ -71118,6 +72253,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1595652098
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1595652095}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1598611698
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -71129,6 +72280,10 @@ PrefabInstance:
     - target: {fileID: 8498775590324875546, guid: 046fcab6e891a844abfc53b520c8f394, type: 3}
       propertyPath: m_Name
       value: Bush_Forest_14
+      objectReference: {fileID: 0}
+    - target: {fileID: 8498775590324875546, guid: 046fcab6e891a844abfc53b520c8f394, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9131725485366274976, guid: 046fcab6e891a844abfc53b520c8f394, type: 3}
       propertyPath: m_LocalScale.x
@@ -71672,6 +72827,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mush_Forest_02
       objectReference: {fileID: 0}
+    - target: {fileID: 7526140038480319387, guid: 1bb7c04abb892e54e86a1e9b09a244a9, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -71844,7 +73003,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -72048,6 +73207,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rock_Beach_03
       objectReference: {fileID: 0}
+    - target: {fileID: 8202731649550764293, guid: d67c6edfceeb6fc468ead41526729645, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 8835539467342418879, guid: d67c6edfceeb6fc468ead41526729645, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.7362212
@@ -72243,6 +73406,10 @@ PrefabInstance:
     - target: {fileID: 8918684442425528394, guid: 22036d00393bb6746ac5e41d671e6289, type: 3}
       propertyPath: m_Name
       value: Grass_All_32
+      objectReference: {fileID: 0}
+    - target: {fileID: 8918684442425528394, guid: 22036d00393bb6746ac5e41d671e6289, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -72458,6 +73625,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_17
       objectReference: {fileID: 0}
+    - target: {fileID: 1880130991530675682, guid: 6b5cd3b0c50436a4db8637775a75d6ad, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -72490,7 +73661,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7108630899420453476, guid: 1e0c08bf09b1111458c92d464f747140, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7632825728804978910, guid: 1e0c08bf09b1111458c92d464f747140, type: 3}
       propertyPath: m_LocalPosition.x
@@ -72881,6 +74052,10 @@ PrefabInstance:
     - target: {fileID: 1088854689373730615, guid: bfc5147e29b7d3b438d660583fb8c1fc, type: 3}
       propertyPath: m_Name
       value: Flower_Forest_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 1088854689373730615, guid: bfc5147e29b7d3b438d660583fb8c1fc, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -73794,6 +74969,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bush_Forest_15
       objectReference: {fileID: 0}
+    - target: {fileID: 4972494463789170577, guid: 66ac80e5433ccc449bef8f4363dac41c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5641332418407277867, guid: 66ac80e5433ccc449bef8f4363dac41c, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0957935
@@ -74003,6 +75182,10 @@ PrefabInstance:
     - target: {fileID: 8219387034375519183, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
       propertyPath: m_Name
       value: Flower_Forest_00
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219387034375519183, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8744565892573503861, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
       propertyPath: m_LocalScale.x
@@ -75031,6 +76214,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_07
       objectReference: {fileID: 0}
+    - target: {fileID: 984033382794011341, guid: 6be8e9010233523468254ec42d49af70, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -75476,6 +76663,10 @@ PrefabInstance:
     - target: {fileID: 1471158863065593529, guid: 7628db9a16bdf3b4d8aedab590c9f226, type: 3}
       propertyPath: m_Name
       value: Grass_All_29
+      objectReference: {fileID: 0}
+    - target: {fileID: 1471158863065593529, guid: 7628db9a16bdf3b4d8aedab590c9f226, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2243157229698116611, guid: 7628db9a16bdf3b4d8aedab590c9f226, type: 3}
       propertyPath: m_LocalScale.x
@@ -77624,7 +78815,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 52144190322191893, guid: c7291645b957c444b8e4bfc1d41aaf80, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 860909298080904367, guid: c7291645b957c444b8e4bfc1d41aaf80, type: 3}
       propertyPath: m_LocalPosition.x
@@ -77757,6 +78948,10 @@ PrefabInstance:
     - target: {fileID: 8219387034375519183, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
       propertyPath: m_Name
       value: Flower_Forest_17
+      objectReference: {fileID: 0}
+    - target: {fileID: 8219387034375519183, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8744565892573503861, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
       propertyPath: m_LocalScale.x
@@ -78230,6 +79425,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_45
       objectReference: {fileID: 0}
+    - target: {fileID: 2166530208138196212, guid: 37c2994d3a827184593e4bf8f8e836b5, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -78392,6 +79591,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_00
       objectReference: {fileID: 0}
+    - target: {fileID: 6131553767378768855, guid: ae12f1ba847c6f74281e7a9a7b0ac7fd, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6799440408756717933, guid: ae12f1ba847c6f74281e7a9a7b0ac7fd, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.1555371
@@ -78534,6 +79737,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1756289091}
   - component: {fileID: 1756289092}
+  - component: {fileID: 1756289093}
   m_Layer: 0
   m_Name: WallSeg_44
   m_TagString: Untagged
@@ -78577,6 +79781,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1756289093
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756289090}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1762428236
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -79831,6 +81051,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rock_Beach_02
       objectReference: {fileID: 0}
+    - target: {fileID: 906591600361499829, guid: 5216f6d56a7c6e041869f68471d4aaae, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -79851,6 +81075,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1807011364}
   - component: {fileID: 1807011365}
+  - component: {fileID: 1807011366}
   m_Layer: 0
   m_Name: WallSeg_40
   m_TagString: Untagged
@@ -79894,6 +81119,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1807011366
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1807011363}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1807182839
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -80044,6 +81285,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1817111009}
   - component: {fileID: 1817111010}
+  - component: {fileID: 1817111011}
   m_Layer: 0
   m_Name: WallSeg_09
   m_TagString: Untagged
@@ -80087,6 +81329,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1817111011
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1817111008}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1821616769
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -80769,6 +82027,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_06
       objectReference: {fileID: 0}
+    - target: {fileID: 4492788140253398761, guid: 814fca2ada463e34d8f0430280c2f116, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -81329,6 +82591,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_46
       objectReference: {fileID: 0}
+    - target: {fileID: 3016793139068439016, guid: ca285bbe344593746ad838255e5fa0bf, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -81473,6 +82739,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_25
       objectReference: {fileID: 0}
+    - target: {fileID: 2137760205200772258, guid: 49091280d622b904f96e72e71fe4e877, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -81546,6 +82816,10 @@ PrefabInstance:
     - target: {fileID: 4492788140253398761, guid: 814fca2ada463e34d8f0430280c2f116, type: 3}
       propertyPath: m_Name
       value: Tree_Forest_11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492788140253398761, guid: 814fca2ada463e34d8f0430280c2f116, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -81827,6 +83101,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_18
       objectReference: {fileID: 0}
+    - target: {fileID: 4492788140253398761, guid: 814fca2ada463e34d8f0430280c2f116, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -81929,7 +83207,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3890554199827564479, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4518753930360921349, guid: 5f13adf1020d9d3428e681e3b4de11ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -82114,6 +83392,10 @@ PrefabInstance:
     - target: {fileID: 6873938577213127126, guid: a9a82dc7a09f37741916c33cc3483e7c, type: 3}
       propertyPath: m_Name
       value: Rock_Mountain_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 6873938577213127126, guid: a9a82dc7a09f37741916c33cc3483e7c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -82416,6 +83698,10 @@ PrefabInstance:
     - target: {fileID: 3906769237286605374, guid: 9b3829509b5d28940973bfb14488a673, type: 3}
       propertyPath: m_Name
       value: Bush_Forest_06
+      objectReference: {fileID: 0}
+    - target: {fileID: 3906769237286605374, guid: 9b3829509b5d28940973bfb14488a673, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4430540655354448004, guid: 9b3829509b5d28940973bfb14488a673, type: 3}
       propertyPath: m_LocalScale.x
@@ -82876,6 +84162,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flower_Forest_15
       objectReference: {fileID: 0}
+    - target: {fileID: 8219387034375519183, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8744565892573503861, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.1741284
@@ -83230,6 +84520,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bush_Forest_01
       objectReference: {fileID: 0}
+    - target: {fileID: 6938313185453466299, guid: 3d7b3b0cc989a8b42b09ddb0ad31ef4d, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7710734000174446593, guid: 3d7b3b0cc989a8b42b09ddb0ad31ef4d, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0642395
@@ -83426,6 +84720,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rock_Mountain_08
       objectReference: {fileID: 0}
+    - target: {fileID: 6551663106355943591, guid: 4938a8fb6b665c24d8d6f44a454494b1, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -83447,6 +84745,10 @@ PrefabInstance:
     - target: {fileID: 1487672732027152291, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
       propertyPath: m_Name
       value: Tree_Forest_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 1487672732027152291, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2300942327582244121, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
       propertyPath: m_LocalScale.x
@@ -83942,6 +85244,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bush_Forest_09
       objectReference: {fileID: 0}
+    - target: {fileID: 2491540900960312439, guid: aca2c515abe7d65458fb9fcbafb26568, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3015278230495610573, guid: aca2c515abe7d65458fb9fcbafb26568, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9521168
@@ -84015,6 +85321,10 @@ PrefabInstance:
     - target: {fileID: 7196810933511123041, guid: 29cecbe5f22b8f248abca9b49e8fe3ef, type: 3}
       propertyPath: m_Name
       value: Stump_Forest_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 7196810933511123041, guid: 29cecbe5f22b8f248abca9b49e8fe3ef, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7542374637332835035, guid: 29cecbe5f22b8f248abca9b49e8fe3ef, type: 3}
       propertyPath: m_LocalScale.x
@@ -84720,6 +86030,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_24
       objectReference: {fileID: 0}
+    - target: {fileID: 1487672732027152291, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2300942327582244121, guid: 6a549a408565cdf44b5961dccadce139, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.9453835
@@ -84932,6 +86246,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1936458225}
   - component: {fileID: 1936458226}
+  - component: {fileID: 1936458227}
   m_Layer: 0
   m_Name: WallSeg_26
   m_TagString: Untagged
@@ -84975,6 +86290,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1936458227
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936458224}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1939813497
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -85805,6 +87136,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_Forest_26
       objectReference: {fileID: 0}
+    - target: {fileID: 4492788140253398761, guid: 814fca2ada463e34d8f0430280c2f116, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -86135,6 +87470,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1975940114}
   - component: {fileID: 1975940115}
+  - component: {fileID: 1975940116}
   m_Layer: 0
   m_Name: WallSeg_41
   m_TagString: Untagged
@@ -86178,6 +87514,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &1975940116
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1975940113}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &1976764095
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -86965,6 +88317,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flower_Forest_10
       objectReference: {fileID: 0}
+    - target: {fileID: 8219387034375519183, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8744565892573503861, guid: 61956c11453fbab41b638bef50a1848c, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.1397276
@@ -87189,7 +88545,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 52144190322191893, guid: c7291645b957c444b8e4bfc1d41aaf80, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 860909298080904367, guid: c7291645b957c444b8e4bfc1d41aaf80, type: 3}
       propertyPath: m_LocalPosition.x
@@ -87304,6 +88660,10 @@ PrefabInstance:
     - target: {fileID: 1880130991530675682, guid: 6b5cd3b0c50436a4db8637775a75d6ad, type: 3}
       propertyPath: m_Name
       value: Tree_Forest_09
+      objectReference: {fileID: 0}
+    - target: {fileID: 1880130991530675682, guid: 6b5cd3b0c50436a4db8637775a75d6ad, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -87466,6 +88826,10 @@ PrefabInstance:
     - target: {fileID: 4896451603243524774, guid: 256298740a6c77c4f8af89c39ad73925, type: 3}
       propertyPath: m_Name
       value: Grass_All_15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4896451603243524774, guid: 256298740a6c77c4f8af89c39ad73925, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5240044161902098460, guid: 256298740a6c77c4f8af89c39ad73925, type: 3}
       propertyPath: m_LocalScale.x
@@ -87816,6 +89180,10 @@ PrefabInstance:
     - target: {fileID: 3906769237286605374, guid: 9b3829509b5d28940973bfb14488a673, type: 3}
       propertyPath: m_Name
       value: Bush_Forest_07
+      objectReference: {fileID: 0}
+    - target: {fileID: 3906769237286605374, guid: 9b3829509b5d28940973bfb14488a673, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4430540655354448004, guid: 9b3829509b5d28940973bfb14488a673, type: 3}
       propertyPath: m_LocalScale.x
@@ -88664,6 +90032,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2041279129}
   - component: {fileID: 2041279130}
+  - component: {fileID: 2041279131}
   m_Layer: 0
   m_Name: WallSeg_47
   m_TagString: Untagged
@@ -88707,6 +90076,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &2041279131
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041279128}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &2048493043
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -88910,6 +90295,10 @@ PrefabInstance:
     - target: {fileID: 6791717390955216362, guid: c04794bce9d79814b98d598aa5269b64, type: 3}
       propertyPath: m_Name
       value: Grass_All_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 6791717390955216362, guid: c04794bce9d79814b98d598aa5269b64, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -90416,6 +91805,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2084462249}
   - component: {fileID: 2084462250}
+  - component: {fileID: 2084462251}
   m_Layer: 0
   m_Name: WallSeg_27
   m_TagString: Untagged
@@ -90459,6 +91849,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &2084462251
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2084462248}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &2084561974
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -90803,6 +92209,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_39
       objectReference: {fileID: 0}
+    - target: {fileID: 984033382794011341, guid: 6be8e9010233523468254ec42d49af70, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -90877,6 +92287,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_20
       objectReference: {fileID: 0}
+    - target: {fileID: 5684114389060801868, guid: 4f3460e4939cc0544abce02e9458020c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -90897,6 +92311,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2098557475}
   - component: {fileID: 2098557476}
+  - component: {fileID: 2098557477}
   m_Layer: 0
   m_Name: WallSeg_01
   m_TagString: Untagged
@@ -90940,6 +92355,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10.448377, y: 5, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!208 &2098557477
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2098557474}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 5.2241883, y: 2.5, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &2100590846
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -91528,6 +92959,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Flower_Forest_05
       objectReference: {fileID: 0}
+    - target: {fileID: 4924576800014285052, guid: 880d11450f7f8be4e84a47d9b20805aa, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5700514991133385286, guid: 880d11450f7f8be4e84a47d9b20805aa, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.94829637
@@ -91863,6 +93298,10 @@ PrefabInstance:
     - target: {fileID: 6443395740361465152, guid: 7b82e04a27c74dc41b25b85279da1a13, type: 3}
       propertyPath: m_Name
       value: Tree_Mountain_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 6443395740361465152, guid: 7b82e04a27c74dc41b25b85279da1a13, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -92916,6 +94355,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass_All_13
       objectReference: {fileID: 0}
+    - target: {fileID: 1471158863065593529, guid: 7628db9a16bdf3b4d8aedab590c9f226, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2243157229698116611, guid: 7628db9a16bdf3b4d8aedab590c9f226, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.0338928
@@ -93334,6 +94777,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bush_Forest_13
       objectReference: {fileID: 0}
+    - target: {fileID: 7803592360295843284, guid: b7c758d6e67b0c047a67ddd2f5ef0022, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -93407,6 +94854,10 @@ PrefabInstance:
     - target: {fileID: 8918684442425528394, guid: 22036d00393bb6746ac5e41d671e6289, type: 3}
       propertyPath: m_Name
       value: Grass_All_14
+      objectReference: {fileID: 0}
+    - target: {fileID: 8918684442425528394, guid: 22036d00393bb6746ac5e41d671e6289, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -93623,108 +95074,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 5651189303498518384, guid: 73f97c55a16c6ba4d952c5742a9c4825, type: 3}
   m_PrefabInstance: {fileID: 2141138605}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &166497569651284059
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1524037884}
-    m_Modifications:
-    - target: {fileID: 777001187400576768, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_Name
-      value: Test1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_Pivot.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_Pivot.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
---- !u!224 &166497569651284060 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 7747831616116956133, guid: 5c3639dcfbaf07c4dabe80fe0d91c26c, type: 3}
-  m_PrefabInstance: {fileID: 166497569651284059}
   m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

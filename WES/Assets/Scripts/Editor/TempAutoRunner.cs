@@ -5,7 +5,7 @@ using UnityEngine;
 [InitializeOnLoad]
 public static class TempAutoRunner
 {
-    private const string SESSION_KEY = "MapGen_AutoBake_v2_AfterLandmark";
+    private const string SESSION_KEY = "MapGen_AutoBake_v3_NavStaticFix";
 
     static TempAutoRunner()
     {

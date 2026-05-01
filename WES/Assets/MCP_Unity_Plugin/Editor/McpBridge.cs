@@ -269,6 +269,7 @@ public static partial class McpBridge
             "u_console"               => ReadConsole(req),          // McpBridgeConsole.cs
             "u_screenshot"            => Screenshot(req),           // McpBridgeScreenshot.cs
             "u_editor_sceneview"      => RouteSceneView(req),       // McpBridgeSceneView.cs
+            "u_editor_menu"           => ExecuteMenu(req),          // McpBridgeMenu.cs
             _                         => BuildError($"Unknown action: '{req.action}'")
         };
     }
@@ -489,6 +490,7 @@ public static partial class McpBridge
         public string angle;           // u_editor_sceneview focus 각도 (top/front/side/persp)
         public float  size;            // u_editor_sceneview preset size 명시값
         public bool   hasSize;         // u_editor_sceneview size 명시 여부
+        public string menuPath;        // u_editor_menu 메뉴 경로 (예: "Tools/Map Generator/Bake NavMesh")
     }
 
     private class PendingRequest
