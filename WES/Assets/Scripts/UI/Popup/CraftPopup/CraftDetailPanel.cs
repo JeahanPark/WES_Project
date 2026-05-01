@@ -8,6 +8,7 @@ public class CraftDetailPanel : MonoBehaviour
     [SerializeField] private Image m_IconImage;
     [SerializeField] private TextMeshProUGUI m_NameText;
     [SerializeField] private TextMeshProUGUI m_DescriptionText;
+    [SerializeField] private TextMeshProUGUI m_ConditionsLabel;
     [SerializeField] private Transform m_MaterialsContainer;
     [SerializeField] private Transform m_ConditionsContainer;
     [SerializeField] private TextMeshProUGUI m_MaterialItemTemplate;
@@ -41,10 +42,18 @@ public class CraftDetailPanel : MonoBehaviour
         if (m_IconImage != null)
         {
             string iconKey = _craftInfo.IconKey;
-            m_IconImage.sprite = !string.IsNullOrEmpty(iconKey)
+            Sprite next = !string.IsNullOrEmpty(iconKey)
                 ? Managers.Resource.LoadAddressable<Sprite>(iconKey)
                 : null;
-            m_IconImage.enabled = m_IconImage.sprite != null;
+            if (next != null)
+            {
+                m_IconImage.sprite = next;
+                m_IconImage.enabled = true;
+            }
+            else
+            {
+                m_IconImage.enabled = false;
+            }
         }
 
         RefreshMaterials(_craftInfo.Id);
@@ -125,8 +134,19 @@ public class CraftDetailPanel : MonoBehaviour
 
     private void RefreshCraftButton(int _craftId)
     {
-        if (m_CraftButton != null)
-            m_CraftButton.interactable = CanCraft(_craftId);
+        if (m_CraftButton == null)
+            return;
+
+        bool canCraft = CanCraft(_craftId);
+        m_CraftButton.interactable = canCraft;
+
+        var image = m_CraftButton.GetComponent<Image>();
+        if (image != null)
+            image.color = canCraft ? new Color(0.298f, 0.686f, 0.314f, 1f) : new Color(0.32f, 0.32f, 0.32f, 1f);
+
+        var label = m_CraftButton.GetComponentInChildren<TextMeshProUGUI>();
+        if (label != null)
+            label.text = canCraft ? "제작하기" : "재료 부족";
     }
 
     private void RefreshMaterials(int _craftId)
@@ -160,6 +180,17 @@ public class CraftDetailPanel : MonoBehaviour
             var row = Instantiate(m_MaterialItemTemplate, m_MaterialsContainer);
             row.text = $"{itemName} {owned}/{material.RequiredCount}";
             row.gameObject.SetActive(true);
+
+            var iconChild = row.transform.Find("IconImage");
+            if (iconChild != null && itemInfo != null && !string.IsNullOrEmpty(itemInfo.IconKey))
+            {
+                var iconImg = iconChild.GetComponent<Image>();
+                if (iconImg != null)
+                {
+                    iconImg.sprite = Managers.Resource.LoadAddressable<Sprite>(itemInfo.IconKey);
+                    iconImg.enabled = iconImg.sprite != null;
+                }
+            }
         }
     }
 
@@ -177,6 +208,11 @@ public class CraftDetailPanel : MonoBehaviour
         m_ConditionItemTemplate.gameObject.SetActive(false);
 
         var conditions = Managers.Info.GetConditionsByCraftId(_craftId);
+        bool hasAnyCondition = conditions != null && conditions.Count > 0;
+        if (m_ConditionsLabel != null)
+            m_ConditionsLabel.gameObject.SetActive(hasAnyCondition);
+        m_ConditionsContainer.gameObject.SetActive(hasAnyCondition);
+
         foreach (var condition in conditions)
         {
             string conditionText = condition.ConditionType switch
