@@ -212,6 +212,11 @@ public class CharacterBase : WorldEntityBase
     /// </summary>
     protected virtual void OnDamaged(int _damage, CharacterBase _attacker)
     {
+        if (InGameController.Instance == null || InGameController.Instance.WorldUIWorker == null)
+            return;
+
+        Vector3 spawnPosition = transform.position + WorldUIOffset + Vector3.up * 0.3f;
+        InGameController.Instance.WorldUIWorker.CreateDamageNumber(_damage, spawnPosition);
     }
 
     /// <summary>
