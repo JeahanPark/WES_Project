@@ -67,6 +67,19 @@ public class InGameWorldUIWorker : MonoBehaviour
         return worldUI;
     }
 
+    public DamageNumberWorldUI CreateDamageNumber(int _damage, Vector3 _worldPosition)
+    {
+        DamageNumberWorldUI worldUI = CreateWorldUI<DamageNumberWorldUI>();
+
+        if (worldUI == null)
+            return null;
+
+        Vector2 screenOffset = new Vector2(Random.Range(-20f, 20f), 0f);
+        worldUI.SetData(_damage, _worldPosition, screenOffset, m_Camera, m_UICamera, m_CanvasRectTransform, Color.white);
+
+        return worldUI;
+    }
+
     public void ReleaseWorldUI(BaseWorldUI _worldUI)
     {
         if (_worldUI == null)
