@@ -90,6 +90,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07f6217d60e6951419347a511d611f97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_BuildingButton: {fileID: 0}
+  m_InventoryButton: {fileID: 100018}
 --- !u!1 &100004
 GameObject:
   m_ObjectHideFlags: 0
@@ -372,7 +374,7 @@ GameObject:
   - component: {fileID: 100017}
   - component: {fileID: 100018}
   m_Layer: 5
-  m_Name: ItemButton
+  m_Name: InventoryButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -504,7 +506,7 @@ GameObject:
   - component: {fileID: 100021}
   - component: {fileID: 100022}
   m_Layer: 5
-  m_Name: ItemLabel
+  m_Name: InventoryLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -557,7 +559,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC544\uC774\uD15C"
+  m_text: "\uC778\uBCA4\uD1A0\uB9AC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

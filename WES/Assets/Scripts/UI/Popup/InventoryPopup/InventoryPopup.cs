@@ -10,14 +10,41 @@ public class InventoryPopup : BasePopup
     [SerializeField] private Image m_DragPreview;
 
     private InventoryScrollCell m_DragSourceCell;
+    private InventoryRegistry m_SubscribedRegistry;
 
     private void Start()
     {
         m_InventoryScroll.SetCellClickCallback(OnCellClicked);
+        SubscribeInventory();
         RefreshInventory();
 
         if (m_DragPreview != null)
             m_DragPreview.gameObject.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeInventory();
+    }
+
+    private void SubscribeInventory()
+    {
+        var inventory = InGameController.Instance?.ObjectDataWorker?.GetInventoryRegistry();
+        if (inventory == null || m_SubscribedRegistry == inventory)
+            return;
+
+        UnsubscribeInventory();
+        inventory.OnInventoryChanged += RefreshInventory;
+        m_SubscribedRegistry = inventory;
+    }
+
+    private void UnsubscribeInventory()
+    {
+        if (m_SubscribedRegistry != null)
+        {
+            m_SubscribedRegistry.OnInventoryChanged -= RefreshInventory;
+            m_SubscribedRegistry = null;
+        }
     }
 
     public void RefreshInventory()

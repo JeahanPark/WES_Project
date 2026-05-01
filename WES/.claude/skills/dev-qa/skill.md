@@ -14,10 +14,23 @@ description: Use when developing features that need runtime QA testing in Unity.
 - MCP 도구 활용: `u_editor_component`, `u_editor_reference`, `u_editor_prefab`, `u_editor_gameobject` 등
 - 독립적인 코드 작업이 여러 개면 서브에이전트 병렬 처리 가능
 
+### QA 대상 코드 스캔 (필수)
+TestManager 시나리오를 작성하기 **전에** QA 대상 기능의 코드를 모두 읽는다.
+
+**스캔 대상**:
+- **진입점**: 해당 기능의 public 메서드, 이벤트 핸들러, UI 버튼 OnClick
+- **상태 분기**: if/switch 조건, 상태 전이 (예: `if (m_HP <= 0)`, `switch (m_State)`)
+- **데이터 경로**: 어떤 아이템/수치/상태 변화가 발생하는지
+- **외부 의존성**: 다른 Manager/Worker/Component와의 상호작용
+
+**산출물**: 스캔 결과를 바탕으로 **모든 분기를 커버하는 시나리오 목록**을 도출한다.
+러프한 1개 시나리오 금지 — 분기 개수만큼 시나리오를 쪼갠다.
+
 ### TestManager 시나리오 추가
-- `Assets/Scripts/Manager/TestManager.cs`에 해당 기능의 테스트 시나리오 메서드 추가
+- 위 스캔에서 도출한 시나리오 목록을 `Test<기능명>_<분기명>()` 형식으로 각각 `Assets/Scripts/Manager/TestManager.cs`에 추가
 - **원칙**: 테스트 전용 로직 금지. 기존 public 메서드를 조합만 한다.
-- 메서드명: `Test<기능명>()` 형식 (예: `TestSpawnAndKillMonster()`)
+- **커버리지 원칙**: 스캔한 분기/조건/상태 전이가 시나리오 목록에 모두 있어야 한다. 누락된 분기가 있다면 시나리오를 추가할지, 해당 분기가 도달 불가한지 판정한다.
+- 예: `TestCraftItem_Success()`, `TestCraftItem_InsufficientMaterial()`, `TestCraftItem_InventoryFull()`
 
 ### 컴파일 확인
 - `u_editor_asset(action: refresh)` 호출
@@ -32,8 +45,9 @@ u_play_control(action: "enter")
 ```
 
 ### 시나리오 실행
+스캔에서 도출한 모든 시나리오를 순차 실행한다. 단일 시나리오로 끝내지 않는다.
 ```
-u_play_invoke(target: "TestManager", componentType: "TestManager", methodName: "Test<기능명>")
+u_play_invoke(target: "TestManager", componentType: "TestManager", methodName: "Test<기능명>_<분기명>")
 ```
 
 ### 결과 검증

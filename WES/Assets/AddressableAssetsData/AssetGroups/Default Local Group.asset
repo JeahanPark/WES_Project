@@ -15,8 +15,43 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: d1778c85a1ae05245b00c13659e2dbac
   m_SerializeEntries:
+  - m_GUID: 05de108413c00d74d9d8698db1f83047
+    m_Address: sword_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 09b414800fa827e44bf1367db448b0be
     m_Address: Assets/GameResource/UI/WorldUI
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d9b2ff73a31dd940853ee47d3f32ab1
+    m_Address: leather_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1abd0e0f1129b2845a185fdb751ba1ef
+    m_Address: ironsword_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f866476c941a7042a7e3a540d587882
+    m_Address: potion_cold_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f654c84a2a65fb4cb98239820a99afe
+    m_Address: potion_hp_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ee3ede1dc5226f40922db05d6894426
+    m_Address: leatherarmor_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 612fb4e6bdb50ad418a72afd8a1ad899
+    m_Address: bandage_icon
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -25,8 +60,24 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a7546e7566b33342bd21a24211fd0fa
+    m_Address: herb_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82bdaf46420c4c44ea3c65baa84103e4
+    m_Address: campfire_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 85b946bd83753ec4086332e1a355acaa
     m_Address: CraftPopup
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Popup
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a51780f7b3fce154982353aa08aef351
+    m_Address: LobbyPopup
     m_ReadOnly: 0
     m_SerializedLabels:
     - Popup
@@ -58,11 +109,21 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5115c390f6a75d4fb94cccc2b8cc21b
+    m_Address: torch_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c912869b85ccd4a41ba3d690870a0461
     m_Address: InventoryPopup
     m_ReadOnly: 0
     m_SerializedLabels:
     - Popup
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: caf3868f17daa4b47951818037569d34
+    m_Address: bone_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d4cbacd3120afa54e9382787bb6f4036
     m_Address: stone_icon
@@ -79,11 +140,10 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: a51780f7b3fce154982353aa08aef351
-    m_Address: LobbyPopup
+  - m_GUID: e6447491916f3b6478588c0869d3e7ba
+    m_Address: shield_icon
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - Popup
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ebf4fdbc467fafe4eb4f6401af1aba2c
     m_Address: LobbyRoomPopup
@@ -91,68 +151,8 @@ MonoBehaviour:
     m_SerializedLabels:
     - Popup
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 82bdaf46420c4c44ea3c65baa84103e4
-    m_Address: campfire_icon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 05de108413c00d74d9d8698db1f83047
-    m_Address: sword_icon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7a7546e7566b33342bd21a24211fd0fa
-    m_Address: herb_icon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0d9b2ff73a31dd940853ee47d3f32ab1
-    m_Address: leather_icon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: caf3868f17daa4b47951818037569d34
-    m_Address: bone_icon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ec9247edf0f5ef24684ac916488ee07b
     m_Address: ironore_icon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3f654c84a2a65fb4cb98239820a99afe
-    m_Address: potion_hp_icon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2f866476c941a7042a7e3a540d587882
-    m_Address: potion_cold_icon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 612fb4e6bdb50ad418a72afd8a1ad899
-    m_Address: bandage_icon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e6447491916f3b6478588c0869d3e7ba
-    m_Address: shield_icon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 1abd0e0f1129b2845a185fdb751ba1ef
-    m_Address: ironsword_icon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4ee3ede1dc5226f40922db05d6894426
-    m_Address: leatherarmor_icon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: c5115c390f6a75d4fb94cccc2b8cc21b
-    m_Address: torch_icon
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

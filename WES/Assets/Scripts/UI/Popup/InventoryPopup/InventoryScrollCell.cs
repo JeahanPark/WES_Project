@@ -3,8 +3,12 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
-public class InventoryScrollCell : BaseScrollCell<ItemData>, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+public class InventoryScrollCell : BaseScrollCell<ItemData>, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler
 {
+    private static readonly Color SLOT_EMPTY_COLOR = new Color(0.18f, 0.18f, 0.22f, 0.85f);
+    private static readonly Color SLOT_FILLED_COLOR = new Color(0.25f, 0.25f, 0.30f, 0.95f);
+    private static readonly Color SLOT_BORDER_COLOR = new Color(0.4f, 0.4f, 0.5f, 1f);
+
     [SerializeField] private Image m_IconImage;
     [SerializeField] private TextMeshProUGUI m_CountText;
     [SerializeField] private Image m_BackgroundImage;
@@ -12,8 +16,34 @@ public class InventoryScrollCell : BaseScrollCell<ItemData>, IBeginDragHandler, 
 
     private ItemData m_ItemData;
     private bool m_IsSelected;
+    private Outline m_Outline;
 
     public ItemData ItemData => m_ItemData;
+
+    private void Awake()
+    {
+        ApplyStyle();
+    }
+
+    private void ApplyStyle()
+    {
+        var bg = m_BackgroundImage != null ? m_BackgroundImage : GetComponent<Image>();
+        if (bg != null)
+            bg.color = SLOT_EMPTY_COLOR;
+
+        m_Outline = GetComponent<Outline>();
+        if (m_Outline == null)
+            m_Outline = gameObject.AddComponent<Outline>();
+        m_Outline.effectColor = SLOT_BORDER_COLOR;
+        m_Outline.effectDistance = new Vector2(1.5f, -1.5f);
+    }
+
+    private void RefreshBackgroundColor(bool _hasItem)
+    {
+        var bg = m_BackgroundImage != null ? m_BackgroundImage : GetComponent<Image>();
+        if (bg != null)
+            bg.color = _hasItem ? SLOT_FILLED_COLOR : SLOT_EMPTY_COLOR;
+    }
 
     protected override void OnUpdateCell(int _index, ItemData _data)
     {
@@ -38,6 +68,8 @@ public class InventoryScrollCell : BaseScrollCell<ItemData>, IBeginDragHandler, 
                 : null;
             m_IconImage.enabled = m_IconImage.sprite != null;
         }
+
+        RefreshBackgroundColor(true);
     }
 
     private void SetEmpty()
@@ -54,6 +86,7 @@ public class InventoryScrollCell : BaseScrollCell<ItemData>, IBeginDragHandler, 
         }
 
         SetSelected(false);
+        RefreshBackgroundColor(false);
     }
 
     public void SetSelected(bool _selected)
@@ -110,5 +143,26 @@ public class InventoryScrollCell : BaseScrollCell<ItemData>, IBeginDragHandler, 
     {
         var popup = GetComponentInParent<InventoryPopup>(true);
         popup?.DropOnSlot(this);
+    }
+
+    // P11: 더블클릭으로 직접 설치/사용
+    public void OnPointerClick(PointerEventData _eventData)
+    {
+        if (m_ItemData == null || m_ItemData.Info == null)
+            return;
+
+        if (_eventData.button != PointerEventData.InputButton.Left)
+            return;
+
+        if (_eventData.clickCount < 2)
+            return;
+
+        // 건물 아이템: 즉시 배치 모드 진입 + 인벤토리 팝업 닫기
+        if (m_ItemData.Info.IsBuilding)
+        {
+            InGameController.Instance?.BuildingPlacementWorker?.StartPlacement(m_ItemData.Info.Id);
+            var popup = GetComponentInParent<InventoryPopup>(true);
+            popup?.Close();
+        }
     }
 }

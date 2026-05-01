@@ -64,6 +64,7 @@ Material:
     - _CastShadows: 1
     - _Cull: 2
     - _DstBlend: 10
+    - _DstBlendAlpha: 10
     - _Falloff: 50
     - _GridScale: 5
     - _Grid_Scale: 5
@@ -75,6 +76,7 @@ Material:
     - _Smoothness: 0.734
     - _Specular: 0.1
     - _SrcBlend: 1
+    - _SrcBlendAlpha: 1
     - _Surface: 1
     - _WorkflowMode: 1
     - _ZTest: 4

@@ -40,12 +40,4 @@ public abstract class BaseWorldUI : MonoBehaviour
     protected virtual void OnRelease()
     {
     }
-
-    protected void SetVisible(bool _visible)
-    {
-        if (gameObject.activeSelf != _visible)
-        {
-            gameObject.SetActive(_visible);
-        }
-    }
 }

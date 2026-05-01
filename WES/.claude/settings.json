@@ -2,7 +2,23 @@
   "permissions": {
     "allow": [
       "mcp__mcp-unity__ensure_guid_table",
-      "Edit(/.claude/skills/dev-qa/**)"
+      "Edit(/.claude/skills/dev-qa/**)",
+      "WebFetch(domain:api.github.com)",
+      "Edit(/.claude/skills/commit-push/**)",
+      "WebSearch",
+      "mcp__mcp-unity__u_play",
+      "Write",
+      "Edit",
+      "mcp__mcp-unity__u_set_transform",
+      "Edit(/.claude/skills/ui-review/**)",
+      "mcp__mcp-unity__u_editor_sceneview",
+      "mcp__mcp-unity__u_editor_tag_layer"
+    ],
+    "additionalDirectories": [
+      "C:\\GitFork\\WES_Project\\WES\\.claude\\skills",
+      "c:\\GitFork\\WES_Project\\WES\\.claude\\skills",
+      "C:\\GitFork\\WES_Project\\WES\\.claude",
+      "C:\\Users\\cgq02\\.claude\\projects\\c--GitFork-WES-Project\\memory"
     ]
   }
 }

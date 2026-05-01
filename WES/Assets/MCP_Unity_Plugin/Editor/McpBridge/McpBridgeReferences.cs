@@ -94,37 +94,104 @@ public static partial class McpBridge
         if (string.IsNullOrEmpty(_mapping.referenceTarget))
             return "referenceTarget is required";
 
-        // 필드/프로퍼티 타입 추론
-        var field = _compType.GetField(_mapping.propertyName,
-            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        // 배열 인덱스 표기 파싱: "m_Cells[0]" → fieldName="m_Cells", arrayIndex=0
+        string fieldName = _mapping.propertyName;
+        int arrayIndex = -1;
+        var bracketMatch = System.Text.RegularExpressions.Regex.Match(_mapping.propertyName, @"^(.+)\[(\d+)\]$");
+        if (bracketMatch.Success)
+        {
+            fieldName = bracketMatch.Groups[1].Value;
+            arrayIndex = int.Parse(bracketMatch.Groups[2].Value);
+        }
+
+        // 필드/프로퍼티 타입 추론 (제네릭 베이스 포함)
+        var field = FindFieldInHierarchy(_compType, fieldName);
         Type fieldType = field?.FieldType;
 
         if (fieldType == null)
         {
-            var prop = _compType.GetProperty(_mapping.propertyName,
-                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            var prop = FindPropertyInHierarchy(_compType, fieldName);
             fieldType = prop?.PropertyType;
         }
 
         if (fieldType == null)
-            return $"Field or property '{_mapping.propertyName}' not found on '{_compType.Name}'";
+            return $"Field or property '{fieldName}' not found on '{_compType.Name}'";
+
+        // 배열/리스트인 경우 요소 타입 결정
+        Type elementType = null;
+        if (arrayIndex >= 0)
+        {
+            if (fieldType.IsArray)
+            {
+                elementType = fieldType.GetElementType();
+            }
+            else if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.List<>))
+            {
+                elementType = fieldType.GetGenericArguments()[0];
+            }
+            else
+            {
+                return $"Field '{fieldName}' is not an array or List type";
+            }
+        }
+
+        Type resolveType = (arrayIndex >= 0) ? elementType : fieldType;
 
         // 참조 오브젝트 해석
-        var resolveError = ResolveReference(_mapping, fieldType, _contextGo, _prefabRoot, out var refObj);
+        var resolveError = ResolveReference(_mapping, resolveType, _contextGo, _prefabRoot, out var refObj);
         if (resolveError != null)
             return resolveError;
 
         // 필드에 할당
         try
         {
-            if (field != null)
+            if (arrayIndex >= 0)
+            {
+                // 배열/리스트 요소 할당
+                if (field != null)
+                {
+                    var arr = field.GetValue(_component);
+                    if (fieldType.IsArray)
+                    {
+                        var array = (Array)arr;
+                        if (array == null || array.Length <= arrayIndex)
+                        {
+                            // 배열 확장
+                            int newLen = arrayIndex + 1;
+                            var newArray = Array.CreateInstance(elementType, newLen);
+                            if (array != null)
+                                Array.Copy(array, newArray, array.Length);
+                            array = newArray;
+                            field.SetValue(_component, array);
+                        }
+                        array.SetValue(refObj, arrayIndex);
+                    }
+                    else
+                    {
+                        // List<T>
+                        var list = arr as System.Collections.IList;
+                        if (list == null)
+                        {
+                            list = (System.Collections.IList)Activator.CreateInstance(fieldType);
+                            field.SetValue(_component, list);
+                        }
+                        while (list.Count <= arrayIndex)
+                            list.Add(null);
+                        list[arrayIndex] = refObj;
+                    }
+                }
+                else
+                {
+                    return $"Array index assignment requires a field, not a property";
+                }
+            }
+            else if (field != null)
             {
                 field.SetValue(_component, refObj);
             }
             else
             {
-                var prop = _compType.GetProperty(_mapping.propertyName,
-                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                var prop = FindPropertyInHierarchy(_compType, fieldName);
                 prop.SetValue(_component, refObj);
             }
             return null;

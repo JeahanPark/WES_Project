@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.UI;
 
 public class TestManager : MonoSingleton<TestManager>
 {
@@ -328,6 +329,346 @@ public class TestManager : MonoSingleton<TestManager>
         }
 
         GameDebug.Log("[TestManager] TestContentExpansion 완료");
+    }
+
+    public void TestTerrainSlope()
+    {
+        StartCoroutine(CoTestTerrainSlope());
+    }
+
+    private IEnumerator CoTestTerrainSlope()
+    {
+        GameDebug.Log("[TestManager] TestTerrainSlope 시작");
+
+        int passed = 0;
+        int failed = 0;
+        void Mark(bool _condition, string _label)
+        {
+            if (_condition) { passed++; GameDebug.Log($"[TestManager] PASS: {_label}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+
+        var player = controller.PlayWorker?.LocalPlayer;
+        if (player == null) { GameDebug.LogError("[TestManager] LocalPlayer 없음"); yield break; }
+
+        // 시나리오 1: 슬로프 위 Y 자연 보정
+        GameDebug.Log("[TestManager] 시나리오 1: 슬로프 위 이동");
+        var agent = player.GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null && UnityEngine.AI.NavMesh.SamplePosition(new Vector3(0, 0, 35), out var nh1, 5f, UnityEngine.AI.NavMesh.AllAreas))
+        {
+            agent.Warp(nh1.position);
+            yield return new WaitForSeconds(0.3f);
+            Vector3 startPos = player.transform.position;
+            player.MoveWithDirection(new Vector2(0, 1));
+            yield return new WaitForSeconds(2f);
+            player.MoveWithDirection(Vector2.zero);
+            Vector3 endPos = player.transform.position;
+            GameDebug.Log($"[TestManager] 시작 Y={startPos.y:F2}, 종료 Y={endPos.y:F2}, ΔZ={endPos.z - startPos.z:F2}");
+            Mark(Mathf.Abs(endPos.y - startPos.y) > 0.3f || Mathf.Abs(endPos.z - startPos.z) > 1f, "슬로프 이동 + Y 변화");
+        }
+        else
+        {
+            Mark(false, "슬로프 위치 NavMesh 샘플링 실패");
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        // 시나리오 2: 마우스 Raycast Ground 레이어 hit
+        var camera = Camera.main;
+        if (camera != null)
+        {
+            int groundMask = 1 << LayerMask.NameToLayer("Ground");
+            Ray ray = camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            bool hitOk = Physics.Raycast(ray, out RaycastHit hit, 200f, groundMask);
+            Mark(hitOk, $"마우스 Raycast Ground hit (hit={hitOk})");
+        }
+        else { Mark(false, "Camera.main 없음"); }
+
+        yield return new WaitForSeconds(0.5f);
+
+        // 시나리오 3: 외곽 차단 (보조 콜라이더)
+        GameDebug.Log("[TestManager] 시나리오 3: 외곽 차단");
+        if (UnityEngine.AI.NavMesh.SamplePosition(new Vector3(65, 0, 0), out var nh3, 8f, UnityEngine.AI.NavMesh.AllAreas))
+        {
+            agent.Warp(nh3.position);
+            yield return new WaitForSeconds(0.3f);
+            player.MoveWithDirection(new Vector2(1, 0));
+            yield return new WaitForSeconds(3f);
+            player.MoveWithDirection(Vector2.zero);
+            float dist = Mathf.Sqrt(player.transform.position.x * player.transform.position.x +
+                                    player.transform.position.z * player.transform.position.z);
+            GameDebug.Log($"[TestManager] 외곽 시도 후 거리: {dist:F2}");
+            Mark(dist < 75f, $"섬 외곽 차단 (거리 {dist:F2} < 75)");
+        }
+        else { Mark(false, "외곽 좌표 NavMesh 샘플링 실패"); }
+
+        yield return new WaitForSeconds(0.5f);
+
+        // 시나리오 4: NavMeshAgent isOnNavMesh
+        Mark(agent != null && agent.isOnNavMesh, "플레이어 NavMesh 위에 있음");
+
+        yield return new WaitForSeconds(0.3f);
+
+        // 시나리오 5: 다양한 높이 — Start → Escape 사이 NavMesh 샘플
+        GameDebug.Log("[TestManager] 시나리오 5: 다양한 높이");
+        var samples = new Vector3[] {
+            new Vector3(0, 0, -42),
+            new Vector3(0, 0, 0),
+            new Vector3(0, 0, 35),
+            new Vector3(0, 0, 55),
+        };
+        int sampleHits = 0;
+        foreach (var p in samples)
+        {
+            if (UnityEngine.AI.NavMesh.SamplePosition(p, out var nhx, 5f, UnityEngine.AI.NavMesh.AllAreas))
+            {
+                sampleHits++;
+                GameDebug.Log($"[TestManager] {p} → NavMesh Y = {nhx.position.y:F2}");
+            }
+            else GameDebug.LogWarning($"[TestManager] {p} → NavMesh 미적용");
+        }
+        Mark(sampleHits >= 3, $"NavMesh 샘플 {sampleHits}/4 영역 통과");
+
+        yield return new WaitForSeconds(0.3f);
+
+        // 시나리오 6: 몬스터 NavMesh
+        var monsters = Object.FindObjectsByType<MonsterStateMachine>(FindObjectsSortMode.None);
+        GameDebug.Log($"[TestManager] 몬스터 수: {monsters.Length}");
+        if (monsters.Length > 0)
+        {
+            var mAgent = monsters[0].GetComponent<UnityEngine.AI.NavMeshAgent>();
+            Mark(mAgent != null && mAgent.isOnNavMesh, "첫 몬스터 NavMesh 위에 있음");
+        }
+        else
+        {
+            GameDebug.LogWarning("[TestManager] 몬스터 미스폰 — 시나리오 6 SKIP");
+        }
+
+        GameDebug.Log($"[TestManager] TestTerrainSlope 결과: PASS {passed}, FAIL {failed}");
+    }
+
+    public void TestCraftHUDTab()
+    {
+        StartCoroutine(CoTestCraftHUDTab());
+    }
+
+    private IEnumerator CoTestCraftHUDTab()
+    {
+        GameDebug.Log("[TestManager] TestCraftHUDTab 시작");
+
+        int passed = 0;
+        int failed = 0;
+        void Mark(bool _condition, string _label)
+        {
+            if (_condition) { passed++; GameDebug.Log($"[TestManager] PASS: {_label}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
+        }
+
+        var tab = Object.FindFirstObjectByType<CraftHUDTab>();
+        if (tab == null) { GameDebug.LogError("[TestManager] CraftHUDTab 없음"); yield break; }
+
+        // 사전 정리: 모든 팝업 닫기
+        var existingCraft = Managers.Popup.FindOpen<CraftPopup>();
+        if (existingCraft != null) Managers.Popup.Close(existingCraft);
+        var existingInv = Managers.Popup.FindOpen<InventoryPopup>();
+        if (existingInv != null) Managers.Popup.Close(existingInv);
+        yield return new WaitForSeconds(0.3f);
+
+        // 시나리오 1: 건축 버튼 — 닫혀있을 때 CraftPopup 열림
+        tab.OnClickOpenBuilding();
+        yield return new WaitForSeconds(0.3f);
+        var craftPopup = Managers.Popup.FindOpen<CraftPopup>();
+        Mark(craftPopup != null, "건축 클릭 (닫힌 상태) → CraftPopup 열림");
+
+        // 시나리오 2: 건축 버튼 — 이미 열려있으면 동일 팝업 유지 (카테고리만 전환)
+        if (craftPopup != null)
+        {
+            craftPopup.SelectCategory(CraftCategoryType.Item);
+            yield return new WaitForSeconds(0.2f);
+            tab.OnClickOpenBuilding();
+            yield return new WaitForSeconds(0.3f);
+            var stillOpen = Managers.Popup.FindOpen<CraftPopup>();
+            Mark(stillOpen == craftPopup, "건축 클릭 (이미 열린 상태) → 동일 CraftPopup 인스턴스 유지");
+        }
+
+        // CraftPopup 정리
+        if (craftPopup != null) Managers.Popup.Close(craftPopup);
+        yield return new WaitForSeconds(0.3f);
+
+        // 시나리오 3: 인벤토리 버튼 — 닫혀있을 때 InventoryPopup 열림
+        tab.OnClickOpenInventory();
+        yield return new WaitForSeconds(0.3f);
+        var invPopup = Managers.Popup.FindOpen<InventoryPopup>();
+        Mark(invPopup != null, "인벤토리 클릭 (닫힌 상태) → InventoryPopup 열림");
+
+        // 시나리오 4: 인벤토리 버튼 — 이미 열려있으면 무시 (동일 팝업 유지)
+        tab.OnClickOpenInventory();
+        yield return new WaitForSeconds(0.3f);
+        var invPopup2 = Managers.Popup.FindOpen<InventoryPopup>();
+        Mark(invPopup2 == invPopup, "인벤토리 클릭 (이미 열린 상태) → 동일 InventoryPopup 인스턴스 유지");
+
+        // 정리
+        if (invPopup != null) Managers.Popup.Close(invPopup);
+
+        GameDebug.Log($"[TestManager] TestCraftHUDTab 결과: PASS {passed}, FAIL {failed}");
+    }
+
+    // ===== 건축(Building) 시스템 통합 QA =====
+    public void TestBuilding()
+    {
+        StartCoroutine(CoTestBuilding());
+    }
+
+    private IEnumerator CoTestBuilding()
+    {
+        GameDebug.Log("[TestManager] TestBuilding 시작");
+
+        int passed = 0;
+        int failed = 0;
+        void Mark(bool _condition, string _label)
+        {
+            if (_condition) { passed++; GameDebug.Log($"[TestManager] PASS: {_label}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+
+        var placementWorker = controller.BuildingPlacementWorker;
+        var inventory = controller.ObjectDataWorker?.GetInventoryRegistry();
+        var quickSlot = controller.ObjectDataWorker?.GetQuickSlotRegistry();
+        var player = controller.PlayWorker?.LocalPlayer;
+        if (placementWorker == null || inventory == null || quickSlot == null || player == null)
+        {
+            GameDebug.LogError("[TestManager] 의존성 없음");
+            yield break;
+        }
+
+        inventory.Clear();
+
+        // 시나리오 1: 제작 카테고리 데이터 확인 (Building/Item 분리)
+        var buildingList = Managers.Info.GetCraftInfosByCategory(CraftCategoryType.Building);
+        var itemList = Managers.Info.GetCraftInfosByCategory(CraftCategoryType.Item);
+        Mark(buildingList != null && buildingList.Count >= 2, $"Building 카테고리 제작 항목 수: {buildingList?.Count ?? 0} (>=2 기대: 모닥불/횃불)");
+        Mark(itemList != null && itemList.Count >= 1, $"Item 카테고리 제작 항목 수: {itemList?.Count ?? 0}");
+
+        // 시나리오 2: 모닥불(CraftId=1) 재료/조건 확인
+        var materials = Managers.Info.GetMaterialsByCraftId(1);
+        var conditions = Managers.Info.GetConditionsByCraftId(1);
+        Mark(materials != null && materials.Count == 2, $"모닥불 재료 수: {materials?.Count ?? 0} (2 기대: 나무5, 돌2)");
+        Mark(conditions != null && conditions.Count == 1, $"모닥불 조건 수: {conditions?.Count ?? 0} (1 기대: 추위<=50)");
+
+        // 시나리오 3: CraftPopup 열기 → Building 카테고리 → 모닥불 셀 클릭 → DetailPanel 표시
+        var craftPopup = Managers.Popup.Open<CraftPopup>();
+        yield return new WaitForSeconds(0.3f);
+        craftPopup.SelectCategory(CraftCategoryType.Building);
+        yield return new WaitForSeconds(0.3f);
+        Mark(craftPopup != null, "CraftPopup 열림");
+
+        // 시나리오 4: 재료/조건 충족 시 제작 성공 → 결과 아이템 인벤토리 추가
+        // (DetailPanel.OnClickCraft은 private이므로 직접 ExecuteCraft 흐름을 검증)
+        // 재료 채우기: 나무5(id=1), 돌2(id=2)
+        inventory.AddItem(1, 5);
+        inventory.AddItem(2, 2);
+        player.SetCold(30); // 추위 30 (≤50 충족)
+        yield return new WaitForSeconds(0.2f);
+
+        var detailPanel = craftPopup.GetComponentInChildren<CraftDetailPanel>(true);
+        var campfireInfo = buildingList.Find(c => c.Id == 1);
+        Mark(detailPanel != null, "CraftDetailPanel 존재");
+        Mark(campfireInfo != null, "모닥불 CraftInfo 조회 성공");
+
+        if (detailPanel != null && campfireInfo != null)
+        {
+            detailPanel.Show(campfireInfo);
+            yield return new WaitForSeconds(0.3f);
+            int beforeWood = inventory.GetItem(1)?.Count ?? 0;
+            int beforeStone = inventory.GetItem(2)?.Count ?? 0;
+            int beforeCampfire = inventory.GetItem(4)?.Count ?? 0;
+            GameDebug.Log($"[TestManager] 제작 전 — 나무:{beforeWood}, 돌:{beforeStone}, 모닥불:{beforeCampfire}");
+
+            // CraftButton 클릭 시뮬레이션
+            var craftBtn = detailPanel.GetComponentInChildren<Button>(true);
+            // CraftDetailPanel의 OnClickCraft은 private이므로 m_CraftButton.onClick.Invoke()
+            // 하지만 m_CraftButton 직접 접근 불가 → reflection으로 호출
+            var execMethod = typeof(CraftDetailPanel).GetMethod("OnClickCraft",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            execMethod?.Invoke(detailPanel, null);
+            yield return new WaitForSeconds(0.3f);
+
+            int afterWood = inventory.GetItem(1)?.Count ?? 0;
+            int afterStone = inventory.GetItem(2)?.Count ?? 0;
+            int afterCampfire = inventory.GetItem(4)?.Count ?? 0;
+            GameDebug.Log($"[TestManager] 제작 후 — 나무:{afterWood}, 돌:{afterStone}, 모닥불:{afterCampfire}");
+            Mark(afterWood == beforeWood - 5, "재료(나무) 5개 차감");
+            Mark(afterStone == beforeStone - 2, "재료(돌) 2개 차감");
+            Mark(afterCampfire == beforeCampfire + 1, "결과(모닥불 아이템) 1개 획득");
+        }
+
+        // 시나리오 5: 추위 조건 미충족 시 CanCraft false → 버튼 비활성화
+        inventory.Clear();
+        inventory.AddItem(1, 10);
+        inventory.AddItem(2, 5);
+        player.SetCold(80); // 추위 80 → 50 초과 → 조건 실패
+        yield return new WaitForSeconds(0.2f);
+        if (detailPanel != null && campfireInfo != null)
+        {
+            detailPanel.Show(campfireInfo);
+            yield return new WaitForSeconds(0.2f);
+            var craftButton = detailPanel.GetComponentsInChildren<Button>(true)[0];
+            Mark(!craftButton.interactable, $"추위 조건 미충족 시 제작 버튼 비활성 (interactable={craftButton.interactable})");
+        }
+
+        // 시나리오 6: 재료 부족 시 CanCraft false
+        inventory.Clear();
+        inventory.AddItem(1, 1); // 나무 1개만 (5 필요)
+        player.SetCold(20);
+        yield return new WaitForSeconds(0.2f);
+        if (detailPanel != null && campfireInfo != null)
+        {
+            detailPanel.Show(campfireInfo);
+            yield return new WaitForSeconds(0.2f);
+            var craftButton = detailPanel.GetComponentsInChildren<Button>(true)[0];
+            Mark(!craftButton.interactable, $"재료 부족 시 제작 버튼 비활성 (interactable={craftButton.interactable})");
+        }
+
+        Managers.Popup.Close(craftPopup);
+        yield return new WaitForSeconds(0.3f);
+
+        // 시나리오 7: BuildingPlacementWorker - StartPlacement (건물 아이템)
+        inventory.Clear();
+        inventory.AddItem(4, 1); // 모닥불 아이템 보유
+        yield return new WaitForSeconds(0.2f);
+        Mark(!placementWorker.IsPlacing, "초기 IsPlacing == false");
+
+        placementWorker.StartPlacement(4); // 모닥불 ItemInfoId
+        yield return new WaitForSeconds(0.2f);
+        Mark(placementWorker.IsPlacing, "StartPlacement(모닥불) 후 IsPlacing == true");
+
+        // 시나리오 8: CancelPlacement
+        placementWorker.CancelPlacement();
+        yield return new WaitForSeconds(0.2f);
+        Mark(!placementWorker.IsPlacing, "CancelPlacement 후 IsPlacing == false");
+
+        // 시나리오 9: 일반 아이템(IsBuilding=false)으로 StartPlacement → 진입 안됨
+        placementWorker.StartPlacement(1); // 나무 (IsBuilding=false)
+        yield return new WaitForSeconds(0.2f);
+        Mark(!placementWorker.IsPlacing, "일반 아이템(나무)은 StartPlacement 차단됨 (IsPlacing=false)");
+
+        // 시나리오 10: 퀵슬롯 통합 — 건물 아이템을 퀵슬롯에 등록 → UseSlot → 자동 StartPlacement
+        quickSlot.Register(0, 4); // 퀵슬롯0에 모닥불
+        yield return new WaitForSeconds(0.2f);
+        quickSlot.UseSlot(0, inventory);
+        yield return new WaitForSeconds(0.2f);
+        Mark(placementWorker.IsPlacing, "퀵슬롯 사용 → 건물 아이템 자동 StartPlacement");
+
+        // 정리
+        placementWorker.CancelPlacement();
+
+        GameDebug.Log($"[TestManager] TestBuilding 결과: PASS {passed}, FAIL {failed}");
     }
 }
 #endif

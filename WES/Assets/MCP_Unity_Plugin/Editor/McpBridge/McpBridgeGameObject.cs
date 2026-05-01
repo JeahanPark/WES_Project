@@ -18,8 +18,9 @@ public static partial class McpBridge
             "delete"     => DeleteGameObject(_req),
             "rename"     => RenameGameObject(_req),
             "set_active" => SetActive(_req),
-            "duplicate"  => Duplicate(_req),
-            _            => BuildError($"u_editor_gameobject: unknown subAction '{_req.subAction}'")
+            "duplicate"   => Duplicate(_req),
+            "set_parent"  => SetParent(_req),
+            _             => BuildError($"u_editor_gameobject: unknown subAction '{_req.subAction}'")
         };
     }
 
@@ -186,7 +187,15 @@ public static partial class McpBridge
                 if (parentGo == null)
                     return BuildError($"Parent GameObject not found: '{_req.target}'");
 
-                var newGo = new GameObject(_req.gameObjectName);
+                GameObject newGo;
+                if (parentGo.GetComponent<RectTransform>() != null)
+                {
+                    newGo = new GameObject(_req.gameObjectName, typeof(RectTransform));
+                }
+                else
+                {
+                    newGo = new GameObject(_req.gameObjectName);
+                }
                 newGo.transform.SetParent(parentGo.transform, false);
 
                 PrefabUtility.SaveAsPrefabAsset(prefabContents, _req.prefabPath);
@@ -216,11 +225,79 @@ public static partial class McpBridge
         if (sceneParent == null)
             return BuildError($"Parent GameObject not found: '{_req.target}'");
 
-        var newSceneGo = new GameObject(_req.gameObjectName);
+        GameObject newSceneGo;
+        if (sceneParent.GetComponent<RectTransform>() != null)
+        {
+            newSceneGo = new GameObject(_req.gameObjectName, typeof(RectTransform));
+        }
+        else
+        {
+            newSceneGo = new GameObject(_req.gameObjectName);
+        }
         Undo.RegisterCreatedObjectUndo(newSceneGo, "MCP Add GameObject");
         newSceneGo.transform.SetParent(sceneParent.transform, false);
 
         SaveTarget(newSceneGo, null);
         return BuildSuccess($"GameObject '{_req.gameObjectName}' added under '{_req.target}'");
+    }
+
+    // ---- set_parent ----
+
+    private static string SetParent(BridgeRequest _req)
+    {
+        if (string.IsNullOrEmpty(_req.target))
+            return BuildError("'target' (child to move) is required");
+        if (string.IsNullOrEmpty(_req.newParent))
+            return BuildError("'newParent' is required");
+
+        if (!string.IsNullOrEmpty(_req.prefabPath))
+        {
+            var prefabContents = PrefabUtility.LoadPrefabContents(_req.prefabPath);
+            if (prefabContents == null)
+                return BuildError($"Failed to load prefab: '{_req.prefabPath}'");
+
+            try
+            {
+                var childGo = (_req.target == prefabContents.name)
+                    ? prefabContents
+                    : FindInHierarchy(prefabContents.transform, _req.target)?.gameObject;
+
+                if (childGo == null)
+                    return BuildError($"GameObject '{_req.target}' not found in prefab");
+                if (childGo == prefabContents)
+                    return BuildError("Cannot reparent the prefab root GameObject");
+
+                var newParentGo = (_req.newParent == prefabContents.name)
+                    ? prefabContents
+                    : FindInHierarchy(prefabContents.transform, _req.newParent)?.gameObject;
+
+                if (newParentGo == null)
+                    return BuildError($"New parent '{_req.newParent}' not found in prefab");
+
+                childGo.transform.SetParent(newParentGo.transform, false);
+                PrefabUtility.SaveAsPrefabAsset(prefabContents, _req.prefabPath);
+                return BuildSuccess($"'{_req.target}' reparented under '{_req.newParent}'");
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(prefabContents);
+            }
+        }
+
+        // 씬 모드
+        var (childScene, _) = FindTarget(_req);
+        if (childScene == null)
+            return BuildError($"GameObject '{_req.target}' not found");
+
+        // newParent를 찾기 위해 임시 request
+        var parentReq = new BridgeRequest { target = _req.newParent };
+        var (parentScene, _2) = FindTarget(parentReq);
+        if (parentScene == null)
+            return BuildError($"New parent '{_req.newParent}' not found");
+
+        Undo.SetTransformParent(childScene.transform, parentScene.transform, "MCP Set Parent");
+        childScene.transform.SetParent(parentScene.transform, false);
+        SaveTarget(childScene, null);
+        return BuildSuccess($"'{_req.target}' reparented under '{_req.newParent}'");
     }
 }

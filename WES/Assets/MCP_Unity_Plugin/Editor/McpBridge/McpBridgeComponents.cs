@@ -113,8 +113,8 @@ public static partial class McpBridge
     {
         var type = _component.GetType();
 
-        var field = type.GetField(_memberName,
-            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        // 상속 체인(제네릭 베이스 포함)을 순회하여 필드 탐색
+        var field = FindFieldInHierarchy(type, _memberName);
         if (field != null)
         {
             try
@@ -128,8 +128,8 @@ public static partial class McpBridge
             }
         }
 
-        var prop = type.GetProperty(_memberName,
-            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        // 상속 체인(제네릭 베이스 포함)을 순회하여 프로퍼티 탐색
+        var prop = FindPropertyInHierarchy(type, _memberName);
         if (prop != null && prop.CanWrite)
         {
             try

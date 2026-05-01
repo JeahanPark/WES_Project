@@ -139,14 +139,6 @@ public class CharacterWorldUI : BaseWorldUI
         Vector3 worldPosition = m_TargetTransform.position + offset;
         Vector3 screenPosition = m_Camera.WorldToScreenPoint(worldPosition);
 
-        if (screenPosition.z < 0f)
-        {
-            SetVisible(false);
-            return;
-        }
-
-        SetVisible(true);
-
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             m_CanvasRectTransform,
             screenPosition,

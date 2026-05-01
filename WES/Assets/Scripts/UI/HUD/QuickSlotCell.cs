@@ -8,6 +8,10 @@ using TMPro;
 /// </summary>
 public class QuickSlotCell : MonoBehaviour, IDropHandler, IPointerClickHandler
 {
+    private static readonly Color SLOT_BG_COLOR = new Color(0.15f, 0.15f, 0.2f, 0.85f);
+    private static readonly Color SLOT_BORDER_COLOR = new Color(0.4f, 0.4f, 0.5f, 1f);
+    private static readonly Color KEY_NUMBER_COLOR = new Color(1f, 0.9f, 0.5f, 1f);
+
     [SerializeField] private Image m_IconImage;
     [SerializeField] private TextMeshProUGUI m_CountText;
     [SerializeField] private TextMeshProUGUI m_KeyNumberText;
@@ -15,8 +19,14 @@ public class QuickSlotCell : MonoBehaviour, IDropHandler, IPointerClickHandler
 
     private int m_SlotIndex;
     private int m_ItemInfoId;
+    private Outline m_Outline;
 
     public int SlotIndex => m_SlotIndex;
+
+    private void Awake()
+    {
+        ApplyStyle();
+    }
 
     public void Setup(int _slotIndex)
     {
@@ -26,6 +36,29 @@ public class QuickSlotCell : MonoBehaviour, IDropHandler, IPointerClickHandler
             m_KeyNumberText.text = (_slotIndex + 1).ToString();
 
         SetEmpty();
+    }
+
+    private void ApplyStyle()
+    {
+        // 배경색 적용
+        var bgImage = GetComponent<Image>();
+        if (bgImage != null)
+            bgImage.color = SLOT_BG_COLOR;
+
+        // 테두리 추가
+        m_Outline = GetComponent<Outline>();
+        if (m_Outline == null)
+            m_Outline = gameObject.AddComponent<Outline>();
+        m_Outline.effectColor = SLOT_BORDER_COLOR;
+        m_Outline.effectDistance = new Vector2(2, -2);
+
+        // 키 번호 스타일
+        if (m_KeyNumberText != null)
+        {
+            m_KeyNumberText.color = KEY_NUMBER_COLOR;
+            m_KeyNumberText.fontSize = 16;
+            m_KeyNumberText.fontStyle = FontStyles.Bold;
+        }
     }
 
     public void UpdateSlot(int _itemInfoId, InventoryRegistry _inventory)

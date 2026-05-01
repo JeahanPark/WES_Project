@@ -12,6 +12,19 @@ using UnityEditor;
 
 public static partial class McpBridge
 {
+    // ---- u_play: unified play mode router ----
+
+    private static string RoutePlay(BridgeRequest _req)
+    {
+        return (_req.subAction ?? "").ToLowerInvariant() switch
+        {
+            "control" => PlayModeControl(_req),
+            "click"   => ClickUi(_req),
+            "invoke"  => InvokeRuntime(_req),
+            _         => BuildError($"u_play: unknown action '{_req.subAction}'")
+        };
+    }
+
     // ---- u_play_set_transform ----
 
     private static string PlaySetTransform(BridgeRequest _req)

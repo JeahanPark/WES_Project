@@ -25,12 +25,6 @@ public class MonsterStateMachine : MonoBehaviour
     {
         m_SpawnPosition = transform.position;
         m_Agent = GetComponent<NavMeshAgent>();
-        if (m_Agent != null)
-        {
-            m_Agent.speed = MOVE_SPEED;
-            m_Agent.angularSpeed = 360f;
-            m_Agent.stoppingDistance = 0.5f;
-        }
         InitializeStates();
     }
 
