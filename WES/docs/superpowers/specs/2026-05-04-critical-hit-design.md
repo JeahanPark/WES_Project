@@ -9,7 +9,7 @@
 - 적용 범위: 플레이어·몬스터 모든 공격
 - 데미지 공식: `finalDamage = max(1, RoundToInt((ATK - DEF) * (isCritical ? 1.5 : 1)))`
   - DEF 차감 후 배율 적용 (정확히 1.5배 체감)
-- 크리티컬 시각: 노란색(`Color(1, 0.85, 0.2)`) + 폰트 크기 1.4배
+- 크리티컬 시각: 빨간색(`Color.red`) + 폰트 크기 1.4배
 
 ## 1. 아키텍처
 
@@ -90,7 +90,7 @@ public void UnsubscribeOnDamaged(System.Action<int, CharacterBase, bool> _callba
 ### 2.2 `InGameWorldUIWorker.cs`
 
 ```csharp
-private static readonly Color CRIT_COLOR = new(1f, 0.85f, 0.2f);
+private static readonly Color CRIT_COLOR = Color.red;
 private const float CRIT_SCALE_MULTIPLIER = 1.4f;
 
 public DamageNumberWorldUI CreateDamageNumber(int _damage, Vector3 _worldPosition, bool _isCritical = false)
@@ -130,7 +130,7 @@ public void SetData(int _damage, Vector3 _worldPosition, Vector2 _screenOffset,
 
 | 케이스 | 처리 |
 |---|---|
-| `ATK ≤ DEF` (방어력이 공격력 이상) | `Max(1, ...)`로 최소 1 보장. 일반/크리 모두 1이지만 시각 차별화는 그대로 적용 |
+| `ATK ≤ DEF` (방어력이 공격력 이상) | `Max(1, ...)`로 최소 1 보장. 일반/크리 모두 1이지만 시각 차별화(빨간색·1.4배)는 그대로 적용 |
 | 반올림 | `Mathf.RoundToInt` (예: `(10-3)*1.5=10.5 → 11`) |
 | 공격자가 죽거나 사라짐 | 기존 `_attackerId == 0` / `SpawnedObjects` 미존재 시 `attacker = null` 처리 유지. `_isCritical`은 attacker 존재와 무관 |
 | HP가 0 이하 | 기존 `IsDead` → `OnDeathClientRpc` 분기 그대로 유지 |

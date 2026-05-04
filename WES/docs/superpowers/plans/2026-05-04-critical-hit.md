@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 모든 캐릭터의 공격에 10% 확률로 1.5배 데미지를 적용하고, 크리티컬일 때 데미지 숫자를 노란색·1.4배 크기로 차별화한다.
+**Goal:** 모든 캐릭터의 공격에 10% 확률로 1.5배 데미지를 적용하고, 크리티컬일 때 데미지 숫자를 빨간색·1.4배 크기로 차별화한다.
 
 **Architecture:** 크리티컬 판정은 서버 권위 (`CharacterBase.TakeDamageServerRpc`) 내부에서 굴리고, 결과 `isCritical` 플래그를 `OnDamagedClientRpc`로 모든 클라이언트에 브로드캐스트해 World UI 데미지 숫자에 시각 차별화를 적용한다.
 
@@ -201,7 +201,7 @@ git commit -m "크리티컬 히트: 서버 롤 로직 + 시그니처 확장 (시
 
 ## Task 2: 데미지 숫자 시각 차별화 (색상 + 크기)
 
-`InGameWorldUIWorker`에서 크리티컬일 때 노란색·1.4배 크기를 결정하고, `DamageNumberWorldUI.SetData`가 스케일을 받아 폰트 크기에 적용한다. 풀 재사용 시 폰트 크기가 누적되지 않도록 `OnRelease`에서 복원한다.
+`InGameWorldUIWorker`에서 크리티컬일 때 빨간색·1.4배 크기를 결정하고, `DamageNumberWorldUI.SetData`가 스케일을 받아 폰트 크기에 적용한다. 풀 재사용 시 폰트 크기가 누적되지 않도록 `OnRelease`에서 복원한다.
 
 **Files:**
 - Modify: `Assets/Scripts/Worker/InGameWorldUIWorker.cs`
@@ -365,7 +365,7 @@ public class DamageNumberWorldUI : BaseWorldUI
 `Assets/Scripts/Worker/InGameWorldUIWorker.cs` 클래스 멤버 영역 (라인 14 근처, 다른 `private` 멤버들과 함께)에 상수 추가:
 
 ```csharp
-private static readonly Color CRIT_COLOR = new(1f, 0.85f, 0.2f);
+private static readonly Color CRIT_COLOR = Color.red;
 private const float CRIT_SCALE_MULTIPLIER = 1.4f;
 ```
 
@@ -565,10 +565,10 @@ MCP 도구 호출 순서:
 
 확인:
 - 화면에 데미지 숫자 다수 노출
-- 노란색·큰 글씨의 크리티컬 숫자가 1개 이상 보임
+- 빨간색·큰 글씨의 크리티컬 숫자가 1개 이상 보임
 - 흰색·기본 크기의 일반 숫자도 함께 보임 (대조)
 
-스크린샷에서 노란색 큰 숫자가 안 보이면 (확률상 0.1^k로 안 뜨는 경우 가능) Step 1~3을 한 번 더 반복.
+스크린샷에서 빨간색 큰 숫자가 안 보이면 (확률상 0.1^k로 안 뜨는 경우 가능) Step 1~3을 한 번 더 반복.
 
 - [ ] **Step 4: 회귀 — 기존 `TestDamageNumber` 재실행**
 
