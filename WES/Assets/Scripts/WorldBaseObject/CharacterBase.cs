@@ -12,6 +12,8 @@ public class CharacterBase : WorldEntityBase
     public const int DEFAULT_DEF = 3;
     public const float DEFAULT_HP_REGEN = 0.5f;
     public const float DEFAULT_MOVE_SPEED = 5.0f;
+    public const float CRITICAL_CHANCE = 0.1f;
+    public const float CRITICAL_MULTIPLIER = 1.5f;
 
     private const float ROTATION_SPEED = 15f;
 
@@ -26,7 +28,7 @@ public class CharacterBase : WorldEntityBase
     private NetworkVariable<int> m_MaxHP = new(DEFAULT_MAX_HP, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private event System.Action<int, int> m_OnHPChanged;
-    private event System.Action<int, CharacterBase> m_OnDamaged;
+    private event System.Action<int, CharacterBase, bool> m_OnDamaged;
     private event System.Action m_OnDeath;
 
     private CharacterWorldUI m_WorldUI;
@@ -108,12 +110,12 @@ public class CharacterBase : WorldEntityBase
         m_OnHPChanged -= _callback;
     }
 
-    public void SubscribeOnDamaged(System.Action<int, CharacterBase> _callback)
+    public void SubscribeOnDamaged(System.Action<int, CharacterBase, bool> _callback)
     {
         m_OnDamaged += _callback;
     }
 
-    public void UnsubscribeOnDamaged(System.Action<int, CharacterBase> _callback)
+    public void UnsubscribeOnDamaged(System.Action<int, CharacterBase, bool> _callback)
     {
         m_OnDamaged -= _callback;
     }
@@ -172,10 +174,12 @@ public class CharacterBase : WorldEntityBase
         if (IsDead)
             return;
 
-        int finalDamage = Mathf.Max(1, _damage - m_DEF);
+        bool isCritical = UnityEngine.Random.value < CRITICAL_CHANCE;
+        float multiplier = isCritical ? CRITICAL_MULTIPLIER : 1f;
+        int finalDamage = Mathf.Max(1, Mathf.RoundToInt((_damage - m_DEF) * multiplier));
         SetHP(m_HP.Value - finalDamage);
 
-        OnDamagedClientRpc(_damage, _attackerId);
+        OnDamagedClientRpc(finalDamage, _attackerId, isCritical);
 
         if (IsDead)
         {
@@ -184,7 +188,7 @@ public class CharacterBase : WorldEntityBase
     }
 
     [Rpc(SendTo.Everyone)]
-    private void OnDamagedClientRpc(int _damage, ulong _attackerId)
+    private void OnDamagedClientRpc(int _damage, ulong _attackerId, bool _isCritical)
     {
         CharacterBase attacker = null;
 
@@ -196,8 +200,8 @@ public class CharacterBase : WorldEntityBase
             }
         }
 
-        m_OnDamaged?.Invoke(_damage, attacker);
-        OnDamaged(_damage, attacker);
+        m_OnDamaged?.Invoke(_damage, attacker, _isCritical);
+        OnDamaged(_damage, attacker, _isCritical);
     }
 
     [Rpc(SendTo.Everyone)]
@@ -210,13 +214,13 @@ public class CharacterBase : WorldEntityBase
     /// <summary>
     /// 피격 시 호출 (자식 클래스에서 오버라이드)
     /// </summary>
-    protected virtual void OnDamaged(int _damage, CharacterBase _attacker)
+    protected virtual void OnDamaged(int _damage, CharacterBase _attacker, bool _isCritical)
     {
         if (InGameController.Instance == null || InGameController.Instance.WorldUIWorker == null)
             return;
 
         Vector3 spawnPosition = transform.position + WorldUIOffset + Vector3.up * 0.3f;
-        InGameController.Instance.WorldUIWorker.CreateDamageNumber(_damage, spawnPosition);
+        InGameController.Instance.WorldUIWorker.CreateDamageNumber(_damage, spawnPosition, _isCritical);
     }
 
     /// <summary>

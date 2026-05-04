@@ -67,7 +67,7 @@ public class InGameWorldUIWorker : MonoBehaviour
         return worldUI;
     }
 
-    public DamageNumberWorldUI CreateDamageNumber(int _damage, Vector3 _worldPosition)
+    public DamageNumberWorldUI CreateDamageNumber(int _damage, Vector3 _worldPosition, bool _isCritical = false)
     {
         DamageNumberWorldUI worldUI = CreateWorldUI<DamageNumberWorldUI>();
 

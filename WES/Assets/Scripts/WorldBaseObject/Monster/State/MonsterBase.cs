@@ -53,9 +53,9 @@ public abstract class MonsterBase : CharacterBase
         m_Renderer.material.color = _isHit ? Color.red : m_OriginalColor;
     }
 
-    protected override void OnDamaged(int _damage, CharacterBase _attacker)
+    protected override void OnDamaged(int _damage, CharacterBase _attacker, bool _isCritical)
     {
-        base.OnDamaged(_damage, _attacker);
+        base.OnDamaged(_damage, _attacker, _isCritical);
 
         if (!IsDead && m_StateMachine != null)
         {
