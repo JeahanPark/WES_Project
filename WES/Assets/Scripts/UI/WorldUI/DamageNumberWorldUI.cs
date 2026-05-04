@@ -21,6 +21,8 @@ public class DamageNumberWorldUI : BaseWorldUI
     private RectTransform m_CanvasRectTransform;
     private Coroutine m_AnimationCoroutine;
     private float m_CurrentRiseY;
+    private float m_BaseFontSize;
+    private bool m_BaseFontSizeCached;
 
     public void SetData(
         int _damage,
@@ -29,7 +31,8 @@ public class DamageNumberWorldUI : BaseWorldUI
         Camera _camera,
         Camera _uiCamera,
         RectTransform _canvasRect,
-        Color _textColor)
+        Color _textColor,
+        float _scaleMultiplier)
     {
         m_WorldPosition = _worldPosition;
         m_ScreenOffset = _screenOffset;
@@ -39,8 +42,14 @@ public class DamageNumberWorldUI : BaseWorldUI
 
         if (m_DamageText != null)
         {
+            if (!m_BaseFontSizeCached)
+            {
+                m_BaseFontSize = m_DamageText.fontSize;
+                m_BaseFontSizeCached = true;
+            }
             m_DamageText.text = _damage.ToString();
             m_DamageText.color = _textColor;
+            m_DamageText.fontSize = m_BaseFontSize * _scaleMultiplier;
         }
 
         if (m_CanvasGroup != null)
@@ -59,6 +68,11 @@ public class DamageNumberWorldUI : BaseWorldUI
         m_UICamera = null;
         m_CanvasRectTransform = null;
         m_CurrentRiseY = 0f;
+
+        if (m_DamageText != null && m_BaseFontSizeCached)
+        {
+            m_DamageText.fontSize = m_BaseFontSize;
+        }
     }
 
     private void LateUpdate()

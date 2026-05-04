@@ -8,6 +8,9 @@ using UnityEngine;
 /// </summary>
 public class InGameWorldUIWorker : MonoBehaviour
 {
+    private static readonly Color CRIT_COLOR = Color.red;
+    private const float CRIT_SCALE_MULTIPLIER = 1.4f;
+
     private Camera m_Camera;
     private Camera m_UICamera;
     private Transform m_WorldUIRoot;
@@ -75,7 +78,10 @@ public class InGameWorldUIWorker : MonoBehaviour
             return null;
 
         Vector2 screenOffset = new Vector2(UnityEngine.Random.Range(-20f, 20f), 0f);
-        worldUI.SetData(_damage, _worldPosition, screenOffset, m_Camera, m_UICamera, m_CanvasRectTransform, Color.white);
+        Color color = _isCritical ? CRIT_COLOR : Color.white;
+        float scale = _isCritical ? CRIT_SCALE_MULTIPLIER : 1f;
+
+        worldUI.SetData(_damage, _worldPosition, screenOffset, m_Camera, m_UICamera, m_CanvasRectTransform, color, scale);
 
         return worldUI;
     }
