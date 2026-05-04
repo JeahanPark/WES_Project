@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class TestManager : MonoSingleton<TestManager>
 {
+    public const int TEST_START_ITEM_COUNT = 100;
+
     // ===== 범용 입력 시뮬레이션 =====
 
     public void SimulateKeyPress(string _keyName)
@@ -102,6 +104,40 @@ public class TestManager : MonoSingleton<TestManager>
         var inventory = controller.ObjectDataWorker.GetInventoryRegistry();
         inventory.AddItem(itemId, count);
         GameDebug.Log($"[TestManager] Added item {itemId} x{count}");
+    }
+
+    public void TestSpawnCampfireNearPlayer()
+    {
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); return; }
+
+        var player = controller.PlayWorker?.LocalPlayer;
+        if (player == null) { GameDebug.LogError("[TestManager] LocalPlayer 없음"); return; }
+
+        Vector3 spawnPos = player.transform.position + player.transform.forward * 2.5f;
+        GameDebug.Log($"[TestManager] 모닥불 스폰 요청: pos={spawnPos}");
+        controller.PlayWorker.SpawnBuilding(1, spawnPos);
+    }
+
+    public void FillStartInventory(InGameObjectDataWorker _worker)
+    {
+        if (_worker == null) return;
+
+        var inventory = _worker.GetInventoryRegistry();
+        if (inventory == null) return;
+
+        var itemInfoList = Managers.Info?.ItemInfoList;
+        if (itemInfoList == null || itemInfoList.Count == 0) return;
+
+        if (itemInfoList.Count > inventory.SlotCount)
+            inventory.ExpandSlots(itemInfoList.Count);
+
+        foreach (var info in itemInfoList)
+        {
+            inventory.AddItem(info.Id, TEST_START_ITEM_COUNT);
+        }
+
+        GameDebug.Log($"[TestManager] 시작 인벤토리 채움: {itemInfoList.Count}종 x{TEST_START_ITEM_COUNT}");
     }
 
     public void SimulateRegisterQuickSlot(string _args)
@@ -806,6 +842,88 @@ public class TestManager : MonoSingleton<TestManager>
         yield return new WaitForSeconds(0.7f);
 
         GameDebug.Log($"[TestManager] TestDamageNumber 결과: PASS {passed}, FAIL {failed}");
+    }
+
+    public void TestCriticalHit()
+    {
+        StartCoroutine(CoTestCriticalHit());
+    }
+
+    private IEnumerator CoTestCriticalHit()
+    {
+        GameDebug.Log("[TestManager] TestCriticalHit 시작");
+
+        int passed = 0;
+        int failed = 0;
+        void Mark(bool _condition, string _label)
+        {
+            if (_condition) { passed++; GameDebug.Log($"[TestManager] PASS: {_label}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+
+        var player = controller.PlayWorker?.LocalPlayer;
+        if (player == null) { GameDebug.LogError("[TestManager] LocalPlayer 없음"); yield break; }
+
+        // 죽지 않도록 HP 강화
+        player.SetMaxHP(99999);
+        player.SetHP(99999);
+
+        // 카운터
+        int critCount = 0;
+        int normalCount = 0;
+        int totalDamageEvents = 0;
+        int normalDamageValue = -1;
+        int critDamageValue = -1;
+
+        System.Action<int, CharacterBase, bool> callback = (_dmg, _atk, _isCrit) =>
+        {
+            totalDamageEvents++;
+            if (_isCrit)
+            {
+                critCount++;
+                critDamageValue = _dmg;
+            }
+            else
+            {
+                normalCount++;
+                normalDamageValue = _dmg;
+            }
+        };
+        player.SubscribeOnDamaged(callback);
+
+        // 100회 공격 (자가 피격, attacker는 자기 자신)
+        const int ATTACK_COUNT = 100;
+        const int ATTACK_DAMAGE = 20; // ATK - DEF 가 충분히 큰 값으로
+        GameDebug.Log($"[TestManager] {ATTACK_COUNT}회 공격 시작 (damage={ATTACK_DAMAGE})");
+        for (int i = 0; i < ATTACK_COUNT; i++)
+        {
+            player.TakeDamage(ATTACK_DAMAGE, player);
+            yield return null; // 1프레임 대기 (RPC 처리)
+        }
+
+        // RPC 마무리 대기
+        yield return new WaitForSeconds(0.3f);
+
+        player.UnsubscribeOnDamaged(callback);
+
+        // 판정
+        Mark(totalDamageEvents == ATTACK_COUNT, $"총 데미지 이벤트 {totalDamageEvents} == {ATTACK_COUNT}");
+        // 99% 신뢰구간 (n=100, p=0.1): 약 [3, 18]. 여유를 두어 [3, 20]
+        Mark(critCount >= 3 && critCount <= 20, $"크리티컬 횟수 {critCount} ∈ [3, 20] (기대 ~10)");
+        Mark(normalCount >= 80 && normalCount <= 97, $"일반 횟수 {normalCount} ∈ [80, 97] (기대 ~90)");
+
+        // 데미지 값 검증
+        int expectedNormal = Mathf.Max(1, ATTACK_DAMAGE - player.GetDEF());
+        int expectedCrit = Mathf.Max(1, Mathf.RoundToInt((ATTACK_DAMAGE - player.GetDEF()) * CharacterBase.CRITICAL_MULTIPLIER));
+        if (normalCount > 0)
+            Mark(normalDamageValue == expectedNormal, $"일반 데미지값 {normalDamageValue} == {expectedNormal}");
+        if (critCount > 0)
+            Mark(critDamageValue == expectedCrit, $"크리 데미지값 {critDamageValue} == {expectedCrit}");
+
+        GameDebug.Log($"[TestManager] TestCriticalHit 결과: PASS {passed}, FAIL {failed} (crit={critCount}, normal={normalCount})");
     }
 }
 #endif
