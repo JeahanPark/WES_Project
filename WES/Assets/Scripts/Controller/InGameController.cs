@@ -30,6 +30,7 @@ public class InGameController : GameController<InGameController>
     // Game State
     private GameState m_GameState = GameState.Playing;
     private int m_EscapedCount = 0;
+    private int m_AlivePlayerCount = 0;
 
     public GameState GameState => m_GameState;
 
@@ -99,6 +100,11 @@ public class InGameController : GameController<InGameController>
     public void TestMonsterRespawnDamage()
     {
         TestManager.Instance?.TestMonsterRespawnDamage();
+    }
+
+    public void TestPlayerDeathAndGameOver()
+    {
+        TestManager.Instance?.TestPlayerDeathAndGameOver();
     }
 #endif
 
@@ -171,9 +177,25 @@ public class InGameController : GameController<InGameController>
         if (m_ReadyClients.Count >= connectedCount)
         {
             GameDebug.Log("[InGameController] All clients ready! Starting game...");
+            m_AlivePlayerCount = connectedCount;
             m_PlayWorker.StartGame();
             m_AreaWorker.Initialize();
             StartGameClientRpc();
+        }
+    }
+
+    [Rpc(SendTo.Server)]
+    public void NotifyPlayerDiedServerRpc()
+    {
+        if (m_GameState != GameState.Playing)
+            return;
+
+        m_AlivePlayerCount--;
+        GameDebug.Log($"[InGameController] Player died. Alive: {m_AlivePlayerCount}");
+
+        if (m_AlivePlayerCount <= 0)
+        {
+            TriggerGameOver();
         }
     }
 
@@ -190,6 +212,9 @@ public class InGameController : GameController<InGameController>
     public void OnPlayerReachedEscape(PlayerCharacter _player)
     {
         if (m_GameState != GameState.Playing)
+            return;
+
+        if (_player.IsDead)
             return;
 
         GameDebug.Log($"[InGameController] Player {_player.GetPlayerIndex()} reached escape point!");

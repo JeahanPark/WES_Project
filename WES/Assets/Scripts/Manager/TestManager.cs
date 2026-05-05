@@ -973,6 +973,73 @@ public class TestManager : MonoSingleton<TestManager>
         GameDebug.Log($"[TestManager] TestPopupEscapeAndUIGuard 결과: PASS {passed}, FAIL {failed}");
     }
 
+    public void TestPlayerDeathAndGameOver()
+    {
+        StartCoroutine(CoTestPlayerDeathAndGameOver());
+    }
+
+    private IEnumerator CoTestPlayerDeathAndGameOver()
+    {
+        GameDebug.Log("[TestManager] TestPlayerDeathAndGameOver 시작");
+
+        int passed = 0;
+        int failed = 0;
+        void Mark(bool _condition, string _label)
+        {
+            if (_condition) { passed++; GameDebug.Log($"[TestManager] PASS: {_label}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+
+        var player = controller.PlayWorker?.LocalPlayer;
+        if (player == null) { GameDebug.LogError("[TestManager] LocalPlayer 없음"); yield break; }
+
+        // 시나리오 1: 초기 카운트 확인
+        var aliveField = typeof(InGameController).GetField("m_AlivePlayerCount",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        int initialAlive = (int)(aliveField?.GetValue(controller) ?? 0);
+        Mark(initialAlive == 1, $"초기 살아있는 플레이어 카운트 == 1 (실제 {initialAlive})");
+
+        // 시나리오 2: 사망 전 GameState == Playing
+        Mark(controller.GameState == GameState.Playing, $"초기 GameState == Playing (실제 {controller.GameState})");
+
+        // 시나리오 3: 플레이어 죽이기 (TakeDamage로 OnDeath 흐름 트리거)
+        player.TakeDamage(99999, player);
+        yield return new WaitForSeconds(0.5f);
+        Mark(player.IsDead, $"플레이어 사망 (IsDead={player.IsDead})");
+
+        // 시나리오 4: 사망 후 입력 가드 — Attack 호출해도 공격 모션 X
+        // PlayerAnimationComponent.IsAttacking 확인
+        var animField = typeof(PlayerCharacter).GetField("m_AnimationComponent",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var anim = animField?.GetValue(player) as PlayerAnimationComponent;
+        bool wasAttackingBefore = anim != null && anim.IsAttacking();
+        player.Attack();
+        yield return new WaitForSeconds(0.1f);
+        bool isAttackingAfter = anim != null && anim.IsAttacking();
+        Mark(!isAttackingAfter || wasAttackingBefore, $"사망 후 Attack 가드 — IsAttacking 변화 없음 (before={wasAttackingBefore}, after={isAttackingAfter})");
+
+        // 시나리오 5: 사망 후 이동 가드 — MoveWithDirection 후 위치 변화 없음
+        Vector3 posBeforeMove = player.transform.position;
+        player.MoveWithDirection(new Vector2(1, 0));
+        yield return new WaitForSeconds(1f);
+        player.MoveWithDirection(Vector2.zero);
+        Vector3 posAfterMove = player.transform.position;
+        float moveDistance = Vector3.Distance(posBeforeMove, posAfterMove);
+        Mark(moveDistance < 0.3f, $"사망 후 이동 가드 — 위치 변화 {moveDistance:F2} < 0.3");
+
+        // 시나리오 6: 카운트 감소
+        int afterAlive = (int)(aliveField?.GetValue(controller) ?? -1);
+        Mark(afterAlive == 0, $"사망 후 카운트 == 0 (실제 {afterAlive})");
+
+        // 시나리오 7: GameState == GameOver (TriggerGameOver 호출 검증)
+        Mark(controller.GameState == GameState.GameOver, $"GameState == GameOver (실제 {controller.GameState})");
+
+        GameDebug.Log($"[TestManager] TestPlayerDeathAndGameOver 결과: PASS {passed}, FAIL {failed}");
+    }
+
     public void TestMonsterRespawnDamage()
     {
         StartCoroutine(CoTestMonsterRespawnDamage());

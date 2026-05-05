@@ -149,6 +149,9 @@ public class PlayerCharacter : CharacterBase
 
     public override void Attack()
     {
+        if (IsDead)
+            return;
+
         if (TryCollectClickedDropItem())
             return;
 
@@ -183,6 +186,9 @@ public class PlayerCharacter : CharacterBase
 
     public override void Interact()
     {
+        if (IsDead)
+            return;
+
         if (TryCollectNearbyDropItem())
             return;
 
@@ -193,6 +199,47 @@ public class PlayerCharacter : CharacterBase
             return;
 
         m_AnimationComponent.PlayInteract();
+    }
+
+    private bool m_HasReportedDeath = false;
+
+    protected override void OnDeath()
+    {
+        base.OnDeath();
+
+        if (!IsOwner)
+            return;
+
+        if (m_HasReportedDeath)
+            return;
+        m_HasReportedDeath = true;
+
+        SwitchCameraToAliveTeammate();
+
+        if (InGameController.Instance != null)
+            InGameController.Instance.NotifyPlayerDiedServerRpc();
+    }
+
+    private void SwitchCameraToAliveTeammate()
+    {
+        var controller = InGameController.Instance;
+        if (controller == null || controller.CameraWorker == null)
+            return;
+
+        if (controller.CameraWorker.GetTarget() != transform)
+            return;
+
+        var registry = controller.ObjectDataWorker?.GetCharacterRegistry();
+        if (registry == null)
+            return;
+
+        foreach (var alive in registry.GetAlivePlayers())
+        {
+            if (alive == this)
+                continue;
+            controller.CameraWorker.SetTarget(alive.transform);
+            return;
+        }
     }
 
     private bool TryCollectClickedDropItem()

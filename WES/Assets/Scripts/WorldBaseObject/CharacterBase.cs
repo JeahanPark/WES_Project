@@ -263,6 +263,11 @@ public class CharacterBase : WorldEntityBase
 
     public void MoveWithDirection(Vector2 _direction)
     {
+        if (IsDead)
+        {
+            m_MoveDirection = Vector2.zero;
+            return;
+        }
         m_MoveDirection = _direction;
     }
 

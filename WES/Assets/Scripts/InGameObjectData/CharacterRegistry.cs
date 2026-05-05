@@ -67,6 +67,17 @@ public class CharacterRegistry
         return ids;
     }
 
+    public List<PlayerCharacter> GetAlivePlayers()
+    {
+        var result = new List<PlayerCharacter>();
+        foreach (var character in m_CharacterMap.Values)
+        {
+            if (character is PlayerCharacter player && !player.IsDead)
+                result.Add(player);
+        }
+        return result;
+    }
+
     public void Clear()
     {
         m_CharacterMap.Clear();
