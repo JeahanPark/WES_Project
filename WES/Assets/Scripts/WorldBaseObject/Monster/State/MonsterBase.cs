@@ -36,8 +36,11 @@ public abstract class MonsterBase : CharacterBase
 
         if (m_StateMachine != null)
         {
+            m_StateMachine.SetCollisionEnabled(true);
             m_StateMachine.ChangeState(MonsterStateType.Idle);
         }
+
+        SetHitColor(false);
     }
 
     public void SetSpawnAreaId(int _areaId)

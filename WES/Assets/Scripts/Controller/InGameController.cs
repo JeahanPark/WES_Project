@@ -95,6 +95,11 @@ public class InGameController : GameController<InGameController>
     {
         TestManager.Instance?.TestPopupEscapeAndUIGuard();
     }
+
+    public void TestMonsterRespawnDamage()
+    {
+        TestManager.Instance?.TestMonsterRespawnDamage();
+    }
 #endif
 
     private void SubscribeUIInput()

@@ -973,6 +973,110 @@ public class TestManager : MonoSingleton<TestManager>
         GameDebug.Log($"[TestManager] TestPopupEscapeAndUIGuard 결과: PASS {passed}, FAIL {failed}");
     }
 
+    public void TestMonsterRespawnDamage()
+    {
+        StartCoroutine(CoTestMonsterRespawnDamage());
+    }
+
+    private IEnumerator CoTestMonsterRespawnDamage()
+    {
+        GameDebug.Log("[TestManager] TestMonsterRespawnDamage 시작");
+
+        int passed = 0;
+        int failed = 0;
+        void Mark(bool _condition, string _label)
+        {
+            if (_condition) { passed++; GameDebug.Log($"[TestManager] PASS: {_label}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+
+        var player = controller.PlayWorker?.LocalPlayer;
+        if (player == null) { GameDebug.LogError("[TestManager] LocalPlayer 없음"); yield break; }
+
+        // 죽지 않도록 플레이어 HP 강화
+        player.SetMaxHP(99999);
+        player.SetHP(99999);
+
+        // 시나리오 1: 초기 몬스터 콜라이더/데미지 정상
+        var monstersInitial = Object.FindObjectsByType<MonsterBase>(FindObjectsSortMode.None);
+        Mark(monstersInitial.Length > 0, $"초기 몬스터 존재 ({monstersInitial.Length}개)");
+        if (monstersInitial.Length == 0) yield break;
+
+        var firstMonster = monstersInitial[0];
+        var initialColliders = firstMonster.GetComponentsInChildren<Collider>();
+        bool initialAllEnabled = true;
+        foreach (var c in initialColliders) if (!c.enabled) initialAllEnabled = false;
+        Mark(initialAllEnabled, $"초기 몬스터 콜라이더 모두 enabled ({initialColliders.Length}개)");
+
+        int initialHp = firstMonster.HP;
+        firstMonster.TakeDamage(5, player);
+        yield return new WaitForSeconds(0.3f);
+        Mark(firstMonster.HP < initialHp, $"초기 몬스터 데미지 적용 ({initialHp} → {firstMonster.HP})");
+
+        // 시나리오 2: 몬스터 죽이기 (SetHP는 OnDeath 흐름을 안 타므로 TakeDamage로 큰 데미지)
+        firstMonster.TakeDamage(99999, player);
+        yield return new WaitForSeconds(0.5f);
+        Mark(firstMonster.IsDead, $"몬스터 사망 처리 (IsDead={firstMonster.IsDead})");
+
+        // 시나리오 3: 리스폰 대기 (RespawnDelay + 사망 애니메이션 + 마진)
+        var areaInfo = Managers.Info.WorldAreaInfoList.Find(x => x.Id == 1);
+        float respawnDelay = (areaInfo != null) ? areaInfo.RespawnDelay : 5f;
+        float waitTime = respawnDelay + 3f;
+        GameDebug.Log($"[TestManager] 리스폰 대기 {waitTime:F1}s (RespawnDelay={respawnDelay})");
+        yield return new WaitForSeconds(waitTime);
+
+        // 시나리오 4: 리스폰된 몬스터 찾기
+        var monstersAfter = Object.FindObjectsByType<MonsterBase>(FindObjectsSortMode.None);
+        MonsterBase respawned = null;
+        foreach (var m in monstersAfter)
+        {
+            if (!m.IsDead && m.IsSpawned) { respawned = m; break; }
+        }
+        Mark(respawned != null, $"리스폰된 살아있는 몬스터 존재 (총 {monstersAfter.Length})");
+        if (respawned == null)
+        {
+            GameDebug.LogError($"[TestManager] TestMonsterRespawnDamage 결과: PASS {passed}, FAIL {failed}");
+            yield break;
+        }
+
+        Mark(respawned.HP > 0, $"리스폰 몬스터 HP 정상 ({respawned.HP}/{respawned.MaxHP})");
+
+        // 시나리오 5: 콜라이더 enabled 확인 (★ 핵심 회귀 검증)
+        var colliders = respawned.GetComponentsInChildren<Collider>();
+        bool allEnabled = true;
+        int disabledCount = 0;
+        foreach (var col in colliders)
+        {
+            if (!col.enabled) { allEnabled = false; disabledCount++; }
+        }
+        Mark(allEnabled, $"리스폰 몬스터 콜라이더 모두 enabled (총 {colliders.Length}개, disabled={disabledCount})");
+
+        // 시나리오 6: TakeDamage 직접 호출 → HP 감소 (콜라이더와 무관)
+        int beforeDirect = respawned.HP;
+        respawned.TakeDamage(5, player);
+        yield return new WaitForSeconds(0.3f);
+        Mark(respawned.HP < beforeDirect, $"리스폰 몬스터 TakeDamage 적용 ({beforeDirect} → {respawned.HP})");
+
+        // 시나리오 7: OverlapSphere 공격(=실제 플레이어 공격 경로) → HP 감소
+        // 콜라이더 disabled면 OverlapSphere가 못 잡으므로 데미지 0
+        int beforeOverlap = respawned.HP;
+        controller.ColliderWorker.CreateCollider(
+            player,
+            respawned.transform.position,
+            2f,
+            20,
+            3,
+            ~0  // 모든 레이어
+        );
+        yield return new WaitForSeconds(0.3f);
+        Mark(respawned.HP < beforeOverlap, $"리스폰 몬스터 OverlapSphere 공격 적용 ({beforeOverlap} → {respawned.HP})");
+
+        GameDebug.Log($"[TestManager] TestMonsterRespawnDamage 결과: PASS {passed}, FAIL {failed}");
+    }
+
     public void TestCriticalHit()
     {
         StartCoroutine(CoTestCriticalHit());
