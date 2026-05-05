@@ -49,6 +49,14 @@ public class InputManager : MonoSingleton<InputManager>
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
 
+    private bool m_IsPointerOverUICached;
+
+    private void Update()
+    {
+        EventSystem es = EventSystem.current;
+        m_IsPointerOverUICached = es != null && es.IsPointerOverGameObject();
+    }
+
     public override void Init()
     {
         base.Init();
@@ -172,7 +180,7 @@ public class InputManager : MonoSingleton<InputManager>
 
     private void OnAttackPerformed(InputAction.CallbackContext _context)
     {
-        if (IsPointerOverUI())
+        if (m_IsPointerOverUICached)
             return;
 
         m_OnAttack.OnNext(Unit.Default);
@@ -180,7 +188,7 @@ public class InputManager : MonoSingleton<InputManager>
 
     private void OnInteractPerformed(InputAction.CallbackContext _context)
     {
-        if (IsPointerOverUI())
+        if (m_IsPointerOverUICached)
             return;
 
         m_OnInteract.OnNext(Unit.Default);
