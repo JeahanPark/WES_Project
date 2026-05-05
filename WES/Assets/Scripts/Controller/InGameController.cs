@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using Cysharp.Threading.Tasks;
+using UniRx;
 
 public class InGameController : GameController<InGameController>
 {
@@ -58,6 +59,7 @@ public class InGameController : GameController<InGameController>
     private IEnumerator CoWaitForGameStart()
     {
         Managers.Popup.InitializeForScene(m_Canvas);
+        SubscribeUIInput();
         m_WorldUIWorker.Initialize(m_CameraWorker.GetCamera());
 
         GameDebug.Log("[InGameController] Waiting for game start...");
@@ -77,6 +79,32 @@ public class InGameController : GameController<InGameController>
         yield return CoWaitForLocalPlayer();
 
         GameDebug.Log("[InGameController] Game started! Local player is ready.");
+
+#if UNITY_EDITOR
+        TestManager.Instance?.FillStartInventory(m_ObjectDataWorker);
+#endif
+    }
+
+#if UNITY_EDITOR
+    public void TestSpawnCampfireNearPlayer()
+    {
+        TestManager.Instance?.TestSpawnCampfireNearPlayer();
+    }
+
+    public void TestPopupEscapeAndUIGuard()
+    {
+        TestManager.Instance?.TestPopupEscapeAndUIGuard();
+    }
+#endif
+
+    private void SubscribeUIInput()
+    {
+        if (Managers.Input == null)
+            return;
+
+        Managers.Input.OnCancelAsObservable
+            .Subscribe(_ => Managers.Popup?.CloseTop())
+            .AddTo(this);
     }
 
     private IEnumerator CoWaitForLocalPlayer()

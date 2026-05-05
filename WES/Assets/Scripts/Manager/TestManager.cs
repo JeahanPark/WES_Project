@@ -844,6 +844,135 @@ public class TestManager : MonoSingleton<TestManager>
         GameDebug.Log($"[TestManager] TestDamageNumber 결과: PASS {passed}, FAIL {failed}");
     }
 
+    public void TestPopupEscapeAndUIGuard()
+    {
+        StartCoroutine(CoTestPopupEscapeAndUIGuard());
+    }
+
+    private IEnumerator CoTestPopupEscapeAndUIGuard()
+    {
+        GameDebug.Log("[TestManager] TestPopupEscapeAndUIGuard 시작");
+
+        int passed = 0;
+        int failed = 0;
+        void Mark(bool _condition, string _label)
+        {
+            if (_condition) { passed++; GameDebug.Log($"[TestManager] PASS: {_label}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
+        }
+
+        // 사전 정리
+        Managers.Popup.CloseAll();
+        yield return new WaitForSeconds(0.2f);
+
+        // 시나리오 1: 빈 스택에서 CloseTop 호출 → 예외 없음
+        bool noException = true;
+        try { Managers.Popup.CloseTop(); }
+        catch (System.Exception ex) { noException = false; GameDebug.LogError($"[TestManager] CloseTop 예외: {ex.Message}"); }
+        Mark(noException && Managers.Popup.OpenedCount == 0, "빈 스택 CloseTop 안전 (no-op)");
+        yield return null;
+
+        // 시나리오 2: InventoryPopup 단일 → CloseTop으로 닫기
+        Managers.Popup.Open<InventoryPopup>();
+        yield return new WaitForSeconds(0.3f);
+        Mark(Managers.Popup.FindOpen<InventoryPopup>() != null, "InventoryPopup 열림");
+        Mark(Managers.Popup.OpenedCount == 1, $"OpenedCount == 1 (실제 {Managers.Popup.OpenedCount})");
+
+        Managers.Popup.CloseTop();
+        yield return new WaitForSeconds(0.3f);
+        Mark(Managers.Popup.FindOpen<InventoryPopup>() == null, "CloseTop 후 InventoryPopup 닫힘");
+        Mark(Managers.Popup.OpenedCount == 0, $"OpenedCount == 0 (실제 {Managers.Popup.OpenedCount})");
+
+        // 시나리오 3: 두 개의 mock BasePopup 스택 → CloseTop은 마지막만 닫음
+        var rootField = typeof(PopupManager).GetField("m_PopupRoot",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        Transform popupRoot = rootField?.GetValue(Managers.Popup) as Transform;
+
+        var listField = typeof(PopupManager).GetField("m_OpenedPopups",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var list = listField?.GetValue(Managers.Popup) as System.Collections.Generic.List<BasePopup>;
+
+        if (popupRoot != null && list != null)
+        {
+            var mock1Go = new GameObject("MockPopup1", typeof(RectTransform));
+            mock1Go.transform.SetParent(popupRoot, false);
+            var mock1 = mock1Go.AddComponent<BasePopup>();
+
+            var mock2Go = new GameObject("MockPopup2", typeof(RectTransform));
+            mock2Go.transform.SetParent(popupRoot, false);
+            var mock2 = mock2Go.AddComponent<BasePopup>();
+
+            list.Add(mock1);
+            list.Add(mock2);
+            yield return null;
+
+            Mark(Managers.Popup.OpenedCount == 2, $"Mock 두 팝업 등록 (count={Managers.Popup.OpenedCount})");
+
+            Managers.Popup.CloseTop();
+            yield return new WaitForSeconds(0.1f);
+            Mark(Managers.Popup.OpenedCount == 1, $"CloseTop → 카운트 1로 감소 (실제 {Managers.Popup.OpenedCount})");
+            Mark(list.Count == 1 && list[0] == mock1, "마지막(mock2)만 제거, mock1 유지");
+
+            Managers.Popup.CloseTop();
+            yield return new WaitForSeconds(0.1f);
+            Mark(Managers.Popup.OpenedCount == 0, $"두 번째 CloseTop → 카운트 0 (실제 {Managers.Popup.OpenedCount})");
+        }
+        else
+        {
+            Mark(false, "PopupManager 내부 필드 reflection 실패 → 시나리오 3 SKIP");
+        }
+
+        // 시나리오 4: InputManager.IsPointerOverUI 정적 헬퍼 동작 검증
+        // (마우스 위치 워프는 GameView 포커스 의존이라 환경 차이가 있어 informational only)
+        var mouse = UnityEngine.InputSystem.Mouse.current;
+        if (mouse != null)
+        {
+            Managers.Popup.Open<InventoryPopup>();
+            yield return new WaitForSeconds(0.3f);
+            mouse.WarpCursorPosition(new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
+            yield return null;
+            yield return null;
+            bool overUI = InputManager.IsPointerOverUI();
+            GameDebug.Log($"[TestManager] 화면 중앙(인벤토리 위) IsPointerOverUI = {overUI} (true 기대, GameView 포커스 시)");
+
+            Managers.Popup.CloseAll();
+            yield return new WaitForSeconds(0.3f);
+        }
+        else
+        {
+            GameDebug.LogWarning("[TestManager] Mouse 없음 — 시나리오 4 SKIP");
+        }
+
+        // 시나리오 5: OnCancelAsObservable 발화 시 PopupManager.CloseTop 와이어링 검증
+        // InGameController.SubscribeUIInput을 통해 OnCancel 구독이 걸려있어야 함
+        Managers.Popup.Open<InventoryPopup>();
+        yield return new WaitForSeconds(0.3f);
+        int beforeCount = Managers.Popup.OpenedCount;
+
+        // InputManager 내부 m_OnCancel Subject 직접 발화
+        var cancelField = typeof(InputManager).GetField("m_OnCancel",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var cancelSubject = cancelField?.GetValue(Managers.Input);
+        if (cancelSubject != null)
+        {
+            var onNextMethod = cancelSubject.GetType().GetMethod("OnNext");
+            onNextMethod?.Invoke(cancelSubject, new object[] { UniRx.Unit.Default });
+            yield return new WaitForSeconds(0.3f);
+            int afterCount = Managers.Popup.OpenedCount;
+            Mark(afterCount == beforeCount - 1,
+                $"OnCancel 발화 시 CloseTop 호출됨 (count {beforeCount} → {afterCount})");
+        }
+        else
+        {
+            Mark(false, "InputManager.m_OnCancel reflection 실패 → 시나리오 5 SKIP");
+        }
+
+        // 정리
+        Managers.Popup.CloseAll();
+
+        GameDebug.Log($"[TestManager] TestPopupEscapeAndUIGuard 결과: PASS {passed}, FAIL {failed}");
+    }
+
     public void TestCriticalHit()
     {
         StartCoroutine(CoTestCriticalHit());

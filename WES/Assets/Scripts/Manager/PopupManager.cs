@@ -8,6 +8,8 @@ public class PopupManager : MonoSingleton<PopupManager>
     private Transform m_PopupRoot;
     private List<BasePopup> m_OpenedPopups = new List<BasePopup>();
 
+    public int OpenedCount => m_OpenedPopups.Count;
+
     public override void Init()
     {
         base.Init();
@@ -94,6 +96,21 @@ public class PopupManager : MonoSingleton<PopupManager>
 
         m_OpenedPopups.Remove(_popup);
         Managers.Resource.Destroy(_popup.gameObject);
+    }
+
+    public void CloseTop()
+    {
+        if (m_OpenedPopups.Count == 0)
+            return;
+
+        BasePopup top = m_OpenedPopups[m_OpenedPopups.Count - 1];
+        if (top == null)
+        {
+            m_OpenedPopups.RemoveAt(m_OpenedPopups.Count - 1);
+            return;
+        }
+
+        top.Close();
     }
 
     public void CloseAll()

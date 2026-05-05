@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UniRx;
 using System;
@@ -15,6 +16,7 @@ public class InputManager : MonoSingleton<InputManager>
     private InputAction m_InteractAction;
     private InputAction m_InventoryAction;
     private InputAction m_SubmitAction;
+    private InputAction m_CancelAction;
 
     // 퀵슬롯 액션 (1~8)
     private InputAction[] m_QuickSlotActions = new InputAction[QuickSlotRegistry.SLOT_COUNT];
@@ -26,6 +28,7 @@ public class InputManager : MonoSingleton<InputManager>
     private readonly Subject<Unit> m_OnInteract = new Subject<Unit>();
     private readonly Subject<Unit> m_OnInventory = new Subject<Unit>();
     private readonly Subject<Unit> m_OnEnter = new Subject<Unit>();
+    private readonly Subject<Unit> m_OnCancel = new Subject<Unit>();
     private readonly Subject<int> m_OnQuickSlot = new Subject<int>();
 
     // Public Observables
@@ -35,6 +38,7 @@ public class InputManager : MonoSingleton<InputManager>
     public IObservable<Unit> OnInteractAsObservable => m_OnInteract;
     public IObservable<Unit> OnInventoryAsObservable => m_OnInventory;
     public IObservable<Unit> OnEnterAsObservable => m_OnEnter;
+    public IObservable<Unit> OnCancelAsObservable => m_OnCancel;
 
     /// <summary>
     /// 퀵슬롯 키 입력 (0~7 인덱스 전달)
@@ -69,6 +73,7 @@ public class InputManager : MonoSingleton<InputManager>
         m_InteractAction = m_PlayerMap.FindAction("Interact");
         m_InventoryAction = m_PlayerMap.FindAction("Inventory");
         m_SubmitAction = m_UIMap.FindAction("Submit");
+        m_CancelAction = m_UIMap.FindAction("Cancel");
 
         // 퀵슬롯 액션 바인딩
         SetupQuickSlotActions();
@@ -82,6 +87,8 @@ public class InputManager : MonoSingleton<InputManager>
         m_InteractAction.performed += OnInteractPerformed;
         m_InventoryAction.performed += OnInventoryPerformed;
         m_SubmitAction.performed += OnEnterPerformed;
+        if (m_CancelAction != null)
+            m_CancelAction.performed += OnCancelPerformed;
 
         m_PlayerMap.Enable();
         m_UIMap.Enable();
@@ -124,6 +131,8 @@ public class InputManager : MonoSingleton<InputManager>
         if (m_UIMap != null)
         {
             m_SubmitAction.performed -= OnEnterPerformed;
+            if (m_CancelAction != null)
+                m_CancelAction.performed -= OnCancelPerformed;
             m_UIMap.Disable();
         }
 
@@ -133,6 +142,7 @@ public class InputManager : MonoSingleton<InputManager>
         m_OnInteract?.Dispose();
         m_OnInventory?.Dispose();
         m_OnEnter?.Dispose();
+        m_OnCancel?.Dispose();
         m_OnQuickSlot?.Dispose();
     }
 
@@ -162,11 +172,17 @@ public class InputManager : MonoSingleton<InputManager>
 
     private void OnAttackPerformed(InputAction.CallbackContext _context)
     {
+        if (IsPointerOverUI())
+            return;
+
         m_OnAttack.OnNext(Unit.Default);
     }
 
     private void OnInteractPerformed(InputAction.CallbackContext _context)
     {
+        if (IsPointerOverUI())
+            return;
+
         m_OnInteract.OnNext(Unit.Default);
     }
 
@@ -178,6 +194,17 @@ public class InputManager : MonoSingleton<InputManager>
     private void OnEnterPerformed(InputAction.CallbackContext _context)
     {
         m_OnEnter.OnNext(Unit.Default);
+    }
+
+    private void OnCancelPerformed(InputAction.CallbackContext _context)
+    {
+        m_OnCancel.OnNext(Unit.Default);
+    }
+
+    public static bool IsPointerOverUI()
+    {
+        EventSystem es = EventSystem.current;
+        return es != null && es.IsPointerOverGameObject();
     }
 
     public void EnablePlayerInput()
