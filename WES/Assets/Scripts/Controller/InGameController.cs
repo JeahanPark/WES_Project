@@ -242,7 +242,7 @@ public class InGameController : GameController<InGameController>
     {
         m_GameState = GameState.Clear;
         GameDebug.Log("[InGameController] GAME CLEAR!");
-        StartCoroutine(CoReturnToLobby(3f));
+        ShowResultPopup(GameState.Clear);
     }
 
     public void TriggerGameOver()
@@ -258,12 +258,13 @@ public class InGameController : GameController<InGameController>
     {
         m_GameState = GameState.GameOver;
         GameDebug.Log("[InGameController] GAME OVER!");
-        StartCoroutine(CoReturnToLobby(3f));
+        ShowResultPopup(GameState.GameOver);
     }
 
-    private IEnumerator CoReturnToLobby(float _delay)
+    private void ShowResultPopup(GameState _state)
     {
-        yield return new WaitForSeconds(_delay);
-        Managers.Scene.LoadScene(GameSceneManager.SCENE_LOBBY);
+        var popup = Managers.Popup.Open<ResultPopup>();
+        if (popup != null)
+            popup.ShowResult(_state);
     }
 }

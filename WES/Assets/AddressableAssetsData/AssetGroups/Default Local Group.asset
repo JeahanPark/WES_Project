@@ -35,6 +35,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b822daa746540d487561ee544b8cef8
+    m_Address: DamageNumberWorldUI
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 2f866476c941a7042a7e3a540d587882
     m_Address: potion_cold_icon
     m_ReadOnly: 0
@@ -57,11 +62,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6f0859bdacc3c714894a50003a684bc1
     m_Address: CharacterWorldUI
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 2b822daa746540d487561ee544b8cef8
-    m_Address: DamageNumberWorldUI
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -125,6 +125,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Popup
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f846ee8433900434dacf99e2bdd74831
+    m_Address: ResultPopup
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Popup
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: caf3868f17daa4b47951818037569d34
     m_Address: bone_icon
     m_ReadOnly: 0
@@ -158,6 +164,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ec9247edf0f5ef24684ac916488ee07b
     m_Address: ironore_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3df2110f749b8d49ba8190d1dbc4ec2
+    m_Address: Campfire
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

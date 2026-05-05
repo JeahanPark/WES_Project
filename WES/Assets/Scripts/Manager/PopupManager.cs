@@ -76,6 +76,10 @@ public class PopupManager : MonoSingleton<PopupManager>
 
         m_OpenedPopups.Add(popup);
 
+        if (m_PopupRoot != null)
+            m_PopupRoot.SetAsLastSibling();
+        popup.transform.SetAsLastSibling();
+
         return popup;
     }
 
