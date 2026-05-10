@@ -140,17 +140,27 @@ public static partial class McpBridge
         if (string.IsNullOrEmpty(_req.methodName))
             return BuildError("'methodName' is required");
 
-        var go = FindRuntimeObject(_req.target);
-        if (go == null)
-            return BuildError($"GameObject '{_req.target}' not found in scene");
-
         var compType = FindComponentType(_req.componentType);
         if (compType == null)
             return BuildError($"Component type '{_req.componentType}' not found");
 
-        var comp = go.GetComponent(compType);
-        if (comp == null)
-            return BuildError($"Component '{_req.componentType}' not found on '{_req.target}'");
+        // target이 "@type" 또는 "*"이면 GameObject 탐색 없이 컴포넌트 타입으로 직접 FindFirstObjectByType
+        Component comp;
+        if (_req.target == "*" || _req.target.StartsWith("@"))
+        {
+            comp = (Component)UnityEngine.Object.FindFirstObjectByType(compType);
+            if (comp == null)
+                return BuildError($"Component '{_req.componentType}' not found in any scene (including DontDestroyOnLoad)");
+        }
+        else
+        {
+            var go = FindRuntimeObject(_req.target);
+            if (go == null)
+                return BuildError($"GameObject '{_req.target}' not found in scene");
+            comp = go.GetComponent(compType);
+            if (comp == null)
+                return BuildError($"Component '{_req.componentType}' not found on '{_req.target}'");
+        }
 
         var method = compType.GetMethod(_req.methodName,
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -212,7 +222,7 @@ public static partial class McpBridge
         }
     }
 
-    // ---- 헬퍼: 런타임 씬에서 이름으로 GameObject 탐색 ----
+    // ---- 헬퍼: 런타임 씬에서 이름으로 GameObject 탐색 (DontDestroyOnLoad 포함) ----
 
     private static GameObject FindRuntimeObject(string _name)
     {
@@ -241,6 +251,16 @@ public static partial class McpBridge
             return null;
         }
 
-        return GameObject.Find(_name);
+        // GameObject.Find는 DontDestroyOnLoad를 못 찾을 수 있으므로 FindObjectsByType으로 폴백
+        var found_go = GameObject.Find(_name);
+        if (found_go != null) return found_go;
+
+        var all = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+        foreach (var go in all)
+        {
+            if (go.transform.parent == null && go.name == _name)
+                return go;
+        }
+        return null;
     }
 }
