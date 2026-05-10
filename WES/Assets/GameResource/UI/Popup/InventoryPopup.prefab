@@ -62,7 +62,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.6}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -91,6 +91,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_OpenPolicy: 1
+  m_UseDimBackdrop: 0
   m_InventoryScroll: {fileID: 6442672929485857659}
   m_DetailPanel: {fileID: 5242545320042281554}
   m_DragPreview: {fileID: 7710102061745017229}

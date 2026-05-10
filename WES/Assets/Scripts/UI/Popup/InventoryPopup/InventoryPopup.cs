@@ -19,7 +19,10 @@ public class InventoryPopup : BasePopup
         RefreshInventory();
 
         if (m_DragPreview != null)
+        {
+            m_DragPreview.raycastTarget = false;
             m_DragPreview.gameObject.SetActive(false);
+        }
     }
 
     private void OnDestroy()
@@ -83,6 +86,7 @@ public class InventoryPopup : BasePopup
 
         if (m_DragPreview != null && _sourceCell.ItemData != null)
         {
+            m_DragPreview.raycastTarget = false;
             m_DragPreview.gameObject.SetActive(true);
             m_DragPreview.sprite = Managers.Resource.LoadAddressable<Sprite>(_sourceCell.ItemData.Info.IconKey);
             m_DragPreview.rectTransform.position = _eventData.position;

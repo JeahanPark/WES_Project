@@ -121,15 +121,20 @@ public class QuickSlotCell : MonoBehaviour, IDropHandler, IPointerClickHandler
     // 인벤토리에서 드래그하여 퀵슬롯에 드롭
     public void OnDrop(PointerEventData _eventData)
     {
+        GameDebug.Log($"[QuickSlotCell] OnDrop slot={m_SlotIndex} pointerDrag={_eventData.pointerDrag?.name ?? "null"}");
         var draggedCell = _eventData.pointerDrag?.GetComponent<InventoryScrollCell>();
         if (draggedCell == null || draggedCell.ItemData == null)
+        {
+            GameDebug.LogWarning($"[QuickSlotCell] OnDrop 차단: draggedCell={draggedCell}, itemData={draggedCell?.ItemData}");
             return;
+        }
 
         var objectData = InGameController.Instance?.ObjectDataWorker;
         if (objectData == null)
             return;
 
         objectData.GetQuickSlotRegistry().Register(m_SlotIndex, draggedCell.ItemData.Info.Id);
+        GameDebug.Log($"[QuickSlotCell] 퀵슬롯 등록: slot={m_SlotIndex}, itemId={draggedCell.ItemData.Info.Id}");
     }
 
     // 우클릭으로 퀵슬롯 해제
