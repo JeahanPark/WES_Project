@@ -1,6 +1,7 @@
 using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine;
+using Unity.Netcode;
 
 public class GameSceneManager : MonoSingleton<GameSceneManager>
 {
@@ -21,7 +22,15 @@ public class GameSceneManager : MonoSingleton<GameSceneManager>
             return;
         }
 
-        SceneManager.LoadScene(_sceneName);
+        // 호스트/서버 상태에서는 Netcode SceneManager로 로드해야 in-scene NetworkObject가 정상 스폰됨
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening && NetworkManager.Singleton.IsServer)
+        {
+            NetworkManager.Singleton.SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
+        }
+        else
+        {
+            SceneManager.LoadScene(_sceneName);
+        }
     }
 
     public void LoadSceneAsync(string _sceneName)

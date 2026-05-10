@@ -12,6 +12,9 @@ public class LobbyPopup : BasePopup
     [SerializeField] private TMP_InputField m_CodeInputField;
     [SerializeField] private Button m_CodeConfirmButton;
 
+    private bool m_IsCreatingRoom;
+    private bool m_IsJoiningRoom;
+
     private void Awake()
     {
         m_EnterButton.onClick.AddListener(OnClickEnter);
@@ -30,11 +33,16 @@ public class LobbyPopup : BasePopup
 
     private void OnClickCreate()
     {
+        if (m_IsCreatingRoom)
+            return;
         StartCoroutine(CoCreateRoom());
     }
 
     private void OnClickCodeConfirm()
     {
+        if (m_IsJoiningRoom)
+            return;
+
         string code = m_CodeInputField.text;
 
         if (string.IsNullOrEmpty(code))
@@ -48,6 +56,7 @@ public class LobbyPopup : BasePopup
 
     private IEnumerator CoCreateRoom()
     {
+        m_IsCreatingRoom = true;
         m_CreateButton.interactable = false;
 
         var task = Managers.Network.HostRelayAsync(destroyCancellationToken);
@@ -72,10 +81,12 @@ public class LobbyPopup : BasePopup
         }
 
         m_CreateButton.interactable = true;
+        m_IsCreatingRoom = false;
     }
 
     private IEnumerator CoJoinRoom(string _code)
     {
+        m_IsJoiningRoom = true;
         m_CodeConfirmButton.interactable = false;
 
         var task = Managers.Network.JoinRelayAsync(_code, destroyCancellationToken);
@@ -100,5 +111,6 @@ public class LobbyPopup : BasePopup
         }
 
         m_CodeConfirmButton.interactable = true;
+        m_IsJoiningRoom = false;
     }
 }
