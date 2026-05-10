@@ -1,0 +1,81 @@
+{
+  "name": "ResultPopup",
+  "type": "panel",
+  "anchor": "stretch",
+  "size": [0, 0],
+  "position": [0, 0],
+  "color": [0, 0, 0, 0],
+  "style": "bg_standard",
+  "sprite": "none",
+  "raycastTarget": false,
+  "children": [
+    {
+      "name": "BackgroundPanel",
+      "type": "panel",
+      "anchor": "center",
+      "size": [800, 500],
+      "position": [0, 0],
+      "color": [0, 0, 0, 0.85],
+      "style": "bg_dark",
+      "sprite": "Background",
+      "raycastTarget": true,
+      "children": [
+        {
+          "name": "TitleText",
+          "type": "text",
+          "anchor": "top-stretch",
+          "size": [0, 120],
+          "position": [0, -110],
+          "color": [1, 1, 1, 1],
+          "text": "결과",
+          "fontSize": 80,
+          "fontStyle": 1,
+          "hAlign": 2,
+          "sprite": "none",
+          "raycastTarget": false
+        },
+        {
+          "name": "SubtitleText",
+          "type": "text",
+          "anchor": "top-stretch",
+          "size": [0, 60],
+          "position": [0, -220],
+          "color": [0.8, 0.8, 0.8, 1],
+          "text": "여기에 부제가 들어갑니다",
+          "fontSize": 32,
+          "fontStyle": 0,
+          "hAlign": 2,
+          "sprite": "none",
+          "raycastTarget": false
+        },
+        {
+          "name": "ConfirmButton",
+          "type": "button",
+          "anchor": "bottom-stretch",
+          "size": [0, 80],
+          "position": [0, 100],
+          "color": [1, 1, 1, 1],
+          "style": "btn_primary",
+          "sprite": "UISprite",
+          "raycastTarget": true,
+          "children": [
+            {
+              "name": "ButtonText",
+              "type": "text",
+              "anchor": "center",
+              "size": [240, 80],
+              "position": [0, 0],
+              "color": [1, 1, 1, 1],
+              "text": "확인",
+              "fontSize": 36,
+              "fontStyle": 0,
+              "hAlign": 2,
+              "sprite": "none",
+              "raycastTarget": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
