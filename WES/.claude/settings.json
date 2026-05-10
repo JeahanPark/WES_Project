@@ -13,7 +13,11 @@
       "Edit(/.claude/skills/ui-review/**)",
       "mcp__mcp-unity__u_editor_sceneview",
       "mcp__mcp-unity__u_editor_tag_layer",
-      "mcp__mcp-unity__u_editor_menu"
+      "mcp__mcp-unity__u_editor_menu",
+      "WebFetch(domain:khalidabuhakmeh.com)",
+      "WebFetch(domain:www.jetbrains.com)",
+      "Skill(schedule)",
+      "Skill(schedule:*)"
     ],
     "additionalDirectories": [
       "C:\\GitFork\\WES_Project\\WES\\.claude\\skills",
