@@ -32,6 +32,8 @@ Unity Editor 메뉴에서:
 | `u_editor_asset` | 에셋 검색/정보/갱신 | O |
 | `u_editor_scene` | 씬 열기/저장/생성 | O |
 | `u_editor_tag_layer` | 태그/레이어 관리 | O |
+| `u_editor_input` | InputActionAsset 액션 추가/제거/조회 | O |
+| `u_editor_menu` | Editor 메뉴 항목 경로 실행 | O |
 | `u_set_transform` | Transform 위치/회전/스케일 설정 | O |
 | `u_screenshot` | Game View 스크린샷 캡처 | O |
 | `u_editor_sceneview` | Scene View 캡처 + 카메라 시점 제어 | O |
@@ -50,11 +52,12 @@ GameObject를 관리하고 조회한다.
 
 | 파라미터 | 필수 | 설명 |
 |---------|:----:|------|
-| `action` | O | `add` / `delete` / `rename` / `set_active` / `duplicate` / `find` / `get` / `hierarchy` |
+| `action` | O | `add` / `delete` / `rename` / `set_active` / `duplicate` / `set_parent` / `find` / `get` / `hierarchy` |
 | `target` | O | 대상 GameObject 이름 또는 경로 (find 시 검색 키워드) |
 | `gameObjectName` | X | 새 이름 (`add` / `rename` / `duplicate` 전용) |
 | `active` | X | `true` / `false` (`set_active` 전용, 기본값: true) |
 | `prefabPath` | X | 프리팹 에셋 경로. 생략 시 현재 씬에서 검색. |
+| `newParent` | X | 새 부모 GameObject 이름 (`set_parent` 전용) |
 | `maxCount` | X | 최대 노드 수 (`hierarchy` 전용, 기본값: 500) |
 
 ```
@@ -64,6 +67,7 @@ action: "delete",     target: "OldPanel"
 action: "rename",     target: "Panel",   gameObjectName: "MainPanel"
 action: "set_active", target: "Popup",   active: false
 action: "duplicate",  target: "ItemSlot", gameObjectName: "ItemSlot_Copy"
+action: "set_parent", target: "ChildGO", newParent: "NewParentGO"
 action: "find",       target: "Button"
 action: "get",        target: "Canvas/Panel/Title"
 action: "hierarchy"   (target 생략 시 전체 씬)
@@ -286,6 +290,47 @@ Unity 콘솔 로그를 읽어 반환한다.
 ```
 # 예시
 logType: "error", maxCount: 20
+```
+
+---
+
+### u_editor_input
+
+InputActionAsset(`.inputactions`) 파일의 액션을 추가/제거/조회한다.
+
+| 파라미터 | 필수 | 설명 |
+|---------|:----:|------|
+| `action` | O | `add_action` / `remove_action` / `list_actions` |
+| `assetPath` | O | `.inputactions` 파일 경로 (예: `Assets/Settings/InputSystem_Actions.inputactions`) |
+| `actionMap` | X | ActionMap 이름 (예: `Player`) — add/remove 필수 |
+| `actionName` | X | 액션 이름 (예: `QuickSlot1`) — add/remove 필수 |
+| `actionType` | X | `Button` / `Value` / `PassThrough` (기본값: `Button`, `add_action` 전용) |
+| `bindingPath` | X | 바인딩 경로 (예: `<Keyboard>/1`, `add_action` 전용) |
+
+```
+# 예시
+action: "list_actions",   assetPath: "Assets/Settings/InputSystem_Actions.inputactions"
+action: "add_action",     assetPath: "Assets/Settings/InputSystem_Actions.inputactions",
+                          actionMap: "Player", actionName: "QuickSlot1",
+                          actionType: "Button", bindingPath: "<Keyboard>/1"
+action: "remove_action",  assetPath: "Assets/Settings/InputSystem_Actions.inputactions",
+                          actionMap: "Player", actionName: "QuickSlot1"
+```
+
+---
+
+### u_editor_menu
+
+Unity Editor 메뉴 항목을 경로로 실행한다. 커스텀 에디터 도구(NavMesh 베이크, 맵 재생성 등) 트리거에 유용하다.
+
+| 파라미터 | 필수 | 설명 |
+|---------|:----:|------|
+| `menuPath` | O | 메뉴 경로 (슬래시 구분, 예: `Tools/Map Generator/Bake NavMesh`, `File/Save`) |
+
+```
+# 예시
+menuPath: "Tools/Map Generator/Bake NavMesh"
+menuPath: "File/Save"
 ```
 
 ---

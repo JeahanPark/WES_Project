@@ -1,6 +1,13 @@
 ## MCP Rules
-- Unity 관련 작업(프리팹, 컴포넌트, Inspector 참조 등)은 MCP 도구를 우선 사용한다.
-- 사용 가능한 도구: `echo` / `generate_ui_with_gpt` / `manage_components` / `set_reference` / `instantiate_prefab` / `add_gameobject` / `connect_button` / `refresh_assets`
+- Unity 관련 작업(프리팹, 컴포넌트, Inspector 참조, 씬 조작 등)은 MCP 도구를 우선 사용한다.
+- 사용 가능한 도구:
+  - **에디터**: `u_editor_gameobject` / `u_editor_component` / `u_editor_prefab` / `u_editor_asset` / `u_editor_scene` / `u_editor_tag_layer` / `u_editor_input` / `u_editor_menu` / `u_editor_sceneview`
+  - **트랜스폼**: `u_set_transform` (mode='editor'|'play')
+  - **플레이모드**: `u_play` (control/click/invoke)
+  - **공통**: `u_console` / `u_screenshot`
+  - **파일 생성**: `generate_ui_with_gpt`
 - 도구 사용법은 반드시 [Assets/MCP_Unity_Plugin/README.md](Assets/MCP_Unity_Plugin/README.md)를 참고한다.
+- 에셋(스크립트, CSV, 프리팹 등)을 추가/수정/삭제한 경우 작업 완료 후 `u_editor_asset(action: refresh)`를 호출해 Unity 에디터에 변경 사항을 반영한다.
+- **McpBridge 활성화 필수**: Unity Editor 메뉴 `Tools > McpBridge > ▶ 시작`. 도메인 리로드(스크립트 컴파일) 시 자동 중지되므로 컴파일 완료 후 다시 시작해야 한다.
 - **MCP 한계 리스트업**: MCP 호출 시 불가능한 상황이 발생하면, 해당 작업이 끝난 후 불가능했던 항목을 리스트업한다.
 - **MCP 기능 수정/추가 전 토큰 체크**: MCP 기능을 수정하거나 추가하기 전에 토큰 사용량을 체크하고 사용자에게 보고한다.
