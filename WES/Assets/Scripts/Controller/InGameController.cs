@@ -5,8 +5,14 @@ using Unity.Netcode;
 using Cysharp.Threading.Tasks;
 using UniRx;
 
-public class InGameController : GameController<InGameController>
+public class InGameController : NetworkGameController<InGameController>
 {
+#if UNITY_EDITOR
+    // QA 풀플레이(E2E): Intro→Ingame 점프 시 씬 로드 전에 켜두면
+    // Ingame InGameController가 Start에서 기존 CoInitializeTestMode(자동 Host 셋업)를 그대로 탄다.
+    private static bool s_ForceTestModeOnLoad = false;
+#endif
+
     [SerializeField] private Canvas m_Canvas;
     [Header("Worker")]
     [SerializeField] private InGameCameraWorker m_CameraWorker;
@@ -53,7 +59,11 @@ public class InGameController : GameController<InGameController>
     {
         m_NetworkObject = GetComponent<NetworkObject>();
 
-        if (m_TestMode)
+        bool testMode = m_TestMode;
+#if UNITY_EDITOR
+        testMode = testMode || ConsumeTestModeRequest();
+#endif
+        if (testMode)
         {
             yield return CoInitializeTestMode();
         }
@@ -91,6 +101,15 @@ public class InGameController : GameController<InGameController>
     }
 
 #if UNITY_EDITOR
+    public static void RequestTestModeOnLoad() => s_ForceTestModeOnLoad = true;
+
+    private static bool ConsumeTestModeRequest()
+    {
+        bool requested = s_ForceTestModeOnLoad;
+        s_ForceTestModeOnLoad = false;
+        return requested;
+    }
+
     public void TestSpawnCampfireNearPlayer()
     {
         TestManager.Instance?.TestSpawnCampfireNearPlayer();

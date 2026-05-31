@@ -16,6 +16,7 @@ public class CharacterBase : WorldEntityBase
     public const float CRITICAL_MULTIPLIER = 1.5f;
 
     private const float ROTATION_SPEED = 15f;
+    private const float PATH_CORNER_ARRIVE_DISTANCE = 0.4f;
 
     [SerializeField] private CharacterScriptable m_CharacterData;
     [SerializeField] private int m_ATK = DEFAULT_ATK;
@@ -38,10 +39,16 @@ public class CharacterBase : WorldEntityBase
     private bool m_HasLookTarget;
     private float m_HPRegenAccumulator = 0f;
 
+    // NavMesh 경로 추종 (MoveTo)
+    private Vector3[] m_PathCorners;
+    private int m_PathCornerIndex;
+    private bool m_IsFollowingPath;
+
     // HP Properties
     public int HP => m_HP.Value;
     public int MaxHP => m_MaxHP.Value;
     public bool IsDead => m_HP.Value <= 0;
+    public bool IsFollowingPath => m_IsFollowingPath;
     public Vector3 WorldUIOffset => m_CharacterData != null ? m_CharacterData.WorldUIOffset : Vector3.up * 2f;
 
     public int GetATK() => m_ATK;
@@ -242,6 +249,7 @@ public class CharacterBase : WorldEntityBase
 
         if (IsOwner)
         {
+            UpdatePathFollow();
             UpdateMovement();
             UpdateRotation();
         }
@@ -268,7 +276,47 @@ public class CharacterBase : WorldEntityBase
             m_MoveDirection = Vector2.zero;
             return;
         }
+        // 수동 방향 입력이 들어오면 경로 추종을 취소한다.
+        if (m_IsFollowingPath)
+            StopMove();
         m_MoveDirection = _direction;
+    }
+
+    /// <summary>
+    /// NavMesh 경로탐색으로 목표 지점까지 이동을 시작한다.
+    /// 매 프레임 다음 코너 방향으로 기존 이동 로직(MoveWithDirection 경로)을 사용해 추종한다.
+    /// </summary>
+    /// <returns>경로 계산 성공 여부. false면 호출측에서 Warp 등 폴백 처리.</returns>
+    public bool MoveTo(Vector3 _destination)
+    {
+        if (IsDead)
+            return false;
+
+        if (m_NavAgent == null || !m_NavAgent.isOnNavMesh)
+            return false;
+
+        NavMeshPath path = new NavMeshPath();
+        if (!NavMesh.CalculatePath(transform.position, _destination, NavMesh.AllAreas, path))
+            return false;
+
+        if (path.status == NavMeshPathStatus.PathInvalid || path.corners == null || path.corners.Length < 2)
+            return false;
+
+        m_PathCorners = path.corners;
+        m_PathCornerIndex = 1; // corners[0]은 시작점이므로 1번부터 추종
+        m_IsFollowingPath = true;
+        return true;
+    }
+
+    /// <summary>
+    /// 진행 중인 이동(경로 추종 및 수동 방향)을 모두 정지한다.
+    /// </summary>
+    public void StopMove()
+    {
+        m_IsFollowingPath = false;
+        m_PathCorners = null;
+        m_PathCornerIndex = 0;
+        m_MoveDirection = Vector2.zero;
     }
 
     public void LookAtPosition(Vector3 _worldPosition)
@@ -287,6 +335,42 @@ public class CharacterBase : WorldEntityBase
 
     protected virtual void OnWalkChanged(bool _isWalking)
     {
+    }
+
+    private void UpdatePathFollow()
+    {
+        if (!m_IsFollowingPath)
+            return;
+
+        if (IsDead || m_PathCorners == null || m_PathCornerIndex >= m_PathCorners.Length)
+        {
+            StopMove();
+            return;
+        }
+
+        Vector3 target = m_PathCorners[m_PathCornerIndex];
+        Vector3 toTarget = target - transform.position;
+        toTarget.y = 0f;
+
+        // 현재 코너 도달 → 다음 코너로
+        if (toTarget.sqrMagnitude <= PATH_CORNER_ARRIVE_DISTANCE * PATH_CORNER_ARRIVE_DISTANCE)
+        {
+            m_PathCornerIndex++;
+            if (m_PathCornerIndex >= m_PathCorners.Length)
+            {
+                StopMove();
+                return;
+            }
+            target = m_PathCorners[m_PathCornerIndex];
+            toTarget = target - transform.position;
+            toTarget.y = 0f;
+        }
+
+        // 경로 추종 중에는 진행 방향을 바라보게 하고 이동 방향을 직접 설정한다.
+        // (MoveWithDirection은 경로를 취소하므로 m_MoveDirection을 직접 갱신)
+        Vector3 dir = toTarget.normalized;
+        m_MoveDirection = new Vector2(dir.x, dir.z);
+        LookAtPosition(target);
     }
 
     private void UpdateMovement()

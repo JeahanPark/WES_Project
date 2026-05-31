@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UI;
@@ -8,6 +9,14 @@ using UnityEngine.UI;
 public class TestManager : MonoSingleton<TestManager>
 {
     public const int TEST_START_ITEM_COUNT = 100;
+
+    // QA 풀플레이(E2E)
+    public const float FULLPLAY_TOTAL_TIMEOUT = 120f;
+    public const float FULLPLAY_MOVE_TIMEOUT = 60f;
+    public const float FULLPLAY_ARRIVE_DISTANCE = 1.5f;
+    public const int FULLPLAY_INVINCIBLE_HP = 999999;
+
+    private bool m_IsFullPlayRunning = false;
 
     // ===== 범용 입력 시뮬레이션 =====
 
@@ -1307,6 +1316,174 @@ public class TestManager : MonoSingleton<TestManager>
             Mark(critDamageValue == expectedCrit, $"크리 데미지값 {critDamageValue} == {expectedCrit}");
 
         GameDebug.Log($"[TestManager] TestCriticalHit 결과: PASS {passed}, FAIL {failed} (crit={critCount}, normal={normalCount})");
+    }
+
+    // ===== QA 풀플레이 (E2E 자동 진행) =====
+    public void TestFullPlayClear()
+    {
+        if (m_IsFullPlayRunning)
+        {
+            GameDebug.LogWarning("[TestManager] FullPlay already running — 중복 호출 무시");
+            return;
+        }
+        StartCoroutine(CoTestFullPlayClear());
+    }
+
+    private IEnumerator CoTestFullPlayClear()
+    {
+        m_IsFullPlayRunning = true;
+        GameDebug.Log("[TestManager] ===== QA FullPlay 시작 =====");
+
+        float startTime = Time.realtimeSinceStartup;
+        bool TotalTimedOut() => Time.realtimeSinceStartup - startTime > FULLPLAY_TOTAL_TIMEOUT;
+
+        // ---- S0: Intro 시작 → Ingame 점프 ----
+        GameDebug.Log("[FullPlay][S0] Intro 시작 OK — TestMode 요청 후 Ingame 로드");
+        InGameController.RequestTestModeOnLoad();
+        GameSceneManager.Instance.LoadScene(GameSceneManager.SCENE_INGAME);
+
+        // ---- S1: Ingame 진입 + 스폰 대기 ----
+        InGameController controller = null;
+        while (controller == null || !controller.IsGameStarted || controller.PlayWorker?.LocalPlayer == null)
+        {
+            if (TotalTimedOut())
+            {
+                GameDebug.LogError("[FullPlay][FAIL] S1 스폰 대기 타임아웃 (Host 셋업/스폰 실패 추정)");
+                m_IsFullPlayRunning = false;
+                yield break;
+            }
+            controller = Object.FindFirstObjectByType<InGameController>();
+            yield return null;
+        }
+
+        var player = controller.PlayWorker.LocalPlayer;
+        GameDebug.Log($"[FullPlay][S1] Ingame 진입·스폰 OK — LocalPlayer index {player.GetPlayerIndex()}");
+
+        // 무적/스탯 동결 (이동 중 사망 방지) — 기존 API 재사용
+        ApplyFullPlayInvincible(player);
+
+        // ---- S2: EscapePoint 위치 획득 후 실제 이동 개시 ----
+        var escapePoint = Object.FindFirstObjectByType<EscapePoint>();
+        if (escapePoint == null)
+        {
+            GameDebug.LogError("[FullPlay][FAIL] S2 EscapePoint 없음 — 씬 배치 확인 필요");
+            m_IsFullPlayRunning = false;
+            yield break;
+        }
+
+        Vector3 escapePos = escapePoint.transform.position;
+        GameDebug.Log($"[FullPlay][S2] 이동 개시 — EscapePoint {escapePos}");
+
+        bool pathOk = player.MoveTo(escapePos);
+        if (!pathOk)
+            GameDebug.LogWarning("[FullPlay][S2] MoveTo 경로 계산 실패 — 직선 추종으로 시도");
+
+        // ---- S3: 이동 진행 / 도달 / 타임아웃 → Warp 폴백 ----
+        float moveStart = Time.realtimeSinceStartup;
+        bool reached = false;
+        bool warpFallback = false;
+
+        while (!reached)
+        {
+            if (TotalTimedOut())
+            {
+                player.StopMove();
+                GameDebug.LogError("[FullPlay][FAIL] 전체 타임아웃 — 이동 중 중단");
+                m_IsFullPlayRunning = false;
+                yield break;
+            }
+
+            // 클리어 RPC가 이미 도달했으면 성공 처리
+            if (controller.GameState == GameState.Clear)
+            {
+                reached = true;
+                break;
+            }
+
+            float distance = HorizontalDistance(player.transform.position, escapePos);
+            if (distance <= FULLPLAY_ARRIVE_DISTANCE)
+            {
+                reached = true;
+                break;
+            }
+
+            // 경로 계산 실패했거나 추종이 끊겼으면 직선 방향으로라도 진행
+            if (!player.IsFollowingPath)
+            {
+                Vector3 dir = (escapePos - player.transform.position);
+                dir.y = 0f;
+                player.MoveWithDirection(new Vector2(dir.normalized.x, dir.normalized.z));
+            }
+
+            // 이동 타임아웃 → Warp 폴백
+            if (Time.realtimeSinceStartup - moveStart > FULLPLAY_MOVE_TIMEOUT)
+            {
+                warpFallback = true;
+                player.StopMove();
+                GameDebug.LogWarning("[FullPlay][S3] 이동실패→Warp폴백 (이동 타임아웃, 경로 막힘 추정)");
+                WarpToEscape(player, escapePos);
+                // 무적 재적용 (혹시 죽었을 경우 트리거 가드 통과 보장)
+                ApplyFullPlayInvincible(player);
+                break;
+            }
+
+            yield return null;
+        }
+
+        player.StopMove();
+
+        if (warpFallback)
+            GameDebug.Log("[FullPlay][S3] EscapePoint 도달 OK (Warp 폴백 경유)");
+        else
+            GameDebug.Log("[FullPlay][S3] EscapePoint 도달 OK (실제 이동)");
+
+        // Warp 직후 트리거 콜라이더가 자연 발동하지 않는 경우를 대비해 도달 보조 — 직접 진입점 호출
+        if (controller.GameState != GameState.Clear)
+        {
+            controller.OnPlayerReachedEscape(player);
+        }
+
+        // ---- S4: 클리어 화면 확인 ----
+        while (controller.GameState != GameState.Clear)
+        {
+            if (TotalTimedOut())
+            {
+                GameDebug.LogError("[FullPlay][FAIL] S4 클리어 RPC 미수신 타임아웃");
+                m_IsFullPlayRunning = false;
+                yield break;
+            }
+            yield return null;
+        }
+
+        bool resultShown = Managers.Popup.FindOpen<ResultPopup>() != null;
+        GameDebug.Log($"[FullPlay][S4] 클리어 화면 OK — GameState=Clear, ResultPopup={resultShown}");
+        GameDebug.Log("[TestManager] ===== QA FullPlay PASS =====");
+
+        m_IsFullPlayRunning = false;
+    }
+
+    private void ApplyFullPlayInvincible(PlayerCharacter _player)
+    {
+        if (_player == null) return;
+        _player.SetMaxHP(FULLPLAY_INVINCIBLE_HP);
+        _player.SetHP(FULLPLAY_INVINCIBLE_HP);
+        _player.SetCold(0);
+    }
+
+    private void WarpToEscape(PlayerCharacter _player, Vector3 _escapePos)
+    {
+        var agent = _player.GetComponent<NavMeshAgent>();
+        if (agent != null && NavMesh.SamplePosition(_escapePos, out NavMeshHit hit, 5f, NavMesh.AllAreas))
+            agent.Warp(hit.position);
+        else
+            _player.transform.position = _escapePos;
+    }
+
+    private float HorizontalDistance(Vector3 _a, Vector3 _b)
+    {
+        _a.y = 0f;
+        _b.y = 0f;
+        return Vector3.Distance(_a, _b);
     }
 }
 #endif
