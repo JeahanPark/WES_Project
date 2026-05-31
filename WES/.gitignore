@@ -107,3 +107,14 @@ InitTestScene*.unity*
 MCP/
 *.ir.json
 *.ir.json.meta
+
+# Claude Code 로컬 상태
+.claude/.discord-threads.json
+.claude/.discord-cursor.json
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
+.claude/.auto-doc-report-cursor.json
+
+# 작업용 임시 스크린샷 / IDE 빌드 캐시
+screenshot_*.png
+*.lscache

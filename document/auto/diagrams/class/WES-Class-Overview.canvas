@@ -1,0 +1,413 @@
+{
+  "nodes": [
+    {
+      "id": "9c9800a4633a47c0",
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "width": 360,
+      "height": 100,
+      "text": "### IManager\n*(외부 베이스)*",
+      "color": "6"
+    },
+    {
+      "id": "4387f06077959501",
+      "type": "text",
+      "x": 390,
+      "y": 0,
+      "width": 360,
+      "height": 100,
+      "text": "### MonoBehaviour\n*(외부 베이스)*",
+      "color": "6"
+    },
+    {
+      "id": "5b01668dbd655595",
+      "type": "text",
+      "x": 780,
+      "y": 0,
+      "width": 360,
+      "height": 100,
+      "text": "### NetworkBehaviour\n*(외부 베이스)*",
+      "color": "6"
+    },
+    {
+      "id": "8673b233ff8d6368",
+      "type": "group",
+      "x": 0,
+      "y": 200,
+      "width": 840,
+      "height": 780,
+      "label": "Manager",
+      "color": "2"
+    },
+    {
+      "id": "777eabe4aed0063b",
+      "type": "file",
+      "x": 40,
+      "y": 260,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/ChatManager.md",
+      "color": "2"
+    },
+    {
+      "id": "45c4c1ec79e88f74",
+      "type": "file",
+      "x": 440,
+      "y": 260,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/GameNetworkManager.md",
+      "color": "2"
+    },
+    {
+      "id": "4463f72767bcd1e4",
+      "type": "file",
+      "x": 40,
+      "y": 405,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/GameSceneManager.md",
+      "color": "2"
+    },
+    {
+      "id": "713e87f55b458ed9",
+      "type": "file",
+      "x": 440,
+      "y": 405,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/InputManager.md",
+      "color": "2"
+    },
+    {
+      "id": "267fe81bcec1bae4",
+      "type": "file",
+      "x": 40,
+      "y": 550,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/Managers.md",
+      "color": "2"
+    },
+    {
+      "id": "66b46208ce328998",
+      "type": "file",
+      "x": 440,
+      "y": 550,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/MonoSingleton.md",
+      "color": "2"
+    },
+    {
+      "id": "80c6830ac0508104",
+      "type": "file",
+      "x": 40,
+      "y": 695,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/PopupManager.md",
+      "color": "2"
+    },
+    {
+      "id": "d75c1c50b41db8ca",
+      "type": "file",
+      "x": 440,
+      "y": 695,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/ResourceManager.md",
+      "color": "2"
+    },
+    {
+      "id": "030472799a7de845",
+      "type": "file",
+      "x": 40,
+      "y": 840,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/Singleton.md",
+      "color": "2"
+    },
+    {
+      "id": "50520aef2df4b668",
+      "type": "file",
+      "x": 440,
+      "y": 840,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/TestManager.md",
+      "color": "2"
+    },
+    {
+      "id": "b2c8e88fbd561303",
+      "type": "group",
+      "x": 940,
+      "y": 200,
+      "width": 840,
+      "height": 345,
+      "label": "Controller",
+      "color": "1"
+    },
+    {
+      "id": "a89f9289ecb074f5",
+      "type": "file",
+      "x": 980,
+      "y": 260,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/GameController.md",
+      "color": "1"
+    },
+    {
+      "id": "4c4fb7ccf09053ac",
+      "type": "file",
+      "x": 1380,
+      "y": 260,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/InGameController.md",
+      "color": "1"
+    },
+    {
+      "id": "b172b7f08234ba82",
+      "type": "file",
+      "x": 980,
+      "y": 405,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/IntroController.md",
+      "color": "1"
+    },
+    {
+      "id": "62864b32744b9d70",
+      "type": "file",
+      "x": 1380,
+      "y": 405,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/LobbyController.md",
+      "color": "1"
+    },
+    {
+      "id": "a0aa118178f67755",
+      "type": "group",
+      "x": 0,
+      "y": 1080,
+      "width": 840,
+      "height": 635,
+      "label": "Worker",
+      "color": "4"
+    },
+    {
+      "id": "b135efdfa2559a11",
+      "type": "file",
+      "x": 40,
+      "y": 1140,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/BuildingPlacementWorker.md",
+      "color": "4"
+    },
+    {
+      "id": "f7beadd45506b350",
+      "type": "file",
+      "x": 440,
+      "y": 1140,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/DayNightRenderWorker.md",
+      "color": "4"
+    },
+    {
+      "id": "d6cc777ba4c03cf2",
+      "type": "file",
+      "x": 40,
+      "y": 1285,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/DayNightWorker.md",
+      "color": "4"
+    },
+    {
+      "id": "649ef3270a59055e",
+      "type": "file",
+      "x": 440,
+      "y": 1285,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/InGameAreaWorker.md",
+      "color": "4"
+    },
+    {
+      "id": "17363a703c73af41",
+      "type": "file",
+      "x": 40,
+      "y": 1430,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/InGameCameraWorker.md",
+      "color": "4"
+    },
+    {
+      "id": "c84f777940bb8fef",
+      "type": "file",
+      "x": 440,
+      "y": 1430,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/InGamePlayWorker.md",
+      "color": "4"
+    },
+    {
+      "id": "d6965b6530dff6a3",
+      "type": "file",
+      "x": 40,
+      "y": 1575,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/InGameSpawnWorker.md",
+      "color": "4"
+    },
+    {
+      "id": "b9c54a38b7f2cf59",
+      "type": "file",
+      "x": 440,
+      "y": 1575,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/InGameWorldUIWorker.md",
+      "color": "4"
+    },
+    {
+      "id": "361ac083ca8b845f",
+      "type": "group",
+      "x": 940,
+      "y": 1080,
+      "width": 840,
+      "height": 345,
+      "label": "Component",
+      "color": "5"
+    },
+    {
+      "id": "56bfb418709d7069",
+      "type": "file",
+      "x": 980,
+      "y": 1140,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/MonsterSpawnArea.md",
+      "color": "5"
+    },
+    {
+      "id": "da59ae85fef17c5e",
+      "type": "file",
+      "x": 1380,
+      "y": 1140,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/NightMonsterComponent.md",
+      "color": "5"
+    },
+    {
+      "id": "58c891f3ab02e399",
+      "type": "file",
+      "x": 980,
+      "y": 1285,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/NightVisionComponent.md",
+      "color": "5"
+    },
+    {
+      "id": "9b8b637ecd1da302",
+      "type": "file",
+      "x": 1380,
+      "y": 1285,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/PhaseIconHUD.md",
+      "color": "5"
+    }
+  ],
+  "edges": [
+    {
+      "id": "449e95aa75ead0d1",
+      "fromNode": "777eabe4aed0063b",
+      "fromSide": "top",
+      "toNode": "66b46208ce328998",
+      "toSide": "bottom"
+    },
+    {
+      "id": "b9ab81c154a414e1",
+      "fromNode": "45c4c1ec79e88f74",
+      "fromSide": "top",
+      "toNode": "66b46208ce328998",
+      "toSide": "bottom"
+    },
+    {
+      "id": "8f9fa6729348b132",
+      "fromNode": "4463f72767bcd1e4",
+      "fromSide": "top",
+      "toNode": "66b46208ce328998",
+      "toSide": "bottom"
+    },
+    {
+      "id": "c52a245a4ef256fc",
+      "fromNode": "4c4fb7ccf09053ac",
+      "fromSide": "top",
+      "toNode": "a89f9289ecb074f5",
+      "toSide": "bottom"
+    },
+    {
+      "id": "9b07e55e70170138",
+      "fromNode": "713e87f55b458ed9",
+      "fromSide": "top",
+      "toNode": "66b46208ce328998",
+      "toSide": "bottom"
+    },
+    {
+      "id": "0450de5891ea2bfb",
+      "fromNode": "b172b7f08234ba82",
+      "fromSide": "top",
+      "toNode": "a89f9289ecb074f5",
+      "toSide": "bottom"
+    },
+    {
+      "id": "30cedf92005da655",
+      "fromNode": "62864b32744b9d70",
+      "fromSide": "top",
+      "toNode": "a89f9289ecb074f5",
+      "toSide": "bottom"
+    },
+    {
+      "id": "303b4be61702a19c",
+      "fromNode": "267fe81bcec1bae4",
+      "fromSide": "top",
+      "toNode": "66b46208ce328998",
+      "toSide": "bottom"
+    },
+    {
+      "id": "3633b7016beef735",
+      "fromNode": "80c6830ac0508104",
+      "fromSide": "top",
+      "toNode": "66b46208ce328998",
+      "toSide": "bottom"
+    },
+    {
+      "id": "0111260f98ac0da9",
+      "fromNode": "d75c1c50b41db8ca",
+      "fromSide": "top",
+      "toNode": "030472799a7de845",
+      "toSide": "bottom"
+    },
+    {
+      "id": "10e946a8d39111d8",
+      "fromNode": "50520aef2df4b668",
+      "fromSide": "top",
+      "toNode": "66b46208ce328998",
+      "toSide": "bottom"
+    }
+  ]
+}

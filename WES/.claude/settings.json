@@ -1,4 +1,7 @@
 {
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "permissions": {
     "allow": [
       "mcp__mcp-unity__ensure_guid_table",
@@ -17,13 +20,66 @@
       "WebFetch(domain:khalidabuhakmeh.com)",
       "WebFetch(domain:www.jetbrains.com)",
       "Skill(schedule)",
-      "Skill(schedule:*)"
+      "Skill(schedule:*)",
+      "WebFetch(domain:opencode.ai)",
+      "Bash(rm -f .claude/scripts/fake-payload.json .claude/scripts/check-env.ps1 && ls .claude/scripts/)",
+      "Bash(rm -f .claude/.discord-cursor.json .claude/.discord-threads.json && ls .claude/.discord-* 2>&1; echo \"---\"; ls -la ~/.claude/teams/)",
+      "WebFetch(domain:openclaw.ai)",
+      "WebFetch(domain:gist.github.com)",
+      "WebFetch(domain:item.gmarket.co.kr)",
+      "WebFetch(domain:global.gmarket.co.kr)",
+      "Edit(/.claude/skills/weekly-plan/**)",
+      "Skill(superpowers-brainstorming)",
+      "Skill(superpowers-brainstorming:*)"
     ],
     "additionalDirectories": [
       "C:\\GitFork\\WES_Project\\WES\\.claude\\skills",
       "c:\\GitFork\\WES_Project\\WES\\.claude\\skills",
       "C:\\GitFork\\WES_Project\\WES\\.claude",
-      "C:\\Users\\cgq02\\.claude\\projects\\c--GitFork-WES-Project\\memory"
+      "C:\\Users\\cgq02\\.claude\\projects\\c--GitFork-WES-Project\\memory",
+      "c:\\GitFork\\WES_Project\\WES\\.claude\\scripts",
+      "c:\\GitFork\\WES_Project\\WES\\.claude",
+      "C:\\GitFork\\WES_Project\\.git\\hooks",
+      "C:\\GitFork\\FantasyCritters\\.claude",
+      "C:\\GitFork\\FantasyCritters\\.vscode"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\scripts\\auto-doc\\update-vault.ps1\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\scripts\\discord-mirror.ps1\""
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\scripts\\auto-doc\\update-vault.ps1\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\scripts\\discord-mirror.ps1\""
+          }
+        ]
+      }
     ]
   }
 }
