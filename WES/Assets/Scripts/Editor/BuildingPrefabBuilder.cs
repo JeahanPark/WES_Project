@@ -11,7 +11,7 @@ public static class BuildingPrefabBuilder
     private const string BUILDING_FOLDER = "Assets/GameResource/Building";
     private const string CAMPFIRE_PREFAB_PATH = "Assets/GameResource/Building/Campfire.prefab";
     private const string CAMPFIRE_ADDRESS = "Campfire";
-    private const string DEFAULT_NETWORK_PREFABS_PATH = "Assets/DefaultNetworkPrefabs.asset";
+    private const string DEFAULT_NETWORK_PREFABS_PATH = "Assets/Resources/DefaultNetworkPrefabs.asset";
 
     [MenuItem("Tools/Building/Setup Campfire Prefab")]
     public static void SetupCampfirePrefab()

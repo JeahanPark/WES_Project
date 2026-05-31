@@ -77,6 +77,11 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
         }
 
         networkManager.NetworkConfig.NetworkTransport = transport;
+
+        // 동적 생성된 NetworkManager는 NetworkConfig가 비어 있어 NetworkPrefabsList가 연결되지 않는다.
+        // 이 목록이 없으면 클라이언트가 서버의 스폰 오브젝트(플레이어·몬스터 등)를 해시로 복원하지 못한다.
+        // Resources의 DefaultNetworkPrefabs를 런타임에 등록해 호스트/클라이언트 프리팹 목록을 일치시킨다.
+        RegisterNetworkPrefabs(networkManager);
         networkManager.RunInBackground = true;
         networkManager.LogLevel = LogLevel.Normal;
         networkManager.NetworkConfig.ProtocolVersion = 0;
@@ -94,6 +99,25 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
         transport.ConnectionData.ServerListenAddress = "";
 
         GameDebug.Log("[GameNetworkManager] NetworkManager and UnityTransport configured");
+    }
+
+    private const string NETWORK_PREFABS_RESOURCE = "DefaultNetworkPrefabs";
+
+    private void RegisterNetworkPrefabs(NetworkManager _networkManager)
+    {
+        NetworkPrefabsList list = Resources.Load<NetworkPrefabsList>(NETWORK_PREFABS_RESOURCE);
+        if (list == null)
+        {
+            GameDebug.LogError($"[GameNetworkManager] NetworkPrefabsList not found in Resources: {NETWORK_PREFABS_RESOURCE}");
+            return;
+        }
+
+        var lists = _networkManager.NetworkConfig.Prefabs.NetworkPrefabsLists;
+        if (!lists.Contains(list))
+        {
+            lists.Add(list);
+            GameDebug.Log($"[GameNetworkManager] Registered NetworkPrefabsList ({list.PrefabList.Count} prefabs)");
+        }
     }
 
     public override void Clear()
