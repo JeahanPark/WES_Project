@@ -8,9 +8,24 @@ using UnityEngine;
 /// </summary>
 public class InGameAreaWorker : MonoBehaviour
 {
+    private const string PHASE_ANY = "Any";
+    private const string PHASE_NIGHT = "Night";
+    private const string PHASE_DAY = "Day";
+
     [SerializeField] private MonsterSpawnArea[] m_SpawnAreas;
 
     private Dictionary<int, int> m_AreaAliveCount = new();
+    private List<MonsterBase> m_NightMonsters = new();
+
+    private void OnEnable()
+    {
+        DayNightWorker.OnPhaseChanged += OnPhaseChanged;
+    }
+
+    private void OnDisable()
+    {
+        DayNightWorker.OnPhaseChanged -= OnPhaseChanged;
+    }
 
     public void Initialize()
     {
@@ -25,7 +40,7 @@ public class InGameAreaWorker : MonoBehaviour
 
         foreach (var area in m_SpawnAreas)
         {
-            TrySpawnForArea(area);
+            TrySpawnForArea(area, false);
         }
 
         GameDebug.Log($"[InGameAreaWorker] Initialized with {m_SpawnAreas.Length} spawn areas.");
@@ -35,6 +50,8 @@ public class InGameAreaWorker : MonoBehaviour
     {
         if (!Managers.Network.IsServer)
             return;
+
+        m_NightMonsters.Remove(_monster);
 
         var monsterInfo = Managers.Info.MonsterInfoList.Find(x => x.Id == _monster.MonsterId);
         if (monsterInfo != null)
@@ -55,7 +72,54 @@ public class InGameAreaWorker : MonoBehaviour
         StartCoroutine(CoRespawnInArea(_areaId, areaInfo.RespawnDelay));
     }
 
-    private void TrySpawnForArea(MonsterSpawnArea _area)
+    private void OnPhaseChanged(DayPhase _prev, DayPhase _current)
+    {
+        if (!Managers.Network.IsServer)
+            return;
+
+        if (_current == DayPhase.Night)
+        {
+            SpawnNightMonsters();
+        }
+        else if (_prev == DayPhase.Night && _current == DayPhase.Dawn)
+        {
+            DespawnNightMonsters();
+        }
+        else if (_current == DayPhase.Day)
+        {
+            DespawnNightMonsters();
+        }
+    }
+
+    private void SpawnNightMonsters()
+    {
+        foreach (var area in m_SpawnAreas)
+        {
+            TrySpawnForArea(area, true);
+        }
+    }
+
+    private void DespawnNightMonsters()
+    {
+        for (int i = m_NightMonsters.Count - 1; i >= 0; i--)
+        {
+            var monster = m_NightMonsters[i];
+            if (monster == null || !monster.IsSpawned)
+                continue;
+
+            var monsterInfo = Managers.Info.MonsterInfoList.Find(x => x.Id == monster.MonsterId);
+            if (monsterInfo != null)
+            {
+                InGameController.Instance.SpawnWorker.DespawnObject(monster.NetworkObject, monsterInfo.PrefabKey);
+            }
+
+            if (m_AreaAliveCount.ContainsKey(monster.SpawnAreaId))
+                m_AreaAliveCount[monster.SpawnAreaId]--;
+        }
+        m_NightMonsters.Clear();
+    }
+
+    private void TrySpawnForArea(MonsterSpawnArea _area, bool _spawnNightOnly)
     {
         var areaInfo = Managers.Info.WorldAreaInfoList.Find(x => x.Id == _area.AreaId);
         if (areaInfo == null)
@@ -67,19 +131,35 @@ public class InGameAreaWorker : MonoBehaviour
         if (m_AreaAliveCount[_area.AreaId] >= areaInfo.MaxCount)
             return;
 
-        var areaMonsters = Managers.Info.WorldAreaMonsterInfoList.FindAll(x => x.AreaId == _area.AreaId);
-        if (areaMonsters.Count == 0)
+        var allAreaMonsters = Managers.Info.WorldAreaMonsterInfoList.FindAll(x => x.AreaId == _area.AreaId);
+        if (allAreaMonsters.Count == 0)
         {
             GameDebug.LogWarning($"[InGameAreaWorker] No monsters defined for AreaId={_area.AreaId}");
             return;
         }
 
-        int monsterId = areaMonsters[Random.Range(0, areaMonsters.Count)].MonsterId;
+        List<WorldAreaMonsterInfo> candidates;
+        if (_spawnNightOnly)
+        {
+            candidates = allAreaMonsters.FindAll(x => x.PhaseCondition == PHASE_NIGHT);
+        }
+        else
+        {
+            candidates = allAreaMonsters.FindAll(x =>
+                x.PhaseCondition == PHASE_ANY ||
+                x.PhaseCondition == PHASE_DAY ||
+                string.IsNullOrEmpty(x.PhaseCondition));
+        }
+
+        if (candidates.Count == 0)
+            return;
+
+        int monsterId = candidates[Random.Range(0, candidates.Count)].MonsterId;
         Vector3 spawnPos = _area.GetRandomSpawnPosition();
-        SpawnMonster(monsterId, spawnPos, _area.AreaId);
+        SpawnMonster(monsterId, spawnPos, _area.AreaId, _spawnNightOnly);
     }
 
-    private void SpawnMonster(int _monsterId, Vector3 _position, int _areaId)
+    private void SpawnMonster(int _monsterId, Vector3 _position, int _areaId, bool _isNightMonster)
     {
         var monsterInfo = Managers.Info.MonsterInfoList.Find(x => x.Id == _monsterId);
         if (monsterInfo == null)
@@ -97,12 +177,15 @@ public class InGameAreaWorker : MonoBehaviour
 
         monster.SetSpawnAreaId(_areaId);
 
+        if (_isNightMonster)
+            m_NightMonsters.Add(monster);
+
         if (!m_AreaAliveCount.ContainsKey(_areaId))
             m_AreaAliveCount[_areaId] = 0;
 
         m_AreaAliveCount[_areaId]++;
 
-        GameDebug.Log($"[InGameAreaWorker] Spawned monster {_monsterId} at {_position} (Area={_areaId})");
+        GameDebug.Log($"[InGameAreaWorker] Spawned monster {_monsterId} at {_position} (Area={_areaId}, Night={_isNightMonster})");
     }
 
     private IEnumerator CoRespawnInArea(int _areaId, float _delay)
@@ -113,6 +196,8 @@ public class InGameAreaWorker : MonoBehaviour
         if (area == null)
             yield break;
 
-        TrySpawnForArea(area);
+        DayPhase currentPhase = InGameController.Instance?.DayNightWorker?.CurrentPhase ?? DayPhase.Day;
+        bool isNight = currentPhase == DayPhase.Night;
+        TrySpawnForArea(area, isNight);
     }
 }

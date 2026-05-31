@@ -10,6 +10,7 @@ public class InGameHUDWorker : MonoBehaviour
     [SerializeField] private PlayerStatusHUD m_PlayerStatusHUD;
     [SerializeField] private CraftHUDTab m_CraftHUDTab;
     [SerializeField] private QuickSlotHUD m_QuickSlotHUD;
+    [SerializeField] private PhaseIconHUD m_PhaseIconHUD;
 
     private PlayerCharacter m_LocalPlayer;
     private System.IDisposable m_QuickSlotSubscription;

@@ -15,6 +15,7 @@ public abstract class MonsterBase : CharacterBase
     private int m_SpawnAreaId;
 
     public int MonsterId => m_MonsterId;
+    public int SpawnAreaId => m_SpawnAreaId;
     public StateAnimationComponent StateAnimationComponent => m_StateAnimationComponent;
 
     protected virtual void Awake()

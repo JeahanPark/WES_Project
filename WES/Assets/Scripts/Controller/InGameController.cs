@@ -18,6 +18,8 @@ public class InGameController : GameController<InGameController>
     [SerializeField] private InGameSpawnWorker m_SpawnWorker;
     [SerializeField] private InGameAreaWorker m_AreaWorker;
     [SerializeField] private BuildingPlacementWorker m_BuildingPlacementWorker;
+    [SerializeField] private DayNightWorker m_DayNightWorker;
+    [SerializeField] private DayNightRenderWorker m_DayNightRenderWorker;
 
     [Header("Test Mode")]
     [SerializeField] private bool m_TestMode = false;
@@ -43,6 +45,8 @@ public class InGameController : GameController<InGameController>
     public InGameSpawnWorker SpawnWorker => m_SpawnWorker;
     public InGameAreaWorker AreaWorker => m_AreaWorker;
     public BuildingPlacementWorker BuildingPlacementWorker => m_BuildingPlacementWorker;
+    public DayNightWorker DayNightWorker => m_DayNightWorker;
+    public DayNightRenderWorker DayNightRenderWorker => m_DayNightRenderWorker;
     public bool IsGameStarted => m_IsGameStarted;
 
     private IEnumerator Start()
@@ -96,7 +100,6 @@ public class InGameController : GameController<InGameController>
     {
         TestManager.Instance?.TestPopupEscapeAndUIGuard();
     }
-
     public void TestMonsterRespawnDamage()
     {
         TestManager.Instance?.TestMonsterRespawnDamage();
@@ -105,6 +108,11 @@ public class InGameController : GameController<InGameController>
     public void TestPlayerDeathAndGameOver()
     {
         TestManager.Instance?.TestPlayerDeathAndGameOver();
+    }
+
+    public void TestDayNightCycle()
+    {
+        TestManager.Instance?.TestDayNightCycle();
     }
 #endif
 

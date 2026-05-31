@@ -1,4 +1,7 @@
-Id.INT,AreaId.INT,MonsterId.INT
-1,1,1
-2,2,2
-3,3,3
+Id.INT,AreaId.INT,MonsterId.INT,PhaseCondition.STRING
+1,1,1,Any
+2,2,2,Any
+3,3,3,Any
+4,2,4,Night
+5,3,4,Night
+6,1,4,Night

@@ -7,6 +7,7 @@ public class WorldAreaMonsterInfo
     public int Id;
     public int AreaId;
     public int MonsterId;
+    public string PhaseCondition;
 }
 
 

@@ -65,3 +65,11 @@ public enum GameState
     Clear,
     GameOver,
 }
+
+public enum DayPhase
+{
+    Day,
+    Dusk,
+    Night,
+    Dawn,
+}

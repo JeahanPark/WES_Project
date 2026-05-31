@@ -1144,6 +1144,89 @@ public class TestManager : MonoSingleton<TestManager>
         GameDebug.Log($"[TestManager] TestMonsterRespawnDamage 결과: PASS {passed}, FAIL {failed}");
     }
 
+    public void TestDayNightCycle()
+    {
+        StartCoroutine(CoTestDayNightCycle());
+    }
+
+    private IEnumerator CoTestDayNightCycle()
+    {
+        GameDebug.Log("[TestManager] TestDayNightCycle 시작");
+
+        int passed = 0;
+        int failed = 0;
+        void Mark(bool _condition, string _label)
+        {
+            if (_condition) { passed++; GameDebug.Log($"[TestManager] PASS: {_label}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+
+        var dayNight = controller.DayNightWorker;
+        if (dayNight == null) { GameDebug.LogError("[TestManager] DayNightWorker 없음"); yield break; }
+
+        // 시나리오 1: 각 페이즈 강제 전환 + Cold 배수 확인
+        var phases = new[] { DayPhase.Day, DayPhase.Dusk, DayPhase.Night, DayPhase.Dawn };
+        var expectedMultipliers = new[] { 1.0f, 1.3f, 2.0f, 1.3f };
+        var phaseNames = new[] { "낮", "황혼", "밤", "새벽" };
+
+        for (int i = 0; i < phases.Length; i++)
+        {
+            dayNight.ForcePhase(phases[i]);
+            yield return new WaitForSeconds(0.2f);
+
+            Mark(dayNight.CurrentPhase == phases[i], $"ForcePhase({phaseNames[i]}) → CurrentPhase == {phaseNames[i]}");
+
+            float multiplier = dayNight.GetColdRateMultiplier();
+            bool multiplierOk = Mathf.Abs(multiplier - expectedMultipliers[i]) < 0.01f;
+            Mark(multiplierOk, $"{phaseNames[i]} Cold 배수 {multiplier:F1} == {expectedMultipliers[i]:F1}");
+        }
+
+        // 시나리오 2: Night 페이즈 진입 시 야간 몬스터 스폰 확인
+        int monstersBefore = Object.FindObjectsByType<MonsterBase>(FindObjectsSortMode.None).Length;
+        dayNight.ForcePhase(DayPhase.Night);
+        yield return new WaitForSeconds(1f);
+        int monstersAfterNight = Object.FindObjectsByType<MonsterBase>(FindObjectsSortMode.None).Length;
+        GameDebug.Log($"[TestManager] Night 진입 전 몬스터: {monstersBefore}, 후: {monstersAfterNight}");
+
+        // 시나리오 3: Dawn 전환 시 야간 몬스터 디스폰 확인
+        dayNight.ForcePhase(DayPhase.Dawn);
+        yield return new WaitForSeconds(1f);
+        int monstersAfterDawn = Object.FindObjectsByType<MonsterBase>(FindObjectsSortMode.None).Length;
+        GameDebug.Log($"[TestManager] Dawn 전환 후 몬스터: {monstersAfterDawn}");
+        Mark(monstersAfterDawn <= monstersBefore, $"Dawn 전환 후 야간 몬스터 디스폰 (before={monstersBefore}, dawn={monstersAfterDawn})");
+
+        // 정리: 낮으로 복귀
+        dayNight.ForcePhase(DayPhase.Day);
+        yield return new WaitForSeconds(0.2f);
+        Mark(dayNight.CurrentPhase == DayPhase.Day, "최종 Day 복귀");
+
+        GameDebug.Log($"[TestManager] TestDayNightCycle 결과: PASS {passed}, FAIL {failed}");
+    }
+
+    // 시나리오 4 시각 캡처용 — Night/Day 단독 강제
+    public void TestForceNight()
+    {
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); return; }
+        var dayNight = controller.DayNightWorker;
+        if (dayNight == null) { GameDebug.LogError("[TestManager] DayNightWorker 없음"); return; }
+        dayNight.ForcePhase(DayPhase.Night);
+        GameDebug.Log("[TestManager] ForcePhase(Night) 호출 완료");
+    }
+
+    public void TestForceDay()
+    {
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); return; }
+        var dayNight = controller.DayNightWorker;
+        if (dayNight == null) { GameDebug.LogError("[TestManager] DayNightWorker 없음"); return; }
+        dayNight.ForcePhase(DayPhase.Day);
+        GameDebug.Log("[TestManager] ForcePhase(Day) 호출 완료");
+    }
+
     public void TestCriticalHit()
     {
         StartCoroutine(CoTestCriticalHit());
