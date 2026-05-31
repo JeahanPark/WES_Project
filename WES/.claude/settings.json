@@ -55,6 +55,14 @@
             "command": "powershell -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\scripts\\auto-doc\\update-vault.ps1\""
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\scripts\\discord-mirror.ps1\""
+          }
+        ]
       }
     ],
     "SubagentStop": [
@@ -63,6 +71,14 @@
           {
             "type": "command",
             "command": "powershell -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\scripts\\auto-doc\\update-vault.ps1\""
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\scripts\\discord-mirror.ps1\""
           }
         ]
       }

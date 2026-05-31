@@ -1,21 +1,5 @@
 # 디렉터 / 클라이언트 / 디자이너 / QA 팀 에이전트 표준 프로세스
 
-> ⚠️ **[DEPRECATED — 2026-05-31]** WES 팀 작업은 **AICHAT 봇**으로 이관되었다.
-> Claude Code 세션 내 `TeamCreate`/`SendMessage` + `discord-mirror.ps1` 운영은 더 이상 사용하지 않는다.
->
-> **새 운영 방식 (AICHAT)**:
-> - **기동**: `C:\GitFork\aichat\run_wes.bat` 실행 (WES 전용 인스턴스, HTTP `:8766`, FC `:8765`와 독립)
-> - **트리거 (둘 중 하나)**:
->   - Discord: WES 스레드에서 `/aichat <지시>`
->   - Claude Code: `curl -X POST http://127.0.0.1:8766/threads/wes/ask -H "Content-Type: application/json" -d "{\"text\":\"<지시>\"}"`
-> - **역할/페르소나**: `C:\GitFork\aichat\agents\wes\{director,client,designer,qa}.md` (본 폴더의 `.claude/agents/*.md`를 AICHAT `---SEND---` 프로토콜로 변환한 사본)
-> - **규율**: 고정 4-Phase 절차 폐기 → director가 진행자로서 자율 메일박스 핑퐁(기획→구현→QA)을 유도
-> - 설계서: `FantasyCritters/docs/superpowers/specs/2026-05-31-aichat-wes-support-design.md`
->
-> 아래 본문은 **LEGACY 참고용**으로만 보존한다 (Phase 구조의 사고 모델 참조).
-
----
-
 > **대상 독자**: WES 프로젝트에서 4-에이전트 팀 작업을 시작하려는 메인 세션(team-lead)
 > **참조 문서**: [director.md](director.md), [client.md](client.md), [designer.md](designer.md), [qa.md](qa.md), [RESOURCE_INVENTORY.md](../../../document/RESOURCE_INVENTORY.md)
 
