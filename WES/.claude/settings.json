@@ -30,7 +30,8 @@
       "WebFetch(domain:global.gmarket.co.kr)",
       "Edit(/.claude/skills/weekly-plan/**)",
       "Skill(superpowers-brainstorming)",
-      "Skill(superpowers-brainstorming:*)"
+      "Skill(superpowers-brainstorming:*)",
+      "Bash(cd \"C:/GitFork/WES_Project/WES\" && rm -f .claude/scripts/discord-mirror.ps1 .claude/scripts/run-mirror.ps1 .claude/scripts/check-mirror-state.ps1 .claude/scripts/test-discord.ps1 .claude/scripts/aggregate-log.ps1 .claude/.discord-cursor.json .claude/.discord-threads.json .claude/.discord-mirror.log && echo \"deleted\" && echo \"=== 남은 scripts ===\" && ls .claude/scripts/)"
     ],
     "additionalDirectories": [
       "C:\\GitFork\\WES_Project\\WES\\.claude\\skills",
@@ -41,7 +42,8 @@
       "c:\\GitFork\\WES_Project\\WES\\.claude",
       "C:\\GitFork\\WES_Project\\.git\\hooks",
       "C:\\GitFork\\FantasyCritters\\.claude",
-      "C:\\GitFork\\FantasyCritters\\.vscode"
+      "C:\\GitFork\\FantasyCritters\\.vscode",
+      "C:\\GitFork\\WES_Project\\WES\\.claude\\scripts"
     ]
   },
   "hooks": {
@@ -53,14 +55,6 @@
             "command": "powershell -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\scripts\\auto-doc\\update-vault.ps1\""
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "powershell -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\scripts\\discord-mirror.ps1\""
-          }
-        ]
       }
     ],
     "SubagentStop": [
@@ -69,14 +63,6 @@
           {
             "type": "command",
             "command": "powershell -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\scripts\\auto-doc\\update-vault.ps1\""
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "powershell -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\scripts\\discord-mirror.ps1\""
           }
         ]
       }
