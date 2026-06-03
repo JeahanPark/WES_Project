@@ -18,7 +18,7 @@ MonoBehaviour:
   m_DawnDuration: 120
   m_ColdMultiplierDay: 1
   m_ColdMultiplierDusk: 1.3
-  m_ColdMultiplierNight: 2
+  m_ColdMultiplierNight: 1
   m_ColdMultiplierDawn: 1.3
   m_BaseColdDecayPerSecond: 2
   m_VisionRadiusDay: 1

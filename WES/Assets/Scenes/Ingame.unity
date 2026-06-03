@@ -18418,6 +18418,67 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2103556207819361664, guid: d3b2ebfd4513b154daf464919b8c497e, type: 3}
   m_PrefabInstance: {fileID: 419060309}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &422542336
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 422542337}
+  - component: {fileID: 422542339}
+  - component: {fileID: 422542338}
+  m_Layer: 0
+  m_Name: MppmQaBootstrap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &422542337
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 422542336}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2076751651}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &422542338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 422542336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f97c1c592fd92f946b5c07e1edbda5f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SnapshotIntervalSeconds: 0.5
+--- !u!114 &422542339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 422542336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9d82d2a9a763d14fa34cc4f565dce78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AutoRunOnStart: 1
+  m_JoinTimeoutSeconds: 15
+  m_HostReadyPollSeconds: 0.25
 --- !u!1001 &423457546
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -42241,8 +42302,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Config: {fileID: 11400000, guid: f9b95fdee3a0a65499c37b2a556272d9, type: 2}
   m_DarknessOverlay: {fileID: 379881086}
-  m_LightSourceContainer: {fileID: 521367719}
-  m_LightCirclePrefab: {fileID: 208271057}
 --- !u!1001 &931746780
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -52393,6 +52452,7 @@ GameObject:
   - component: {fileID: 1128444547}
   - component: {fileID: 1128444546}
   - component: {fileID: 1128444548}
+  - component: {fileID: 1128444549}
   m_Layer: 0
   m_Name: DayNightWorker
   m_TagString: Untagged
@@ -52454,6 +52514,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   m_Config: {fileID: 11400000, guid: f9b95fdee3a0a65499c37b2a556272d9, type: 2}
+--- !u!114 &1128444549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1128444545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11a66e80843559f46b51f914bae3fccf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  m_Config: {fileID: 11400000, guid: f9b95fdee3a0a65499c37b2a556272d9, type: 2}
+  m_DayNightWorker: {fileID: 1128444548}
 --- !u!1001 &1128643916
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -91958,7 +92033,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 422542337}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2079081214
@@ -93240,6 +93316,7 @@ GameObject:
   - component: {fileID: 2105905848}
   - component: {fileID: 2105905849}
   - component: {fileID: 2105905850}
+  - component: {fileID: 2105905851}
   m_Layer: 0
   m_Name: InGameController
   m_TagString: Untagged
@@ -93274,6 +93351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e588041d1ffc234494ea144b627da02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   m_Canvas: {fileID: 1524037883}
   m_CameraWorker: {fileID: 128846035}
   m_PlayWorker: {fileID: 505209478}
@@ -93286,6 +93364,7 @@ MonoBehaviour:
   m_BuildingPlacementWorker: {fileID: 1180124271}
   m_DayNightWorker: {fileID: 1128444548}
   m_DayNightRenderWorker: {fileID: 1639454701}
+  m_ColdDamageWorker: {fileID: 1128444549}
   m_TestMode: 0
 --- !u!114 &2105905850
 MonoBehaviour:
@@ -93312,6 +93391,18 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &2105905851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2105905847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a3721491b712b242a1230a051929e43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2107055468
 PrefabInstance:
   m_ObjectHideFlags: 0

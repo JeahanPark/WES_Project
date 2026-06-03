@@ -1178,7 +1178,8 @@ public class TestManager : MonoSingleton<TestManager>
 
         // 시나리오 1: 각 페이즈 강제 전환 + Cold 배수 확인
         var phases = new[] { DayPhase.Day, DayPhase.Dusk, DayPhase.Night, DayPhase.Dawn };
-        var expectedMultipliers = new[] { 1.0f, 1.3f, 2.0f, 1.3f };
+        // 결정2(2026-06-03): 밤 감쇠 멀티는 1.0 고정(옛 체온모델 ×2 제거). 밤 추위는 ColdDamageWorker가 누적 전담.
+        var expectedMultipliers = new[] { 1.0f, 1.3f, 1.0f, 1.3f };
         var phaseNames = new[] { "낮", "황혼", "밤", "새벽" };
 
         for (int i = 0; i < phases.Length; i++)
@@ -1484,6 +1485,407 @@ public class TestManager : MonoSingleton<TestManager>
         _a.y = 0f;
         _b.y = 0f;
         return Vector3.Distance(_a, _b);
+    }
+
+    // ===== MPPM 멀티 QA 시나리오 (호스트 권위 트리거) =====
+    // 부트스트랩(MppmBootstrapWorker)이 host+클론 접속을 자동 처리한 뒤,
+    // QA가 이 메서드로 호스트 권위 동작(몬스터/드롭 스폰)을 트리거해 V3/V5/V6 검증 상태를 만든다.
+    // 기존 public(SpawnWorker.SpawnObject / PlayWorker.SpawnDropItem) 조합만 — 테스트 전용 로직 없음.
+    // 서버(호스트)에서만 유효. 클론에서 호출 시 무시.
+    public void TestMultiSpawnForSync()
+    {
+        StartCoroutine(CoTestMultiSpawnForSync());
+    }
+
+    private IEnumerator CoTestMultiSpawnForSync()
+    {
+        GameDebug.Log("[TestManager] TestMultiSpawnForSync 시작");
+
+        if (!Managers.Network.IsServer)
+        {
+            GameDebug.LogWarning("[TestManager] TestMultiSpawnForSync: 서버(호스트) 아님 — 스폰 권위 없음. 무시.");
+            yield break;
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+
+        var player = controller.PlayWorker?.LocalPlayer;
+        if (player == null) { GameDebug.LogError("[TestManager] LocalPlayer 없음"); yield break; }
+
+        Vector3 basePos = player.transform.position;
+
+        // 1) 호스트 권위 몬스터 스폰 (V3 전파, V4 HP, V5 사망용 대상)
+        var monsterList = Managers.Info?.MonsterInfoList;
+        if (monsterList != null && monsterList.Count > 0)
+        {
+            var monsterInfo = monsterList[0];
+            Vector3 monsterPos = basePos + player.transform.forward * 3f;
+            var monster = controller.SpawnWorker.SpawnObject<MonsterBase>(monsterInfo.PrefabKey, monsterPos);
+            GameDebug.Log($"[TestManager] 몬스터 스폰: id={monsterInfo.Id}, key={monsterInfo.PrefabKey}, spawned={(monster != null)}");
+        }
+        else
+        {
+            GameDebug.LogWarning("[TestManager] MonsterInfoList 비어 있음 — 몬스터 스폰 생략");
+        }
+
+        yield return null;
+
+        // 2) 호스트 권위 드롭아이템 스폰 (V6 클론 수집 대상 = 월드 아이템)
+        var itemList = Managers.Info?.ItemInfoList;
+        if (itemList != null && itemList.Count > 0)
+        {
+            int itemId = itemList[0].Id;
+            Vector3 dropPos = basePos + player.transform.right * 2f;
+            controller.PlayWorker.SpawnDropItem(itemId, 1, dropPos);
+            GameDebug.Log($"[TestManager] 드롭아이템 스폰: itemId={itemId}, pos={dropPos}");
+        }
+        else
+        {
+            GameDebug.LogWarning("[TestManager] ItemInfoList 비어 있음 — 드롭 스폰 생략");
+        }
+
+        GameDebug.Log("[TestManager] TestMultiSpawnForSync 완료 — 양측 스냅샷 수집 준비됨");
+    }
+
+    // V2: 로컬 플레이어 이동 → 정지(정지 수렴값 비교용). 각 에디터의 로컬 플레이어를 움직인다.
+    // 호출하는 쪽(호스트/클론)의 자기 플레이어가 ClientNetworkTransform(오너 권위)로 이동 → 반대쪽에 전파.
+    public void TestMpV2_MovePlayer()
+    {
+        StartCoroutine(CoTestMpV2_MovePlayer());
+    }
+
+    private IEnumerator CoTestMpV2_MovePlayer()
+    {
+        var player = FindLocalPlayer();
+        if (player == null) { GameDebug.LogError("[TestManager] V2: LocalPlayer 없음"); yield break; }
+
+        Vector3 before = player.transform.position;
+        GameDebug.Log($"[TestManager] V2 이동 시작: {before}");
+
+        float moved = 0f;
+        const float MOVE_TIME = 1f;
+        while (moved < MOVE_TIME)
+        {
+            player.MoveWithDirection(Vector2.right);
+            moved += Time.deltaTime;
+            yield return null;
+        }
+
+        // 정지: 이동 중 순간이 아니라 정지 후 수렴값으로 비교(디렉터 확정).
+        player.MoveWithDirection(Vector2.zero);
+        GameDebug.Log($"[TestManager] V2 이동 정지: {player.transform.position}");
+    }
+
+    // V4: 몬스터 HP 변화(데미지). 서버 권위 — 호스트에서 호출.
+    public void TestMpV4_DamageMonster(int _damage = 10)
+    {
+        if (!Managers.Network.IsServer) { GameDebug.LogWarning("[TestManager] V4: 서버 아님 — 무시"); return; }
+
+        var monster = FindFirstMonster();
+        if (monster == null) { GameDebug.LogError("[TestManager] V4: 몬스터 없음"); return; }
+
+        int before = monster.HP;
+        monster.SetHP(Mathf.Max(1, before - _damage)); // 사망(0)은 V5에서 분리 검증
+        GameDebug.Log($"[TestManager] V4 데미지: monster HP {before} → {monster.HP}");
+    }
+
+    // V5: 몬스터 사망 → 디스폰 + 드롭 스폰. 서버 권위 — 호스트에서 호출.
+    public void TestMpV5_KillMonster()
+    {
+        if (!Managers.Network.IsServer) { GameDebug.LogWarning("[TestManager] V5: 서버 아님 — 무시"); return; }
+
+        var monster = FindFirstMonster();
+        if (monster == null) { GameDebug.LogError("[TestManager] V5: 몬스터 없음"); return; }
+
+        ulong id = monster.NetworkObjectId;
+        monster.SetHP(0); // 0 → IsDead → 사망 처리(디스폰/드롭)는 기존 몬스터 사망 로직이 수행
+        GameDebug.Log($"[TestManager] V5 사망 트리거: monster id={id} HP=0");
+    }
+
+    // V6: 클론이 드롭아이템 수집(ServerRpc 왕복). 클론 측에서 호출해야 왕복 검증됨.
+    // CollectServerRpc는 public — 호출자(소유 클라)가 서버에 수집 요청 → 서버가 디스폰 + 수집자에 AddItemClientRpc.
+    public void TestMpV6_CollectDropItem()
+    {
+        var drop = FindFirstDropItem();
+        if (drop == null) { GameDebug.LogError("[TestManager] V6: 드롭아이템 없음"); return; }
+
+        ulong id = drop.NetworkObjectId;
+        drop.CollectServerRpc();
+        GameDebug.Log($"[TestManager] V6 수집 요청: drop id={id} (호출자 clientId={Managers.Network.GetLocalClientId()})");
+    }
+
+    // V7: 플레이어 Cold 변화. 서버 권위 — 호스트에서 호출.
+    public void TestMpV7_ChangeCold(int _delta = 20)
+    {
+        if (!Managers.Network.IsServer) { GameDebug.LogWarning("[TestManager] V7: 서버 아님 — 무시"); return; }
+
+        var player = FindLocalPlayer();
+        if (player == null) { GameDebug.LogError("[TestManager] V7: LocalPlayer 없음"); return; }
+
+        int before = player.Cold;
+        player.SetCold(before + _delta);
+        GameDebug.Log($"[TestManager] V7 Cold 변화: {before} → {player.Cold}");
+    }
+
+    // ----- MPPM 시나리오 공용 헬퍼 (기존 조회만) -----
+
+    private PlayerCharacter FindLocalPlayer()
+    {
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        return controller?.PlayWorker?.LocalPlayer;
+    }
+
+    private MonsterBase FindFirstMonster()
+    {
+        var monsters = Object.FindObjectsByType<MonsterBase>(FindObjectsSortMode.None);
+        for (int i = 0; i < monsters.Length; i++)
+        {
+            if (!monsters[i].IsDead)
+            {
+                return monsters[i];
+            }
+        }
+        return monsters.Length > 0 ? monsters[0] : null;
+    }
+
+    private WorldDropItem FindFirstDropItem()
+    {
+        var drops = Object.FindObjectsByType<WorldDropItem>(FindObjectsSortMode.None);
+        return drops.Length > 0 ? drops[0] : null;
+    }
+
+    // ===== Cold 실질화(추위 위협) 통합 QA =====
+    // 명세: document/design/client-spec/campfire-cold/코드명세.md (§6 상태머신, §11 엣지케이스, §13 결정1/2)
+    // 기존 public 메서드 조합만 사용: ForcePhase / SetCold / SetHP / SetMaxHP / SetLit / SpawnBuilding / TakeEnvironmentDamage
+    // 참고: 자연 감쇠(DayNightWorker.ApplyColdDecay)가 누적과 병렬로 항상 진행됨(밤 멀티 1.0 → base 2/s).
+    //       따라서 "밤 누적"은 순효과(+accum - decay > 0)로 증가하는지, "보호"는 증가하지 않는지로 판정한다.
+    public void TestColdRealization()
+    {
+        StartCoroutine(CoTestColdRealization());
+    }
+
+    private IEnumerator CoTestColdRealization()
+    {
+        GameDebug.Log("[TestManager] TestColdRealization 시작");
+
+        int passed = 0;
+        int failed = 0;
+        void Mark(bool _condition, string _label)
+        {
+            if (_condition) { passed++; GameDebug.Log($"[TestManager] PASS: {_label}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+
+        var dayNight = controller.DayNightWorker;
+        var coldWorker = controller.ColdDamageWorker;
+        var player = controller.PlayWorker?.LocalPlayer;
+        if (dayNight == null) { GameDebug.LogError("[TestManager] DayNightWorker 없음"); yield break; }
+        if (player == null) { GameDebug.LogError("[TestManager] LocalPlayer 없음"); yield break; }
+
+        // ColdDamageWorker 와이어링 회귀 검증
+        Mark(coldWorker != null, $"InGameController.ColdDamageWorker 슬롯 연결됨 ({(coldWorker != null ? "OK" : "NULL")})");
+
+        // 죽지 않게 HP 충분히 확보(틱 검증 시나리오에서 별도 재설정)
+        player.SetMaxHP(99999);
+        player.SetHP(99999);
+
+        // 사전 정리: 모닥불이 있으면 위치/점화상태를 통제하기 위해 직접 스폰한 모닥불만 사용
+        // 기존 모닥불 영향 배제: 플레이어를 모든 모닥불에서 멀리 두기 위해 좌표 확인용으로 player 위치 기준 사용
+
+        // ── 시나리오 1: 밤 + 모닥불 없음 → Cold 누적(순증가)
+        GameDebug.Log("[TestManager] 시나리오 1: 밤 누적");
+        dayNight.ForcePhase(DayPhase.Night);
+        yield return new WaitForSeconds(0.2f);
+        Mark(dayNight.CurrentPhase == DayPhase.Night, "ForcePhase(Night) 적용");
+        player.SetCold(0);
+        yield return new WaitForSeconds(0.2f);
+        int coldAccumStart = player.Cold;
+        // accum 10/s - decay 2/s = 순 +8/s. 2초 대기 → 약 +16 기대(클램프/타이밍 여유로 > 시작값만 확인)
+        yield return new WaitForSeconds(2.0f);
+        int coldAccumEnd = player.Cold;
+        GameDebug.Log($"[TestManager] 밤 누적: {coldAccumStart} → {coldAccumEnd} (순증가 기대)");
+        Mark(coldAccumEnd > coldAccumStart, $"밤+모닥불없음 Cold 누적 증가 ({coldAccumStart} → {coldAccumEnd})");
+
+        // ── 시나리오 2: 낮 전환 → 누적 중단(증가 멈춤, 감쇠로 감소)
+        GameDebug.Log("[TestManager] 시나리오 2: 낮 전환 누적 중단");
+        dayNight.ForcePhase(DayPhase.Day);
+        yield return new WaitForSeconds(0.2f);
+        player.SetCold(50);
+        yield return new WaitForSeconds(0.2f);
+        int dayStart = player.Cold;
+        yield return new WaitForSeconds(2.0f);
+        int dayEnd = player.Cold;
+        GameDebug.Log($"[TestManager] 낮 Cold: {dayStart} → {dayEnd} (누적 없음, 감쇠로 감소 기대)");
+        Mark(dayEnd <= dayStart, $"낮 누적 중단 — Cold 증가 안 함 ({dayStart} → {dayEnd})");
+
+        // ── 시나리오 3: 단계 판정 회귀 (None/Warning/WeakDot/StrongDot 임계 30/60/90)
+        // 단계는 private GetColdStage이지만 효과(HP 틱)로 간접 검증.
+        // 먼저 낮 상태에서 SetCold만으로 단계값을 세팅하고, 틱은 시나리오 5~6에서 검증한다.
+        // 단계 임계 회귀: Config 값이 명세대로인지 확인
+        var cfgField = typeof(ColdDamageWorker).GetField("m_Config",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        DayNightConfig cfg = cfgField?.GetValue(coldWorker) as DayNightConfig;
+        if (cfg != null)
+        {
+            Mark(cfg.ColdStageWarning == 30, $"단계 임계 Warning == 30 (실제 {cfg.ColdStageWarning})");
+            Mark(cfg.ColdStageWeak == 60, $"단계 임계 WeakDot == 60 (실제 {cfg.ColdStageWeak})");
+            Mark(cfg.ColdStageStrong == 90, $"단계 임계 StrongDot == 90 (실제 {cfg.ColdStageStrong})");
+            Mark(Mathf.Abs(cfg.WeakDotInterval - 3f) < 0.01f && cfg.WeakDotDamage == 2, $"약틱 3s/-2 (실제 {cfg.WeakDotInterval}s/-{cfg.WeakDotDamage})");
+            Mark(Mathf.Abs(cfg.StrongDotInterval - 2f) < 0.01f && cfg.StrongDotDamage == 5, $"강틱 2s/-5 (실제 {cfg.StrongDotInterval}s/-{cfg.StrongDotDamage})");
+        }
+        else
+        {
+            Mark(false, "ColdDamageWorker.m_Config reflection 실패 → 단계 임계 회귀 SKIP");
+        }
+
+        // ── 시나리오 4: WeakDot 단계(Cold 60~89) → 약틱 HP -2 발생
+        // 누적/감쇠가 Cold를 흔들지 않도록 낮 상태에서 진행(낮=누적없음). 매 프레임 Cold를 60대로 고정 유지.
+        GameDebug.Log("[TestManager] 시나리오 4: WeakDot 약틱");
+        dayNight.ForcePhase(DayPhase.Day);
+        yield return new WaitForSeconds(0.2f);
+        // HP 자가회복(HPRegen)이 Cold 틱을 상쇄/은폐하지 않도록 틱 검증 구간 동안 회복 차단
+        float savedHpRegen = player.GetHPRegen();
+        player.SetHPRegen(0f);
+        player.SetMaxHP(99999);
+        player.SetHP(1000);
+        int weakHpStart = player.HP;
+        float weakElapsed = 0f;
+        while (weakElapsed < 4.0f) // 약틱 3s 간격 → 최소 1틱
+        {
+            player.SetCold(70); // WeakDot 범위 유지(감쇠 상쇄)
+            yield return null;
+            weakElapsed += Time.deltaTime;
+        }
+        int weakHpEnd = player.HP;
+        GameDebug.Log($"[TestManager] WeakDot HP: {weakHpStart} → {weakHpEnd} (약틱 -2 누적 기대)");
+        Mark(weakHpEnd < weakHpStart, $"WeakDot 단계 약틱 HP 감소 ({weakHpStart} → {weakHpEnd})");
+
+        // ── 시나리오 5: StrongDot 단계(Cold 90~100) → 강틱 HP -5 발생
+        GameDebug.Log("[TestManager] 시나리오 5: StrongDot 강틱");
+        player.SetHP(1000);
+        int strongHpStart = player.HP;
+        float strongElapsed = 0f;
+        while (strongElapsed < 3.0f) // 강틱 2s 간격 → 최소 1틱
+        {
+            player.SetCold(95); // StrongDot 범위 유지
+            yield return null;
+            strongElapsed += Time.deltaTime;
+        }
+        int strongHpEnd = player.HP;
+        GameDebug.Log($"[TestManager] StrongDot HP: {strongHpStart} → {strongHpEnd} (강틱 -5 누적 기대)");
+        Mark(strongHpEnd < strongHpStart, $"StrongDot 단계 강틱 HP 감소 ({strongHpStart} → {strongHpEnd})");
+        // 강틱이 약틱보다 큰 손실인지(데미지 차등) — 동일 시간 비교는 간격 다르므로 손실 발생 여부만 핵심
+
+        // ── 시나리오 6: HP 1 보호 — StrongDot 틱이 와도 죽지 않음
+        GameDebug.Log("[TestManager] 시나리오 6: HP 1 보호");
+        player.SetHP(1);
+        float protectElapsed = 0f;
+        while (protectElapsed < 3.0f)
+        {
+            player.SetCold(95); // StrongDot 유지
+            yield return null;
+            protectElapsed += Time.deltaTime;
+        }
+        GameDebug.Log($"[TestManager] HP 1 보호 후: HP={player.HP}, IsDead={player.IsDead}");
+        Mark(player.HP >= 1 && !player.IsDead, $"HP1+StrongDot 보호 — 죽지 않음 (HP={player.HP}, IsDead={player.IsDead})");
+
+        // ── 시나리오 7: None 단계(Cold 0~29) → 틱 없음
+        GameDebug.Log("[TestManager] 시나리오 7: None 단계 무틱");
+        player.SetHP(1000);
+        int noneHpStart = player.HP;
+        float noneElapsed = 0f;
+        while (noneElapsed < 4.0f)
+        {
+            player.SetCold(10); // None 범위
+            yield return null;
+            noneElapsed += Time.deltaTime;
+        }
+        int noneHpEnd = player.HP;
+        GameDebug.Log($"[TestManager] None HP: {noneHpStart} → {noneHpEnd} (틱 없음 기대)");
+        Mark(noneHpEnd == noneHpStart, $"None 단계 — HP 틱 없음 ({noneHpStart} == {noneHpEnd})");
+
+        // 틱 검증 구간 종료 — HP 자가회복 복원
+        player.SetHPRegen(savedHpRegen);
+
+        // ── 시나리오 8: 켜진 모닥불 5m 내 → 밤이어도 누적 스킵 (결정1 회귀: 불 옆에서 추위 안 오름)
+        GameDebug.Log("[TestManager] 시나리오 8: 켜진 모닥불 보호");
+        player.SetHP(99999);
+        // 모닥불 스폰: 플레이어로부터 2m 떨어진 곳(보호범위 5m 내, 단 서버측 HasBlockingObject 반경 1m에
+        // 플레이어 콜라이더가 안 걸리도록 오프셋). 플레이어 정위치 스폰 시 본인 콜라이더와 겹쳐 배치 거부됨.
+        Vector3 firePos = player.transform.position + new Vector3(2f, 0f, 0f);
+        controller.PlayWorker.SpawnBuilding(1, firePos);
+        yield return new WaitForSeconds(0.8f); // 스폰 + NetworkSpawn 대기
+        var litFire = FindNearestBuildingTo(firePos);
+        Mark(litFire != null, $"모닥불 스폰됨 ({(litFire != null ? "OK" : "NULL")})");
+        if (litFire != null)
+        {
+            litFire.SetLit(true);
+            yield return new WaitForSeconds(0.2f);
+            Mark(litFire.IsLit, $"모닥불 점화 상태 (IsLit={litFire.IsLit})");
+
+            dayNight.ForcePhase(DayPhase.Night);
+            yield return new WaitForSeconds(0.2f);
+            player.SetCold(50);
+            yield return new WaitForSeconds(0.2f);
+            int protStart = player.Cold;
+            // 켜진 불 옆: 누적 스킵 + 감쇠 진행 → Cold 증가하면 안 됨(감소/유지)
+            yield return new WaitForSeconds(2.0f);
+            int protEnd = player.Cold;
+            GameDebug.Log($"[TestManager] 켜진 모닥불 옆 Cold: {protStart} → {protEnd} (증가 안 함 기대)");
+            Mark(protEnd <= protStart, $"결정1 회귀 — 켜진 불 옆 Cold 증가 안 함 ({protStart} → {protEnd})");
+
+            // ── 시나리오 9: SetLit(false) → 모닥불 옆이어도 누적 재개
+            GameDebug.Log("[TestManager] 시나리오 9: 모닥불 꺼짐 누적 재개");
+            litFire.SetLit(false);
+            yield return new WaitForSeconds(0.2f);
+            Mark(!litFire.IsLit, $"모닥불 소등 (IsLit={litFire.IsLit})");
+            player.SetCold(10);
+            yield return new WaitForSeconds(0.2f);
+            int offStart = player.Cold;
+            yield return new WaitForSeconds(2.0f);
+            int offEnd = player.Cold;
+            GameDebug.Log($"[TestManager] 꺼진 모닥불 옆 Cold: {offStart} → {offEnd} (누적 재개 기대)");
+            Mark(offEnd > offStart, $"꺼진 불 옆 누적 재개 ({offStart} → {offEnd})");
+        }
+
+        // ── 시나리오 10: 결정2 회귀 — 밤 감쇠가 ×2 가속되지 않음
+        // 모닥불 켜서 누적을 막은 상태에서 밤/낮 감쇠 속도를 비교 → 동일해야 함(밤 멀티 1.0)
+        GameDebug.Log("[TestManager] 시나리오 10: 결정2 밤 감쇠 비배속 회귀");
+        Mark(Mathf.Abs(dayNight.GetColdRateMultiplier() - 1.0f) < 0.01f || dayNight.CurrentPhase != DayPhase.Night,
+            "준비: 멀티 조회 가능");
+        // 직접 Config의 밤 멀티 확인이 가장 결정적
+        if (cfg != null)
+        {
+            dayNight.ForcePhase(DayPhase.Night);
+            yield return new WaitForSeconds(0.2f);
+            float nightMult = dayNight.GetColdRateMultiplier();
+            GameDebug.Log($"[TestManager] 밤 감쇠 멀티 = {nightMult} (1.0 기대, ×2 아님)");
+            Mark(Mathf.Abs(nightMult - 1.0f) < 0.01f, $"결정2 회귀 — 밤 감쇠 멀티 1.0 (×2 아님, 실제 {nightMult})");
+        }
+
+        // 정리: 낮 복귀, Cold 0
+        dayNight.ForcePhase(DayPhase.Day);
+        player.SetCold(0);
+        player.SetHP(99999);
+
+        GameDebug.Log($"[TestManager] TestColdRealization 결과: PASS {passed}, FAIL {failed}");
+    }
+
+    private WorldBuildingObject FindNearestBuildingTo(Vector3 _pos)
+    {
+        WorldBuildingObject nearest = null;
+        float best = float.MaxValue;
+        foreach (var b in WorldBuildingObject.ActiveBuildings)
+        {
+            if (b == null) continue;
+            float d = (b.transform.position - _pos).sqrMagnitude;
+            if (d < best) { best = d; nearest = b; }
+        }
+        return nearest;
     }
 }
 #endif

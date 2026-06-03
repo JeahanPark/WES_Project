@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.AI;
 
 /// <summary>
 /// 게임 진행을 관리하는 Worker
@@ -11,6 +12,8 @@ public class InGamePlayWorker : NetworkBehaviour
     private const string WORLD_DROP_ITEM_PREFAB_KEY = "WorldDropItem";
     private const float BUILDING_PLACEMENT_MAX_DISTANCE = 8f;
     private const float BUILDING_OVERLAP_RADIUS = 1.0f;
+    private const float SPAWN_SAMPLE_RADIUS = 10f;
+    private const float SPAWN_OFFSET_DISTANCE = 2.5f;
 
 
     [Header("Spawn Points")]
@@ -132,9 +135,11 @@ public class InGamePlayWorker : NetworkBehaviour
         ulong[] clientIds = Managers.Network.GetConnectedClientIds();
         int playerIndex = 0;
 
+        Vector3 basePosition = GetPlayerSpawnPosition(0);
+
         foreach (ulong clientId in clientIds)
         {
-            Vector3 spawnPosition = GetPlayerSpawnPosition(playerIndex);
+            Vector3 spawnPosition = GetValidSpawnPosition(GetSpawnOffset(basePosition, playerIndex));
 
             GameObject instance = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
             instance.SetActive(true);
@@ -170,5 +175,28 @@ public class InGamePlayWorker : NetworkBehaviour
             return spawnObj.transform.position;
 
         return new Vector3(_index * 2f, 0f, -85f);
+    }
+
+    // 첫 플레이어(호스트)를 기준점으로, 나머지 플레이어는 그 주위로 일정 간격 흩어 배치한다.
+    // 인덱스별 절대 스폰 포인트(바위·지형과 겹칠 수 있는)에 의존하지 않아 안전하다.
+    private Vector3 GetSpawnOffset(Vector3 _base, int _index)
+    {
+        if (_index == 0)
+            return _base;
+
+        // 호스트 주위 원형으로 배치 (1→오른쪽, 2→왼쪽, 3→앞 ... )
+        float angle = (_index - 1) * (Mathf.PI * 0.5f); // 90도씩
+        Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * SPAWN_OFFSET_DISTANCE;
+        return _base + offset;
+    }
+
+    // 스폰 포인트가 지형/바위와 겹치거나 y가 어긋나 있어도 항상 유효한 땅 위로 보정한다.
+    // (스폰 포인트가 y=0 고정이라 지형 높이와 안 맞으면 캐릭터가 지형에 박히는 문제 방지)
+    private Vector3 GetValidSpawnPosition(Vector3 _desired)
+    {
+        if (NavMesh.SamplePosition(_desired, out NavMeshHit hit, SPAWN_SAMPLE_RADIUS, NavMesh.AllAreas))
+            return hit.position;
+
+        return _desired;
     }
 }

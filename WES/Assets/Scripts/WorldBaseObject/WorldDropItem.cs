@@ -14,6 +14,9 @@ public class WorldDropItem : WorldBaseObject
 
     public ItemInfo ItemInfo => m_ItemInfo;
     public int Count => m_Count.Value;
+    // NetworkVariable 원본 itemInfoId (Read=Everyone) — 클론에서도 양측 동일값 보장.
+    // 캐싱된 m_ItemInfo(단측 Load 결과)가 아니라 이 값을 QA 스냅샷 대조에 쓴다.
+    public int ItemInfoId => m_ItemInfoId.Value;
 
     public override void OnNetworkSpawn()
     {

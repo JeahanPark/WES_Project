@@ -38,6 +38,17 @@ Karpathy의 [[Sources/karpathy-llm-wiki|LLM Wiki 패턴]]을 코드 카탈로그
 
 ---
 
+## Design Catalog (기획 — LLM이 유지)
+
+`auto/catalog/Design/` — 게임 기획/비전을 주제 단위로 추적. 코드 카탈로그(`catalog/Class/`)와 짝을 이룬다.
+
+- [[catalog/Design/index|Design Catalog 인덱스]] — 시스템별 구현 상태 표 + 4분기 현황
+- [[catalog/Design/코어비전_4분기]] — 자원투자 4분기 트레이드오프 (게임 메타 루프)
+
+원본 설계: `design/` · 보완 로드맵: `design/CORE_갭보완_로드맵.md` · 일정: `WES_Schedule.md`
+
+---
+
 ## Diagrams
 
 `auto/diagrams/` — 카테고리별 클래스 다이어그램, 플로우별 시퀀스 다이어그램.

@@ -10,13 +10,25 @@ public class DayNightConfig : ScriptableObject
     [SerializeField] private float m_DawnDuration = 120f;
 
     [Header("Cold Rate Multiplier")]
+    // 결정2(2026-06-03): 밤 가속(옛 체온모델 잔존) 제거. 감쇠는 평탄(1.0), 밤 추위 누적은 ColdDamageWorker 전담.
     [SerializeField] private float m_ColdMultiplierDay = 1.0f;
     [SerializeField] private float m_ColdMultiplierDusk = 1.3f;
-    [SerializeField] private float m_ColdMultiplierNight = 2.0f;
+    [SerializeField] private float m_ColdMultiplierNight = 1.0f;
     [SerializeField] private float m_ColdMultiplierDawn = 1.3f;
 
     [Header("Cold Decay (per second, base)")]
     [SerializeField] private float m_BaseColdDecayPerSecond = 2f;
+
+    [Header("Cold Damage")]
+    [SerializeField] private float m_ColdAccumPerSecondNight = 10f;  // 밤 Cold 누적 속도 (초당)
+    [SerializeField] private int m_ColdStageWarning = 30;            // Warning 시작값
+    [SerializeField] private int m_ColdStageWeak = 60;               // WeakDot 시작값
+    [SerializeField] private int m_ColdStageStrong = 90;             // StrongDot 시작값
+    [SerializeField] private float m_WeakDotInterval = 3f;           // 약틱 간격 (초)
+    [SerializeField] private int m_WeakDotDamage = 2;                // 약틱 데미지
+    [SerializeField] private float m_StrongDotInterval = 2f;         // 강틱 간격 (초)
+    [SerializeField] private int m_StrongDotDamage = 5;              // 강틱 데미지
+    [SerializeField] private float m_CampfireProtectRange = 5f;      // 모닥불 보호 범위
 
     [Header("Vision Radius")]
     [SerializeField] private float m_VisionRadiusDay = 1.0f;
@@ -50,6 +62,15 @@ public class DayNightConfig : ScriptableObject
     public float NightDuration => m_NightDuration;
     public float DawnDuration => m_DawnDuration;
     public float BaseColdDecayPerSecond => m_BaseColdDecayPerSecond;
+    public float ColdAccumPerSecondNight => m_ColdAccumPerSecondNight;
+    public int ColdStageWarning => m_ColdStageWarning;
+    public int ColdStageWeak => m_ColdStageWeak;
+    public int ColdStageStrong => m_ColdStageStrong;
+    public float WeakDotInterval => m_WeakDotInterval;
+    public int WeakDotDamage => m_WeakDotDamage;
+    public float StrongDotInterval => m_StrongDotInterval;
+    public int StrongDotDamage => m_StrongDotDamage;
+    public float CampfireProtectRange => m_CampfireProtectRange;
     public float VisionRadiusDay => m_VisionRadiusDay;
     public float VisionRadiusNight => m_VisionRadiusNight;
     public float CampfireLightRadius => m_CampfireLightRadius;

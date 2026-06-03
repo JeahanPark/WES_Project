@@ -14,6 +14,31 @@ vault 변경 이력. 시간 역순(최신이 위).
 
 ---
 
+## [2026-06-03] ingest | Cold 실질화(추위 위협) 구현·검증 — QA PASS 20/0
+
+- 신규 [[ColdDamageWorker]](밤 Cold 누적+단계 HP틱), [[DayNightConfig]]·[[WorldBuildingObject]]·[[InfoManager]] 카탈로그
+- [[DayNightWorker]] role 갱신(자연 감쇠+밤멀티 1.0)
+- 버그2건 수정: 밤멀티 에셋 2.0→1.0, MPPM Host Info 로드 누락(`LoadAllInfoOnce` 멱등 래퍼)
+- 리포트 [[2026-06-03-Cold실질화]], Design index Cold/시간낮밤 → ✅
+- 단명 subagent 순차 케어 루프(run_in_background+워치독) 첫 실전
+
+## [2026-06-03] update | Design 카탈로그 레이어 신설 — 게임 기획을 위키로 추적
+
+- 신규: [[catalog/Design/index]](기획 카탈로그 — 시스템별 구현상태 표), [[catalog/Design/코어비전_4분기]]
+- index.md에 Design Catalog 섹션 추가
+- 연계: `design/CORE_갭보완_로드맵.md`(신규 로드맵), `WES_Schedule.md`(현재상태+갭로드맵 반영)
+
+## [2026-06-03] ingest | mppm-qa 멀티QA 도구 Ingest — new class=2, updated=3, deleted=1
+
+- 신규: [[MppmBootstrapWorker]](Worker), [[MultiplayerQaProbe]](Component)
+- 갱신: [[GameNetworkManager]](로컬 직결+IsNetworkConfigured), [[InGameController]](m_NetworkObject 제거·parent를 NetworkGameController로 정정), [[TestManager]](MPPM 트리거)
+- 삭제: MultiplayerTestBootstrap.md (소스 클래스 삭제됨 — 고아 페이지)
+- 리포트: [[reports/2026-06-03-mppm-qa-멀티QA도구]]
+
+## [2026-05-31] ingest | Stop hook auto-update - new class=1, new signal=0
+
+## [2026-05-31] ingest | Stop hook auto-update - new class=1, new signal=0
+
 ## [2026-05-17] update | 낮밤 모닥불 컷아웃 셰이더 재작성 (라운드4) — PASS
 
 ## [2026-05-17] update | 낮밤 시나리오 4 시각 캡처 (라운드3) — 모닥불 컷아웃 FAIL 신규 이슈

@@ -194,6 +194,34 @@ public class CharacterBase : WorldEntityBase
         }
     }
 
+    /// <summary>
+    /// 환경 데미지 적용 (서버 전용). DEF/크리티컬 무시, 가공 없는 고정 데미지.
+    /// 공격자 없음(_attackerId = 0)으로 기존 데미지 표시/사망 경로를 재사용한다.
+    /// _allowDeath == false면 HP 1 미만으로 내려가지 않도록 보호한다.
+    /// </summary>
+    protected void ApplyEnvironmentDamageServer(int _damage, bool _allowDeath)
+    {
+        if (!IsServer)
+            return;
+
+        if (IsDead)
+            return;
+
+        int finalDamage = Mathf.Max(0, _damage);
+        int targetHP = m_HP.Value - finalDamage;
+        if (!_allowDeath)
+            targetHP = Mathf.Max(1, targetHP);
+
+        SetHP(targetHP);
+
+        OnDamagedClientRpc(finalDamage, 0, false);
+
+        if (IsDead)
+        {
+            OnDeathClientRpc();
+        }
+    }
+
     [Rpc(SendTo.Everyone)]
     private void OnDamagedClientRpc(int _damage, ulong _attackerId, bool _isCritical)
     {

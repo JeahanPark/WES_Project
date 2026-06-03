@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "id": "9c9800a4633a47c0",
+      "id": "035315f6e2644a16",
       "type": "text",
       "x": 0,
       "y": 0,
@@ -11,7 +11,7 @@
       "color": "6"
     },
     {
-      "id": "4387f06077959501",
+      "id": "9ef869103c3097bd",
       "type": "text",
       "x": 390,
       "y": 0,
@@ -21,7 +21,7 @@
       "color": "6"
     },
     {
-      "id": "5b01668dbd655595",
+      "id": "464354f3cebbd400",
       "type": "text",
       "x": 780,
       "y": 0,
@@ -31,17 +31,17 @@
       "color": "6"
     },
     {
-      "id": "8673b233ff8d6368",
+      "id": "2c81e5da010ad3e6",
       "type": "group",
       "x": 0,
       "y": 200,
       "width": 840,
-      "height": 780,
+      "height": 925,
       "label": "Manager",
       "color": "2"
     },
     {
-      "id": "777eabe4aed0063b",
+      "id": "e0e293483af4f5af",
       "type": "file",
       "x": 40,
       "y": 260,
@@ -51,7 +51,7 @@
       "color": "2"
     },
     {
-      "id": "45c4c1ec79e88f74",
+      "id": "f2ce40b0bb2442a1",
       "type": "file",
       "x": 440,
       "y": 260,
@@ -61,7 +61,7 @@
       "color": "2"
     },
     {
-      "id": "4463f72767bcd1e4",
+      "id": "a2df09f3b2120794",
       "type": "file",
       "x": 40,
       "y": 405,
@@ -71,7 +71,7 @@
       "color": "2"
     },
     {
-      "id": "713e87f55b458ed9",
+      "id": "58fe9c38fd53bfcf",
       "type": "file",
       "x": 440,
       "y": 405,
@@ -81,7 +81,7 @@
       "color": "2"
     },
     {
-      "id": "267fe81bcec1bae4",
+      "id": "a0c34ed28f1848c7",
       "type": "file",
       "x": 40,
       "y": 550,
@@ -91,7 +91,7 @@
       "color": "2"
     },
     {
-      "id": "66b46208ce328998",
+      "id": "5696e6d050495e6f",
       "type": "file",
       "x": 440,
       "y": 550,
@@ -101,9 +101,19 @@
       "color": "2"
     },
     {
-      "id": "80c6830ac0508104",
+      "id": "753a5a41cfb1f9bb",
       "type": "file",
       "x": 40,
+      "y": 695,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/MultiplayerTestBootstrap.md",
+      "color": "2"
+    },
+    {
+      "id": "e3c414564eaea46e",
+      "type": "file",
+      "x": 440,
       "y": 695,
       "width": 360,
       "height": 100,
@@ -111,19 +121,19 @@
       "color": "2"
     },
     {
-      "id": "d75c1c50b41db8ca",
+      "id": "a8387ec2d1b7ec8d",
       "type": "file",
-      "x": 440,
-      "y": 695,
+      "x": 40,
+      "y": 840,
       "width": 360,
       "height": 100,
       "file": "auto/catalog/Class/ResourceManager.md",
       "color": "2"
     },
     {
-      "id": "030472799a7de845",
+      "id": "ac7288f781842d58",
       "type": "file",
-      "x": 40,
+      "x": 440,
       "y": 840,
       "width": 360,
       "height": 100,
@@ -131,27 +141,27 @@
       "color": "2"
     },
     {
-      "id": "50520aef2df4b668",
+      "id": "c0912e9af86b23eb",
       "type": "file",
-      "x": 440,
-      "y": 840,
+      "x": 40,
+      "y": 985,
       "width": 360,
       "height": 100,
       "file": "auto/catalog/Class/TestManager.md",
       "color": "2"
     },
     {
-      "id": "b2c8e88fbd561303",
+      "id": "72ad1ee6b11fc4e7",
       "type": "group",
       "x": 940,
       "y": 200,
       "width": 840,
-      "height": 345,
+      "height": 490,
       "label": "Controller",
       "color": "1"
     },
     {
-      "id": "a89f9289ecb074f5",
+      "id": "5fc9fb3d9a915dcf",
       "type": "file",
       "x": 980,
       "y": 260,
@@ -161,7 +171,7 @@
       "color": "1"
     },
     {
-      "id": "4c4fb7ccf09053ac",
+      "id": "bad2d43b638f46ec",
       "type": "file",
       "x": 1380,
       "y": 260,
@@ -171,7 +181,7 @@
       "color": "1"
     },
     {
-      "id": "b172b7f08234ba82",
+      "id": "26de94e2786a3edf",
       "type": "file",
       "x": 980,
       "y": 405,
@@ -181,7 +191,7 @@
       "color": "1"
     },
     {
-      "id": "62864b32744b9d70",
+      "id": "a4358bf3fc3636cd",
       "type": "file",
       "x": 1380,
       "y": 405,
@@ -191,140 +201,150 @@
       "color": "1"
     },
     {
-      "id": "a0aa118178f67755",
+      "id": "08e6d98495e2ac39",
+      "type": "file",
+      "x": 980,
+      "y": 550,
+      "width": 360,
+      "height": 100,
+      "file": "auto/catalog/Class/NetworkGameController.md",
+      "color": "1"
+    },
+    {
+      "id": "dd80247e332c5cbe",
       "type": "group",
       "x": 0,
-      "y": 1080,
+      "y": 1225,
       "width": 840,
       "height": 635,
       "label": "Worker",
       "color": "4"
     },
     {
-      "id": "b135efdfa2559a11",
+      "id": "e5b4594239a4d49d",
       "type": "file",
       "x": 40,
-      "y": 1140,
+      "y": 1285,
       "width": 360,
       "height": 100,
       "file": "auto/catalog/Class/BuildingPlacementWorker.md",
       "color": "4"
     },
     {
-      "id": "f7beadd45506b350",
+      "id": "72cbd652a14a04cf",
       "type": "file",
       "x": 440,
-      "y": 1140,
+      "y": 1285,
       "width": 360,
       "height": 100,
       "file": "auto/catalog/Class/DayNightRenderWorker.md",
       "color": "4"
     },
     {
-      "id": "d6cc777ba4c03cf2",
+      "id": "215d4b10c5b602cf",
       "type": "file",
       "x": 40,
-      "y": 1285,
+      "y": 1430,
       "width": 360,
       "height": 100,
       "file": "auto/catalog/Class/DayNightWorker.md",
       "color": "4"
     },
     {
-      "id": "649ef3270a59055e",
+      "id": "c2d5a377cbe04e3a",
       "type": "file",
       "x": 440,
-      "y": 1285,
+      "y": 1430,
       "width": 360,
       "height": 100,
       "file": "auto/catalog/Class/InGameAreaWorker.md",
       "color": "4"
     },
     {
-      "id": "17363a703c73af41",
+      "id": "300ebae69fd9e51d",
       "type": "file",
       "x": 40,
-      "y": 1430,
+      "y": 1575,
       "width": 360,
       "height": 100,
       "file": "auto/catalog/Class/InGameCameraWorker.md",
       "color": "4"
     },
     {
-      "id": "c84f777940bb8fef",
+      "id": "bd9fe57fbc91fb4f",
       "type": "file",
       "x": 440,
-      "y": 1430,
+      "y": 1575,
       "width": 360,
       "height": 100,
       "file": "auto/catalog/Class/InGamePlayWorker.md",
       "color": "4"
     },
     {
-      "id": "d6965b6530dff6a3",
+      "id": "116f97b647e2a82e",
       "type": "file",
       "x": 40,
-      "y": 1575,
+      "y": 1720,
       "width": 360,
       "height": 100,
       "file": "auto/catalog/Class/InGameSpawnWorker.md",
       "color": "4"
     },
     {
-      "id": "b9c54a38b7f2cf59",
+      "id": "d55543e1795ccf98",
       "type": "file",
       "x": 440,
-      "y": 1575,
+      "y": 1720,
       "width": 360,
       "height": 100,
       "file": "auto/catalog/Class/InGameWorldUIWorker.md",
       "color": "4"
     },
     {
-      "id": "361ac083ca8b845f",
+      "id": "dd15a7ea97d1bf3d",
       "type": "group",
       "x": 940,
-      "y": 1080,
+      "y": 1225,
       "width": 840,
       "height": 345,
       "label": "Component",
       "color": "5"
     },
     {
-      "id": "56bfb418709d7069",
+      "id": "53797d61ba234078",
       "type": "file",
       "x": 980,
-      "y": 1140,
+      "y": 1285,
       "width": 360,
       "height": 100,
       "file": "auto/catalog/Class/MonsterSpawnArea.md",
       "color": "5"
     },
     {
-      "id": "da59ae85fef17c5e",
+      "id": "f77d285e9bd52272",
       "type": "file",
       "x": 1380,
-      "y": 1140,
+      "y": 1285,
       "width": 360,
       "height": 100,
       "file": "auto/catalog/Class/NightMonsterComponent.md",
       "color": "5"
     },
     {
-      "id": "58c891f3ab02e399",
+      "id": "3097a9b3c8c01ff9",
       "type": "file",
       "x": 980,
-      "y": 1285,
+      "y": 1430,
       "width": 360,
       "height": 100,
       "file": "auto/catalog/Class/NightVisionComponent.md",
       "color": "5"
     },
     {
-      "id": "9b8b637ecd1da302",
+      "id": "bb702162a3ecde8e",
       "type": "file",
       "x": 1380,
-      "y": 1285,
+      "y": 1430,
       "width": 360,
       "height": 100,
       "file": "auto/catalog/Class/PhaseIconHUD.md",
@@ -333,80 +353,80 @@
   ],
   "edges": [
     {
-      "id": "449e95aa75ead0d1",
-      "fromNode": "777eabe4aed0063b",
+      "id": "95dec29b450e0171",
+      "fromNode": "e0e293483af4f5af",
       "fromSide": "top",
-      "toNode": "66b46208ce328998",
+      "toNode": "5696e6d050495e6f",
       "toSide": "bottom"
     },
     {
-      "id": "b9ab81c154a414e1",
-      "fromNode": "45c4c1ec79e88f74",
+      "id": "ebd15223966f7a81",
+      "fromNode": "f2ce40b0bb2442a1",
       "fromSide": "top",
-      "toNode": "66b46208ce328998",
+      "toNode": "5696e6d050495e6f",
       "toSide": "bottom"
     },
     {
-      "id": "8f9fa6729348b132",
-      "fromNode": "4463f72767bcd1e4",
+      "id": "69a32b1fb24ea67c",
+      "fromNode": "a2df09f3b2120794",
       "fromSide": "top",
-      "toNode": "66b46208ce328998",
+      "toNode": "5696e6d050495e6f",
       "toSide": "bottom"
     },
     {
-      "id": "c52a245a4ef256fc",
-      "fromNode": "4c4fb7ccf09053ac",
+      "id": "fdc8b18d198418dd",
+      "fromNode": "bad2d43b638f46ec",
       "fromSide": "top",
-      "toNode": "a89f9289ecb074f5",
+      "toNode": "5fc9fb3d9a915dcf",
       "toSide": "bottom"
     },
     {
-      "id": "9b07e55e70170138",
-      "fromNode": "713e87f55b458ed9",
+      "id": "73f86f9f84bef93c",
+      "fromNode": "58fe9c38fd53bfcf",
       "fromSide": "top",
-      "toNode": "66b46208ce328998",
+      "toNode": "5696e6d050495e6f",
       "toSide": "bottom"
     },
     {
-      "id": "0450de5891ea2bfb",
-      "fromNode": "b172b7f08234ba82",
+      "id": "2dab4ec17e454f2c",
+      "fromNode": "26de94e2786a3edf",
       "fromSide": "top",
-      "toNode": "a89f9289ecb074f5",
+      "toNode": "5fc9fb3d9a915dcf",
       "toSide": "bottom"
     },
     {
-      "id": "30cedf92005da655",
-      "fromNode": "62864b32744b9d70",
+      "id": "2df3a9c39b47049d",
+      "fromNode": "a4358bf3fc3636cd",
       "fromSide": "top",
-      "toNode": "a89f9289ecb074f5",
+      "toNode": "5fc9fb3d9a915dcf",
       "toSide": "bottom"
     },
     {
-      "id": "303b4be61702a19c",
-      "fromNode": "267fe81bcec1bae4",
+      "id": "d3b28d7b4aa664eb",
+      "fromNode": "a0c34ed28f1848c7",
       "fromSide": "top",
-      "toNode": "66b46208ce328998",
+      "toNode": "5696e6d050495e6f",
       "toSide": "bottom"
     },
     {
-      "id": "3633b7016beef735",
-      "fromNode": "80c6830ac0508104",
+      "id": "c22ca284d81b1b46",
+      "fromNode": "e3c414564eaea46e",
       "fromSide": "top",
-      "toNode": "66b46208ce328998",
+      "toNode": "5696e6d050495e6f",
       "toSide": "bottom"
     },
     {
-      "id": "0111260f98ac0da9",
-      "fromNode": "d75c1c50b41db8ca",
+      "id": "0b061a9a149bf31c",
+      "fromNode": "a8387ec2d1b7ec8d",
       "fromSide": "top",
-      "toNode": "030472799a7de845",
+      "toNode": "ac7288f781842d58",
       "toSide": "bottom"
     },
     {
-      "id": "10e946a8d39111d8",
-      "fromNode": "50520aef2df4b668",
+      "id": "a7163ed6ed6ab4fe",
+      "fromNode": "c0912e9af86b23eb",
       "fromSide": "top",
-      "toNode": "66b46208ce328998",
+      "toNode": "5696e6d050495e6f",
       "toSide": "bottom"
     }
   ]

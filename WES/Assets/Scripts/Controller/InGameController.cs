@@ -26,12 +26,15 @@ public class InGameController : NetworkGameController<InGameController>
     [SerializeField] private BuildingPlacementWorker m_BuildingPlacementWorker;
     [SerializeField] private DayNightWorker m_DayNightWorker;
     [SerializeField] private DayNightRenderWorker m_DayNightRenderWorker;
+    [SerializeField] private ColdDamageWorker m_ColdDamageWorker;
 
     [Header("Test Mode")]
     [SerializeField] private bool m_TestMode = false;
 
     // Network
-    private NetworkObject m_NetworkObject;
+    // 자체 NetworkObject 필드를 두지 않는다. NetworkBehaviour 베이스가 제공하는
+    // NetworkObject 프로퍼티와 동일 이름으로 직렬화 충돌이 나기 때문(NGO 직렬화 규칙 위반).
+    // 베이스의 NetworkObject / IsSpawned 를 직접 사용한다.
     private HashSet<ulong> m_ReadyClients = new();
     private bool m_IsGameStarted = false;
 
@@ -53,12 +56,11 @@ public class InGameController : NetworkGameController<InGameController>
     public BuildingPlacementWorker BuildingPlacementWorker => m_BuildingPlacementWorker;
     public DayNightWorker DayNightWorker => m_DayNightWorker;
     public DayNightRenderWorker DayNightRenderWorker => m_DayNightRenderWorker;
+    public ColdDamageWorker ColdDamageWorker => m_ColdDamageWorker;
     public bool IsGameStarted => m_IsGameStarted;
 
     private IEnumerator Start()
     {
-        m_NetworkObject = GetComponent<NetworkObject>();
-
         bool testMode = m_TestMode;
 #if UNITY_EDITOR
         testMode = testMode || ConsumeTestModeRequest();
@@ -79,8 +81,8 @@ public class InGameController : NetworkGameController<InGameController>
 
         GameDebug.Log("[InGameController] Waiting for game start...");
 
-        // NetworkObject 스폰 대기
-        yield return new WaitUntil(() => m_NetworkObject != null && m_NetworkObject.IsSpawned);
+        // NetworkObject 스폰 대기 (베이스 NetworkBehaviour.IsSpawned 사용)
+        yield return new WaitUntil(() => IsSpawned);
 
         // 서버에 준비 완료 알림
         NotifyClientReadyServerRpc(Managers.Network.GetLocalClientId());
@@ -165,7 +167,7 @@ public class InGameController : NetworkGameController<InGameController>
 
         // 2. Info 로드
         GameDebug.Log("[InGameController] Loading info data...");
-        yield return Managers.Info.LoadAllInfo().ToCoroutine();
+        yield return Managers.Info.LoadAllInfoOnce().ToCoroutine();
         GameDebug.Log("[InGameController] Info data loaded!");
 
         // 3. Network 초기화 대기

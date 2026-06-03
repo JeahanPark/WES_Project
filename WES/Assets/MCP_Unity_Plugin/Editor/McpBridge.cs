@@ -64,6 +64,10 @@ public static partial class McpBridge
 
     private static void Start()
     {
+        // MPPM 가상 플레이어(클론)는 메인 에디터와 같은 파이프 이름을 두고 경쟁한다.
+        // 클론은 MCP 브릿지가 필요 없으므로 띄우지 않는다. (파이프 인스턴스 고갈·연결 경쟁 방지)
+        if (IsCloneEditor()) return;
+
         // Stopped → Starting: 이 CAS가 성공해야만 기동 진행.
         if (Interlocked.CompareExchange(ref m_State, S.Starting, S.Stopped) != S.Stopped) return;
 
@@ -87,6 +91,26 @@ public static partial class McpBridge
             CleanupResources();
             Interlocked.Exchange(ref m_State, S.Stopped);
             Debug.LogError($"[McpBridge] 서버 시작 실패: {e}");
+        }
+    }
+
+    // MPPM(Multiplayer Play Mode) 가상 플레이어(클론) 여부를 리플렉션으로 판정한다.
+    // MPPM 패키지에 직접 의존하지 않기 위해(미설치 프로젝트 호환) Type.GetType으로 접근한다.
+    private static bool IsCloneEditor()
+    {
+        try
+        {
+            Type t = Type.GetType("Unity.Multiplayer.Playmode.VirtualProjects.Editor.VirtualProjectsEditor, Unity.Multiplayer.Playmode.VirtualProjects.Editor");
+            if (t == null) return false; // MPPM 미설치 → 클론 개념 없음
+
+            PropertyInfo prop = t.GetProperty("IsClone", BindingFlags.Public | BindingFlags.Static);
+            if (prop == null) return false;
+
+            return (bool)prop.GetValue(null);
+        }
+        catch
+        {
+            return false; // 판정 실패 시 안전하게 메인 취급(기존 동작 유지)
         }
     }
 
@@ -175,6 +199,10 @@ public static partial class McpBridge
                     Debug.LogWarning($"[McpBridge] ListenLoop 오류 (재시도): {e.GetType().Name}: {e.Message}");
                 server?.Dispose();
                 if (m_State != S.Running) break;
+
+                // [Fix] 파이프 인스턴스 고갈("모든 파이프 인스턴스가 사용 중") 등 반복 오류 시
+                // 백오프 없이 즉시 재시도하면 초당 수백 회 경고가 폭주한다. 1초 대기 후 재시도.
+                Thread.Sleep(1000);
             }
         }
     }
@@ -270,6 +298,8 @@ public static partial class McpBridge
             "u_screenshot"            => Screenshot(req),           // McpBridgeScreenshot.cs
             "u_editor_sceneview"      => RouteSceneView(req),       // McpBridgeSceneView.cs
             "u_editor_menu"           => ExecuteMenu(req),          // McpBridgeMenu.cs
+            // MPPM QA tools
+            "mppm_collect"            => RouteMppmQa(req),          // McpBridgeMppmQa.cs
             _                         => BuildError($"Unknown action: '{req.action}'")
         };
     }

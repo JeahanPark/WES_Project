@@ -116,6 +116,15 @@ public class PlayerCharacter : CharacterBase
     }
 
     /// <summary>
+    /// 환경 데미지 (추위 등). 서버 전용. DEF/크리티컬 무시.
+    /// _allowDeath == false면 HP가 1 미만으로 내려가지 않는다(추위로는 즉사하지 않음).
+    /// </summary>
+    public void TakeEnvironmentDamage(int _damage, bool _allowDeath)
+    {
+        ApplyEnvironmentDamageServer(_damage, _allowDeath);
+    }
+
+    /// <summary>
     /// Cold 증감 (양수: 증가, 음수: 감소)
     /// </summary>
     public void AddCold(int _amount)

@@ -21,6 +21,7 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
     public int ConnectedClientCount => NetworkManager.Singleton?.ConnectedClients?.Count ?? 0;
 
     public bool IsInitialized => m_IsInitialized;
+    public bool IsNetworkConfigured => m_IsNetworkConfigured;
 
     public IObservable<Unit> OnPlayerJoinedAsObservable => m_OnPlayerJoined;
     public IObservable<Unit> OnPlayerLeftAsObservable => m_OnPlayerLeft;
@@ -30,6 +31,7 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
 
     private string m_Code;
     private bool m_IsInitialized;
+    private bool m_IsNetworkConfigured;
     private bool m_IsInitializing;
     private UniTaskCompletionSource m_InitTcs;
 
@@ -98,6 +100,7 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
         transport.ConnectionData.Port = 7777;
         transport.ConnectionData.ServerListenAddress = "";
 
+        m_IsNetworkConfigured = true;
         GameDebug.Log("[GameNetworkManager] NetworkManager and UnityTransport configured");
     }
 
@@ -224,6 +227,50 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
         m_Code = code;
         GameDebug.Log($"Relay Host started. Code={code}");
         return code;
+    }
+
+    // ---- QA 멀티(MPPM) 전용: Relay 우회 로컬 직결 ----
+    // MPPM 가상 플레이어는 동일 머신이라 Relay가 불필요하다. transport 기본값(127.0.0.1:7777)으로
+    // 바로 Host/Client를 띄워 JoinCode 공유 없이 자동 접속한다. 동기화 로직 검증엔 transport 무관.
+    // 로컬 직결은 UnityServices/Auth 온라인 초기화가 불필요하다(Relay 경로만 필요).
+    // WaitUntilInitializedAsync를 기다리면 인증 미완료 시 StartHost 자체가 막히므로 호출하지 않는다.
+    public UniTask<bool> StartLocalHostAsync(CancellationToken _ct = default)
+    {
+        if (NetworkManager.Singleton == null)
+        {
+            GameDebug.LogError("[GameNetworkManager] NetworkManager.Singleton is null.");
+            return UniTask.FromResult(false);
+        }
+
+        if (NetworkManager.Singleton.IsListening)
+        {
+            GameDebug.LogWarning("[GameNetworkManager] Already listening. StartLocalHost skipped.");
+            return UniTask.FromResult(true);
+        }
+
+        bool ok = NetworkManager.Singleton.StartHost();
+        m_Code = null;
+        GameDebug.Log($"[GameNetworkManager] Local host started (direct 127.0.0.1). ok={ok}");
+        return UniTask.FromResult(ok);
+    }
+
+    public UniTask<bool> StartLocalClientAsync(CancellationToken _ct = default)
+    {
+        if (NetworkManager.Singleton == null)
+        {
+            GameDebug.LogError("[GameNetworkManager] NetworkManager.Singleton is null.");
+            return UniTask.FromResult(false);
+        }
+
+        if (NetworkManager.Singleton.IsListening)
+        {
+            GameDebug.LogWarning("[GameNetworkManager] Already listening. StartLocalClient skipped.");
+            return UniTask.FromResult(true);
+        }
+
+        bool ok = NetworkManager.Singleton.StartClient();
+        GameDebug.Log($"[GameNetworkManager] Local client connecting (direct 127.0.0.1). ok={ok}");
+        return UniTask.FromResult(ok);
     }
 
     public async UniTask<bool> JoinRelayAsync(string _code, CancellationToken _ct)

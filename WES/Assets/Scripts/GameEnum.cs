@@ -73,3 +73,11 @@ public enum DayPhase
     Night,
     Dawn,
 }
+
+public enum ColdStage
+{
+    None,       // Cold 0~29
+    Warning,    // Cold 30~59
+    WeakDot,    // Cold 60~89
+    StrongDot,  // Cold 90~100
+}

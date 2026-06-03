@@ -31,7 +31,15 @@
       "Edit(/.claude/skills/weekly-plan/**)",
       "Skill(superpowers-brainstorming)",
       "Skill(superpowers-brainstorming:*)",
-      "Bash(cd \"C:/GitFork/WES_Project/WES\" && rm -f .claude/scripts/discord-mirror.ps1 .claude/scripts/run-mirror.ps1 .claude/scripts/check-mirror-state.ps1 .claude/scripts/test-discord.ps1 .claude/scripts/aggregate-log.ps1 .claude/.discord-cursor.json .claude/.discord-threads.json .claude/.discord-mirror.log && echo \"deleted\" && echo \"=== 남은 scripts ===\" && ls .claude/scripts/)"
+      "Bash(cd \"C:/GitFork/WES_Project/WES\" && rm -f .claude/scripts/discord-mirror.ps1 .claude/scripts/run-mirror.ps1 .claude/scripts/check-mirror-state.ps1 .claude/scripts/test-discord.ps1 .claude/scripts/aggregate-log.ps1 .claude/.discord-cursor.json .claude/.discord-threads.json .claude/.discord-mirror.log && echo \"deleted\" && echo \"=== 남은 scripts ===\" && ls .claude/scripts/)",
+      "WebFetch(domain:airtest.doc.io.netease.com)",
+      "WebFetch(domain:poco.readthedocs.io)",
+      "WebFetch(domain:airtest.readthedocs.io)",
+      "Bash(grep -c NetworkTransform Assets/GameResource/__TRACKED_VAR__.prefab)",
+      "WebFetch(domain:111percent.career.greetinghr.com)",
+      "WebFetch(domain:www.wanted.co.kr)",
+      "WebFetch(domain:namu.wiki)",
+      "WebFetch(domain:nx3games.career.greetinghr.com)"
     ],
     "additionalDirectories": [
       "C:\\GitFork\\WES_Project\\WES\\.claude\\skills",
