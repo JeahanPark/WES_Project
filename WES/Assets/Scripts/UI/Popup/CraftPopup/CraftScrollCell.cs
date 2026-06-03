@@ -12,6 +12,7 @@ public class CraftScrollCell : BaseScrollCell<CraftInfo>
     [SerializeField] private Button m_Button;
     [SerializeField] private GameObject m_SelectedFrame;
     [SerializeField] private Image m_BackgroundImage;
+    [SerializeField] private GameObject m_LockOverlay;
 
     private CraftInfo m_CraftInfo;
 
@@ -45,6 +46,7 @@ public class CraftScrollCell : BaseScrollCell<CraftInfo>
         }
 
         SetSelected(false);
+        RefreshLockState();
     }
 
     public void SetSelected(bool _selected)
@@ -53,6 +55,34 @@ public class CraftScrollCell : BaseScrollCell<CraftInfo>
             m_SelectedFrame.SetActive(_selected);
         if (m_BackgroundImage != null)
             m_BackgroundImage.color = _selected ? SELECTED_COLOR : NORMAL_COLOR;
+    }
+
+    // 도면 해금 상태에 따라 잠금 오버레이를 갱신한다. 목록 재배치는 하지 않는다.
+    public void RefreshLockState()
+    {
+        SetLocked(IsLocked());
+    }
+
+    public void SetLocked(bool _locked)
+    {
+        if (m_LockOverlay != null)
+            m_LockOverlay.SetActive(_locked);
+    }
+
+    // 현재 셀의 레시피가 도면 잠금 상태인지 판정.
+    public bool IsLocked()
+    {
+        if (m_CraftInfo == null)
+            return false;
+
+        if (!Managers.Info.IsBlueprintLockedCraft(m_CraftInfo.Id))
+            return false;
+
+        var registry = InGameController.Instance?.ObjectDataWorker?.GetRecipeUnlockRegistry();
+        if (registry == null)
+            return true;
+
+        return !registry.IsUnlocked(m_CraftInfo.Id);
     }
 
     private void SetEmpty()
@@ -67,6 +97,7 @@ public class CraftScrollCell : BaseScrollCell<CraftInfo>
         }
 
         SetSelected(false);
+        SetLocked(false);
     }
 
     private void OnClickCell()

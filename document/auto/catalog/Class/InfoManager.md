@@ -17,6 +17,7 @@ CSV 기획 데이터(BuildingInfo, CraftInfo, ItemInfo 등)를 로드·보관하
 - **데이터 로드**: `LoadAllInfo()`(자동생성) → 각 `*InfoList` 채움.
 - **멱등 로드 보장** `LoadAllInfoOnce()` (+ `m_IsInfoLoaded`/`IsInfoLoaded`): 진입 경로(MPPM Host / TestMode / 일반)와 무관하게 **1회만 로드**. 중복 0.
 - 조회 헬퍼: `GetCraftInfosByCategory` / `GetMaterialsByCraftId` / `GetConditionsByCraftId`.
+- **도면 해금(②)**: `BlueprintInfoList`(BlueprintInfo.csv) + `GetBlueprintByCraftId` / `GetBlueprintByItemId` / `IsBlueprintLockedCraft(craftId)`. [[RecipeUnlockRegistry]]가 잠금 판정에 사용.
 
 ## 변경 이력
 

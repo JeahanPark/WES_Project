@@ -11,13 +11,16 @@ public class InGameHUDWorker : MonoBehaviour
     [SerializeField] private CraftHUDTab m_CraftHUDTab;
     [SerializeField] private QuickSlotHUD m_QuickSlotHUD;
     [SerializeField] private PhaseIconHUD m_PhaseIconHUD;
+    [SerializeField] private BlueprintToast m_BlueprintToast;
 
     private PlayerCharacter m_LocalPlayer;
     private System.IDisposable m_QuickSlotSubscription;
+    private RecipeUnlockRegistry m_UnlockRegistry;
 
     private void OnDisable()
     {
         UnsubscribeEvents();
+        UnsubscribeUnlockEvents();
     }
 
     public void SetLocalPlayer(PlayerCharacter _player)
@@ -29,6 +32,7 @@ public class InGameHUDWorker : MonoBehaviour
         SubscribeEvents();
         RefreshHUD();
         InitializeQuickSlot();
+        InitializeBlueprintToast();
 
         GameDebug.Log($"[InGameHUDWorker] Local player set: PlayerIndex {_player.GetPlayerIndex()}");
     }
@@ -36,10 +40,37 @@ public class InGameHUDWorker : MonoBehaviour
     public void ClearLocalPlayer()
     {
         UnsubscribeEvents();
+        UnsubscribeUnlockEvents();
         m_LocalPlayer = null;
         m_QuickSlotSubscription?.Dispose();
 
         GameDebug.Log("[InGameHUDWorker] Local player cleared");
+    }
+
+    private void InitializeBlueprintToast()
+    {
+        UnsubscribeUnlockEvents();
+
+        m_UnlockRegistry = InGameController.Instance?.ObjectDataWorker?.GetRecipeUnlockRegistry();
+        if (m_UnlockRegistry != null)
+            m_UnlockRegistry.OnUnlockChanged += OnBlueprintUnlocked;
+    }
+
+    private void UnsubscribeUnlockEvents()
+    {
+        if (m_UnlockRegistry != null)
+            m_UnlockRegistry.OnUnlockChanged -= OnBlueprintUnlocked;
+        m_UnlockRegistry = null;
+    }
+
+    private void OnBlueprintUnlocked(int _craftId)
+    {
+        if (m_BlueprintToast == null)
+            return;
+
+        var craftInfo = Managers.Info.CraftInfoList.Find(_info => _info.Id == _craftId);
+        string craftName = craftInfo != null ? craftInfo.Name : $"Craft({_craftId})";
+        m_BlueprintToast.ShowMessage($"{craftName} 도면을 익혔다");
     }
 
     private void InitializeQuickSlot()

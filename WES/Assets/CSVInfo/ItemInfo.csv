@@ -14,3 +14,6 @@ Id.INT,Name.STRING,Description.STRING,IsStackable.BOOL,MaxStack.INT,PrefabKey.ST
 202,철검,강력한 철제 검,false,1,TestItem,ironsword_icon,0
 203,가죽 갑옷,가죽으로 만든 방어구,false,1,TestItem,leatherarmor_icon,0
 301,횃불,주변을 밝히는 횃불,true,9,TestItem,torch_icon,2
+401,나무 방패 도면,바랜 양피지에 그려진 방패 설계도,false,1,TestItem,blueprint_shield_icon,0
+402,철검 도면,찢긴 철검 설계도,false,1,TestItem,blueprint_ironsword_icon,0
+403,가죽 갑옷 도면,누군가 남긴 갑옷 설계도,false,1,TestItem,blueprint_leatherarmor_icon,0

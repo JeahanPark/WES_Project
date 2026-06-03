@@ -32,4 +32,18 @@ public class CraftScroll : BaseScroll<CraftInfo>
             m_CurrentSelected = null;
         }
     }
+
+    // 해금 상태 변경 시 현재 표시 중인 셀들의 잠금 오버레이를 즉시 갱신한다(목록 재배치 없음).
+    public void RefreshLockStates()
+    {
+        var list = GetDataList();
+        if (list == null)
+            return;
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            var cell = GetCellAtIndex(i) as CraftScrollCell;
+            cell?.RefreshLockState();
+        }
+    }
 }

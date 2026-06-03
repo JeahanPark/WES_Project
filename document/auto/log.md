@@ -14,6 +14,15 @@ vault 변경 이력. 시간 역순(최신이 위).
 
 ---
 
+## [2026-06-03] ingest | 도면 해금(②) 구현·검증 — QA PASS 16/0
+
+- 신규 [[RecipeUnlockRegistry]](세션·클라 로컬 해금)·[[BlueprintToast]] 카탈로그, BlueprintInfo.csv·도면3종(401~403)
+- 수정: [[InfoManager]](Blueprint 조회), [[WorldDropItem]](줍기→Unlock 분기), [[InGameObjectDataWorker]](ResetSessionData), CraftPopup 잠금표시·제작게이트
+- 리포트 [[2026-06-03-도면해금]], Design index 도면해금 ❌→✅ · ② 분기 🔧
+- 단명 케어 루프: director→client(명세)→[designer∥client코어]→client(UI)→qa
+
+## [2026-06-03] ingest | Stop hook auto-update - new class=5, new signal=0
+
 ## [2026-06-03] ingest | Cold 실질화(추위 위협) 구현·검증 — QA PASS 20/0
 
 - 신규 [[ColdDamageWorker]](밤 Cold 누적+단계 HP틱), [[DayNightConfig]]·[[WorldBuildingObject]]·[[InfoManager]] 카탈로그

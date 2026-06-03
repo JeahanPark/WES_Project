@@ -63,11 +63,23 @@ public class WorldDropItem : WorldBaseObject
         NetworkObject.Despawn();
     }
 
+    // sender 단독 적용. 도면 아이템이면 인벤토리 미경유로 레시피 해금, 아니면 인벤토리 추가.
     [Rpc(SendTo.SpecifiedInParams)]
     private void AddItemClientRpc(int _itemInfoId, int _count, RpcParams _rpcParams = default)
     {
-        var inventory = InGameController.Instance.ObjectDataWorker.GetInventoryRegistry();
-        inventory.AddItem(_itemInfoId, _count);
+        var objectData = InGameController.Instance?.ObjectDataWorker;
+        if (objectData == null)
+            return;
+
+        BlueprintInfo blueprint = Managers.Info.GetBlueprintByItemId(_itemInfoId);
+        if (blueprint != null)
+        {
+            // 도면: 슬롯 미점유 즉시 해금. 인벤토리 추가 안 함.
+            objectData.GetRecipeUnlockRegistry().Unlock(blueprint.UnlockCraftId);
+            return;
+        }
+
+        objectData.GetInventoryRegistry().AddItem(_itemInfoId, _count);
     }
 
     private void LoadItemInfo()

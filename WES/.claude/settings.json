@@ -39,7 +39,8 @@
       "WebFetch(domain:111percent.career.greetinghr.com)",
       "WebFetch(domain:www.wanted.co.kr)",
       "WebFetch(domain:namu.wiki)",
-      "WebFetch(domain:nx3games.career.greetinghr.com)"
+      "WebFetch(domain:nx3games.career.greetinghr.com)",
+      "WebFetch(domain:support.claude.com)"
     ],
     "additionalDirectories": [
       "C:\\GitFork\\WES_Project\\WES\\.claude\\skills",

@@ -56,9 +56,40 @@ public class CraftDetailPanel : MonoBehaviour
             }
         }
 
-        RefreshMaterials(_craftInfo.Id);
-        RefreshConditions(_craftInfo.Id);
+        if (IsLocked(_craftInfo.Id))
+        {
+            ShowLockedNotice();
+        }
+        else
+        {
+            RefreshMaterials(_craftInfo.Id);
+            RefreshConditions(_craftInfo.Id);
+        }
         RefreshCraftButton(_craftInfo.Id);
+    }
+
+    // 잠긴 레시피: 재료/조건 대신 도면 필요 안내 1줄을 표시한다(기획 §11.2).
+    private void ShowLockedNotice()
+    {
+        if (m_MaterialsContainer != null && m_MaterialItemTemplate != null)
+        {
+            foreach (Transform child in m_MaterialsContainer)
+            {
+                if (child.gameObject != m_MaterialItemTemplate.gameObject)
+                    Destroy(child.gameObject);
+            }
+
+            m_MaterialItemTemplate.gameObject.SetActive(false);
+
+            var row = Instantiate(m_MaterialItemTemplate, m_MaterialsContainer);
+            row.text = "이 레시피는 도면이 필요합니다";
+            row.gameObject.SetActive(true);
+        }
+
+        if (m_ConditionsLabel != null)
+            m_ConditionsLabel.gameObject.SetActive(false);
+        if (m_ConditionsContainer != null)
+            m_ConditionsContainer.gameObject.SetActive(false);
     }
 
     public void Hide()
@@ -79,6 +110,9 @@ public class CraftDetailPanel : MonoBehaviour
 
     private bool CanCraft(int _craftId)
     {
+        if (IsLocked(_craftId))
+            return false;
+
         var inventory = InGameController.Instance?.ObjectDataWorker?.GetInventoryRegistry();
         if (inventory == null)
             return false;
@@ -137,6 +171,7 @@ public class CraftDetailPanel : MonoBehaviour
         if (m_CraftButton == null)
             return;
 
+        bool locked = IsLocked(_craftId);
         bool canCraft = CanCraft(_craftId);
         m_CraftButton.interactable = canCraft;
 
@@ -146,7 +181,20 @@ public class CraftDetailPanel : MonoBehaviour
 
         var label = m_CraftButton.GetComponentInChildren<TextMeshProUGUI>();
         if (label != null)
-            label.text = canCraft ? "제작하기" : "재료 부족";
+            label.text = locked ? "도면 필요" : (canCraft ? "제작하기" : "재료 부족");
+    }
+
+    // 해당 레시피가 도면 잠금 상태인지.
+    private bool IsLocked(int _craftId)
+    {
+        if (!Managers.Info.IsBlueprintLockedCraft(_craftId))
+            return false;
+
+        var registry = InGameController.Instance?.ObjectDataWorker?.GetRecipeUnlockRegistry();
+        if (registry == null)
+            return true;
+
+        return !registry.IsUnlocked(_craftId);
     }
 
     private void RefreshMaterials(int _craftId)

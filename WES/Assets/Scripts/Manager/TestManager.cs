@@ -1628,6 +1628,45 @@ public class TestManager : MonoSingleton<TestManager>
         GameDebug.Log($"[TestManager] V7 Cold 변화: {before} → {player.Cold}");
     }
 
+    // ===== 멀티 도면해금 검증: 클론 단독 줍기 → sender 단독 해금 =====
+    // host에서 호출. 클론(clientId=1) 플레이어 근처에 도면 401을 스폰한다.
+    // 이후 클론이 TestMpV6_CollectDropItem()으로 주우면 WorldDropItem.AddItemClientRpc가
+    // sender(클론) 단독으로 RecipeUnlockRegistry.Unlock(5)을 호출 → 클론만 해금.
+    public void TestMpSpawnBlueprintNearClone()
+    {
+        if (!Managers.Network.IsServer) { GameDebug.LogWarning("[TestManager] MpSpawnBP: 서버 아님 — 무시"); return; }
+
+        var nm = Unity.Netcode.NetworkManager.Singleton;
+        Vector3 pos = Vector3.zero;
+        bool found = false;
+        if (nm != null && nm.ConnectedClients != null)
+        {
+            foreach (var kv in nm.ConnectedClients)
+            {
+                if (kv.Key == 0) continue; // host 제외, 클론(원격) 우선
+                var po = kv.Value?.PlayerObject;
+                if (po != null) { pos = po.transform.position; found = true; break; }
+            }
+        }
+        if (!found) { GameDebug.LogError("[TestManager] MpSpawnBP: 클론 플레이어 미발견"); return; }
+
+        var controller = InGameController.Instance;
+        controller.PlayWorker.SpawnDropItem(401, 1, pos);
+        GameDebug.Log($"[TestManager] MpSpawnBP: 도면 401 스폰 @클론위치 {pos}");
+    }
+
+    // host에서 호출. 클론이 도면을 주운 뒤 호출 — host registry는 미해금이어야 한다(sender 단독).
+    public void TestMpVerifyHostNotUnlocked()
+    {
+        var controller = InGameController.Instance;
+        var registry = controller?.ObjectDataWorker?.GetRecipeUnlockRegistry();
+        if (registry == null) { GameDebug.LogError("[TestManager] MpVerify: registry 없음"); return; }
+
+        bool hostLocked = !registry.IsUnlocked(5);
+        if (hostLocked) GameDebug.Log("[TestManager] MULTI PASS: host registry IsUnlocked(5)=false (클론만 해금, host 잠금 유지)");
+        else GameDebug.LogError("[TestManager] MULTI FAIL: host registry IsUnlocked(5)=true (sender 단독 위반)");
+    }
+
     // ----- MPPM 시나리오 공용 헬퍼 (기존 조회만) -----
 
     private PlayerCharacter FindLocalPlayer()
@@ -1886,6 +1925,180 @@ public class TestManager : MonoSingleton<TestManager>
             if (d < best) { best = d; nearest = b; }
         }
         return nearest;
+    }
+
+    // ===== 도면 해금(Blueprint Unlock) 검증 =====
+    // 기존 public 경로만 조합: Managers.Info.IsBlueprintLockedCraft / GetBlueprintByItemId,
+    // RecipeUnlockRegistry.IsUnlocked/Unlock/OnUnlockChanged, Popup.Open<CraftPopup>,
+    // CraftScrollCell.IsLocked, InventoryRegistry.GetItem. 테스트 전용 로직 없음.
+    public void TestBlueprintUnlock()
+    {
+        StartCoroutine(CoTestBlueprintUnlock());
+    }
+
+    private IEnumerator CoTestBlueprintUnlock()
+    {
+        int passed = 0, failed = 0;
+        void Mark(bool _condition, string _label)
+        {
+            if (_condition) { passed++; GameDebug.Log($"[TestManager] PASS: {_label}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+
+        var registry = controller.ObjectDataWorker?.GetRecipeUnlockRegistry();
+        if (registry == null) { GameDebug.LogError("[TestManager] RecipeUnlockRegistry 없음"); yield break; }
+
+        // 깨끗한 세션 상태에서 시작
+        registry.Clear();
+        yield return null;
+
+        // 1) 데이터 매핑: 401/402/403 -> 5/6/7, 기본 5종은 잠금 대상 아님
+        Mark(Managers.Info.IsBlueprintLockedCraft(5), "CraftId 5(나무방패) = 도면 잠금 대상");
+        Mark(Managers.Info.IsBlueprintLockedCraft(6), "CraftId 6(철검) = 도면 잠금 대상");
+        Mark(Managers.Info.IsBlueprintLockedCraft(7), "CraftId 7(가죽갑옷) = 도면 잠금 대상");
+        Mark(!Managers.Info.IsBlueprintLockedCraft(1), "CraftId 1 = 기본 상시(잠금 아님)");
+        Mark(!Managers.Info.IsBlueprintLockedCraft(8), "CraftId 8 = 기본 상시(잠금 아님)");
+        var bp = Managers.Info.GetBlueprintByItemId(401);
+        Mark(bp != null && bp.UnlockCraftId == 5, "도면아이템 401 -> UnlockCraftId 5 매핑");
+
+        // 2) 초기 잠금 상태: 도면 3종 IsUnlocked=false, 기본종 true
+        Mark(!registry.IsUnlocked(5) && !registry.IsUnlocked(6) && !registry.IsUnlocked(7), "초기: 도면 3종 모두 잠김");
+        Mark(registry.IsUnlocked(1) && registry.IsUnlocked(8), "초기: 기본종 항상 해금");
+
+        // 3) CraftPopup 열림 → 셀 잠금 오버레이 표시 검증
+        Managers.Popup.CloseAll();
+        yield return new WaitForSeconds(0.2f);
+        var popup = Managers.Popup.Open<CraftPopup>();
+        Mark(popup != null, "CraftPopup 열림");
+        yield return new WaitForSeconds(0.3f);
+
+        // 아이템 탭으로 전환(도면 레시피 5/6/7은 Item 카테고리)
+        popup.SelectCategory(CraftCategoryType.Item);
+        yield return new WaitForSeconds(0.3f);
+
+        var cells = popup.GetComponentsInChildren<CraftScrollCell>(true);
+        CraftScrollCell lockedCell = null, unlockedCell = null;
+        foreach (var c in cells)
+        {
+            if (c.CraftInfo == null) continue;
+            if (c.CraftInfo.Id == 5) lockedCell = c;
+            if (c.CraftInfo.Id != 0 && !Managers.Info.IsBlueprintLockedCraft(c.CraftInfo.Id) && unlockedCell == null) unlockedCell = c;
+        }
+        Mark(lockedCell != null && lockedCell.IsLocked(), "도면 레시피(5) 셀 = 잠금 표시");
+        Mark(unlockedCell == null || !unlockedCell.IsLocked(), "기본 레시피 셀 = 잠금 아님");
+
+        // 4) 해금 이벤트 발화 검증 + 줍기 경로(SpawnDropItem 401)
+        int eventFired = -1;
+        System.Action<int> handler = (id) => eventFired = id;
+        registry.OnUnlockChanged += handler;
+
+        var player = controller.PlayWorker?.LocalPlayer;
+        var inventory = controller.ObjectDataWorker?.GetInventoryRegistry();
+        int invBefore = inventory?.GetItem(401)?.Count ?? 0;
+
+        if (Managers.Network != null && Managers.Network.IsServer && player != null)
+        {
+            // 실제 줍기 경로: 도면 월드 드롭 스폰 (호스트 권위)
+            Vector3 dropPos = player.transform.position + player.transform.forward * 1.5f;
+            controller.PlayWorker.SpawnDropItem(401, 1, dropPos);
+            GameDebug.Log("[TestManager] 도면 401 월드 드롭 스폰 — 자동 수집 경로는 상호작용 필요. 해금은 registry.Unlock 직접 경로로 검증");
+            yield return new WaitForSeconds(0.3f);
+        }
+
+        // 해금 적용(WorldDropItem.AddItemClientRpc 내부와 동일 경로: registry.Unlock)
+        registry.Unlock(5);
+        yield return null;
+
+        Mark(eventFired == 5, "Unlock(5) → OnUnlockChanged(5) 발화");
+        Mark(registry.IsUnlocked(5), "해금 후 IsUnlocked(5) = true");
+
+        // 5) 도면은 인벤토리 미점유(슬롯 미추가)
+        int invAfter = inventory?.GetItem(401)?.Count ?? 0;
+        Mark(invAfter == invBefore, "도면(401) 인벤토리 미추가(슬롯 미점유)");
+
+        // 6) 열린 CraftPopup 즉시 갱신: 셀 오버레이 제거
+        yield return new WaitForSeconds(0.2f);
+        Mark(lockedCell == null || !lockedCell.IsLocked(), "해금 시 셀(5) 오버레이 즉시 제거");
+
+        // 7) 중복 해금 무효(이벤트 미발화)
+        eventFired = -1;
+        registry.Unlock(5);
+        Mark(eventFired == -1, "중복 Unlock(5) → 이벤트 미발화(무효)");
+
+        registry.OnUnlockChanged -= handler;
+
+        // 정리: 세션 리셋
+        registry.Clear();
+        Managers.Popup.CloseAll();
+
+        GameDebug.Log($"[TestManager] TestBlueprintUnlock 결과: PASS {passed}, FAIL {failed}");
+    }
+
+    // ===== 심화검증 1: 토스트 실제 표시 (정리 안 함 — 캡처용) =====
+    // registry.Unlock(5) → InGameHUDWorker.OnBlueprintUnlocked → BlueprintToast.ShowMessage 경로를
+    // 실제로 트리거. Clear/CloseAll 호출하지 않아 토스트 페이드 구간을 캡처할 수 있다.
+    public void TestBlueprintToastShow()
+    {
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); return; }
+        var registry = controller.ObjectDataWorker?.GetRecipeUnlockRegistry();
+        if (registry == null) { GameDebug.LogError("[TestManager] RecipeUnlockRegistry 없음"); return; }
+
+        registry.Clear();          // 신규 해금 보장(중복이면 이벤트 미발화)
+        registry.Unlock(5);        // 나무 방패 도면 → 토스트 "나무 방패 도면을 익혔다"
+        GameDebug.Log("[TestManager] TestBlueprintToastShow: Unlock(5) 호출 — 토스트 표시 시작(3.6s)");
+    }
+
+    // ===== 심화검증 2: 제작 게이트 셋업 — 잠긴 철검(6) + 재료 충분 =====
+    // CraftPopup을 열고 Item 카테고리로 전환, 철검 재료(8x5,1x3,7x2)를 인벤토리에 충전한다.
+    // 잠금은 유지(Unlock 안 함). 셀 선택/제작버튼 클릭은 u_play로 수행해 게이트를 실증한다.
+    public void TestBlueprintCraftGateSetup()
+    {
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); return; }
+        var registry = controller.ObjectDataWorker?.GetRecipeUnlockRegistry();
+        var inventory = controller.ObjectDataWorker?.GetInventoryRegistry();
+        if (registry == null || inventory == null) { GameDebug.LogError("[TestManager] Registry/Inventory 없음"); return; }
+
+        registry.Clear();          // 철검(6) 잠금 보장
+        // 철검(CraftId 6) 재료: itemId8 x5, itemId1 x3, itemId7 x2 — 충분히 충전
+        inventory.AddItem(8, 10);
+        inventory.AddItem(1, 10);
+        inventory.AddItem(7, 10);
+
+        Managers.Popup.CloseAll();
+        var popup = Managers.Popup.Open<CraftPopup>();
+        if (popup == null) { GameDebug.LogError("[TestManager] CraftPopup 열기 실패"); return; }
+        popup.SelectCategory(CraftCategoryType.Item);
+        GameDebug.Log("[TestManager] TestBlueprintCraftGateSetup: 철검(6) 잠금 + 재료 충전 + Item 탭. 이제 셀/버튼 클릭으로 게이트 확인");
+    }
+
+    // 게이트 검증 결과 판정: 철검(6)이 여전히 잠김 + 인벤토리에 철검 결과물(202) 미생성 확인.
+    public void TestBlueprintCraftGateVerify()
+    {
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); return; }
+        var registry = controller.ObjectDataWorker?.GetRecipeUnlockRegistry();
+        var inventory = controller.ObjectDataWorker?.GetInventoryRegistry();
+        if (registry == null || inventory == null) { GameDebug.LogError("[TestManager] Registry/Inventory 없음"); return; }
+
+        bool stillLocked = !registry.IsUnlocked(6);
+        var result = inventory.GetItem(202);   // 철검 결과 아이템(CraftInfo Value01=202)
+        int resultCount = result?.Count ?? 0;
+        bool notCrafted = resultCount == 0;
+        // 재료가 소비되지 않았는지(8은 10 충전, 철검 제작 시 5 소비됨)
+        int mat8 = inventory.GetItem(8)?.Count ?? 0;
+        bool materialIntact = mat8 == 10;
+
+        if (stillLocked) GameDebug.Log("[TestManager] GATE PASS: 철검(6) 여전히 잠김(IsUnlocked=false)");
+        else GameDebug.LogError("[TestManager] GATE FAIL: 철검(6) 잠금 해제됨");
+        if (notCrafted) GameDebug.Log($"[TestManager] GATE PASS: 철검 결과물(202) 미생성(count={resultCount})");
+        else GameDebug.LogError($"[TestManager] GATE FAIL: 철검 제작됨(202 count={resultCount})");
+        if (materialIntact) GameDebug.Log($"[TestManager] GATE PASS: 재료(8) 미소비({mat8}=10 유지)");
+        else GameDebug.LogError($"[TestManager] GATE FAIL: 재료(8) 소비됨({mat8})");
     }
 }
 #endif

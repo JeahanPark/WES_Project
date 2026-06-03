@@ -17,6 +17,8 @@ public class CraftPopup : BasePopup
     [SerializeField] private RectTransform m_LeftPanel;
 
     private CraftCategoryType m_CurrentCategory = CraftCategoryType.Building;
+    private CraftInfo m_SelectedCraftInfo;
+    private RecipeUnlockRegistry m_UnlockRegistry;
 
     private void Awake()
     {
@@ -25,6 +27,29 @@ public class CraftPopup : BasePopup
         m_ItemTabButton.onClick.AddListener(OnClickItemTab);
         RebalanceLayout();
         AlignHintToDetailPanel();
+    }
+
+    private void OnEnable()
+    {
+        m_UnlockRegistry = InGameController.Instance?.ObjectDataWorker?.GetRecipeUnlockRegistry();
+        if (m_UnlockRegistry != null)
+            m_UnlockRegistry.OnUnlockChanged += OnUnlockChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (m_UnlockRegistry != null)
+            m_UnlockRegistry.OnUnlockChanged -= OnUnlockChanged;
+        m_UnlockRegistry = null;
+    }
+
+    // 도면 해금 발생 시: 열린 목록의 잠금 오버레이 + 현재 선택 디테일을 즉시 갱신한다.
+    private void OnUnlockChanged(int _craftId)
+    {
+        m_CraftScroll.RefreshLockStates();
+
+        if (m_SelectedCraftInfo != null && m_SelectedCraftInfo.Id == _craftId)
+            m_DetailPanel.Show(m_SelectedCraftInfo);
     }
 
     private void RebalanceLayout()
@@ -104,6 +129,7 @@ public class CraftPopup : BasePopup
         var list = Managers.Info.GetCraftInfosByCategory(_category);
         m_CraftScroll.SetData(list);
         m_CraftScroll.ClearSelection();
+        m_SelectedCraftInfo = null;
         m_DetailPanel.Hide();
         SetHintVisible(true);
         ApplyTabVisualState();
@@ -149,6 +175,7 @@ public class CraftPopup : BasePopup
 
     private void OnCellClicked(CraftInfo _craftInfo)
     {
+        m_SelectedCraftInfo = _craftInfo;
         m_DetailPanel.Show(_craftInfo);
         SetHintVisible(false);
     }
