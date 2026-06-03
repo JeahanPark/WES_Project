@@ -139,6 +139,12 @@ public class MppmBootstrapWorker : MonoBehaviour
 
             if (started && await WaitUntilConnectedAsync(_ct))
             {
+                // 클론도 호스트와 동일하게 CSV(Info) 데이터를 로드해야 한다.
+                // WorldDropItem.Info 등은 클라가 ItemInfoList를 직접 조회하므로,
+                // 미로드 시 클론에서 item.Info == null이 된다(host 경로와 동일 멱등 호출).
+                GameDebug.Log("[MppmBootstrap] Loading info data (client)...");
+                await Managers.Info.LoadAllInfoOnce();
+
                 m_State = BootstrapState.ClientReady;
                 GameDebug.Log("[MppmBootstrap] ClientReady.");
                 return;

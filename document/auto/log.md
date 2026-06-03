@@ -14,6 +14,14 @@ vault 변경 이력. 시간 역순(최신이 위).
 
 ---
 
+## [2026-06-03] ingest | 멀티 Transform frozen 버그 근본수정 (mppm V2~V7 PASS)
+
+- 근본원인: 비권위 인스턴스 NavMeshAgent가 NetworkTransform 적용 위치를 매 프레임 덮어씀(Player·Monster 공통)
+- fix: [[CharacterBase]] `ShouldEnableNavAgent()` 권위 게이트(몬스터 IsServer/[[PlayerCharacter]] IsOwner), MonsterStateMachine 서버 게이트, [[ClientNetworkTransform]] 표준 최소형 정리
+- 부수: [[InfoManager]] `LoadAllInfoOnce`(MPPM Host/Client Info 로드 일원화, 버그3), 버그1=비버그 확정
+- systematic-debugging 가설소거(권위✗·보간✗→수신/적용 분리계측→NavMeshAgent 확정), 리포트 [[2026-06-03-멀티동기화-NavMeshAgent버그]]
+- 스케줄 mppm V2~V7 [x]
+
 ## [2026-06-03] ingest | 도면 해금(②) 구현·검증 — QA PASS 16/0
 
 - 신규 [[RecipeUnlockRegistry]](세션·클라 로컬 해금)·[[BlueprintToast]] 카탈로그, BlueprintInfo.csv·도면3종(401~403)

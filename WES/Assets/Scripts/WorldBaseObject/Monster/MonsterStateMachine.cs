@@ -35,6 +35,11 @@ public class MonsterStateMachine : MonoBehaviour
 
     private void Update()
     {
+        // 몬스터는 서버 권위. 상태머신(이동/상태전이)은 서버에서만 구동한다.
+        // 비권위(클론)에서 돌면 NavMeshAgent 폴백 직접이동이 NetworkTransform과 충돌한다.
+        if (m_Owner != null && !m_Owner.IsServer)
+            return;
+
         m_CurrentState?.Update();
     }
 

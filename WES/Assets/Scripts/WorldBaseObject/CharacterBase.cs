@@ -80,7 +80,23 @@ public class CharacterBase : WorldEntityBase
             m_NavAgent.acceleration = 20f;
             m_NavAgent.stoppingDistance = 0.1f;
             m_NavAgent.updateRotation = false; // 회전은 직접 처리
+
+            // 이동 권위 인스턴스에서만 NavMeshAgent를 활성화한다.
+            // 비권위(클론) 인스턴스에서 Agent가 켜져 있으면 매 프레임 transform.position을
+            // 자기 내부 위치로 덮어써 NetworkTransform이 적용한 동기화 위치를 되돌린다(frozen 버그).
+            // 비권위 인스턴스는 Agent를 끄고 NetworkTransform이 transform을 구동하게 둔다.
+            m_NavAgent.enabled = ShouldEnableNavAgent();
         }
+    }
+
+    /// <summary>
+    /// NavMeshAgent를 활성화할(=이동 권위를 가진) 인스턴스인지 여부.
+    /// 기본은 서버 권위(NetworkTransform 서버권위 객체, 예: 몬스터).
+    /// 오너 권위 이동 객체(예: 플레이어 + ClientNetworkTransform)는 IsOwner로 오버라이드한다.
+    /// </summary>
+    protected virtual bool ShouldEnableNavAgent()
+    {
+        return IsServer;
     }
 
     public override void OnNetworkDespawn()
@@ -449,7 +465,6 @@ public class CharacterBase : WorldEntityBase
 
     private void OnHPValueChanged(int _prev, int _current)
     {
-        GameDebug.Log($"[CharacterBase] OnHPValueChanged: {_prev} -> {_current}, Subscribers: {m_OnHPChanged?.GetInvocationList()?.Length ?? 0}");
         m_OnHPChanged?.Invoke(_current, m_MaxHP.Value);
     }
 

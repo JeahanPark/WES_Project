@@ -109,6 +109,16 @@ public class PlayerCharacter : CharacterBase
         m_Cold.Value = System.Math.Clamp(_value, 0, m_MaxCold.Value);
     }
 
+    /// <summary>
+    /// 플레이어는 ClientNetworkTransform(오너 권위)으로 이동하므로
+    /// NavMeshAgent는 오너 인스턴스에서만 활성화한다. 비오너 클론은 Agent를 끄고
+    /// NetworkTransform이 위치를 구동하게 둔다.
+    /// </summary>
+    protected override bool ShouldEnableNavAgent()
+    {
+        return IsOwner;
+    }
+
     public void SetMaxCold(int _value)
     {
         if (!IsServer) return;

@@ -1599,8 +1599,11 @@ public class TestManager : MonoSingleton<TestManager>
         if (monster == null) { GameDebug.LogError("[TestManager] V5: 몬스터 없음"); return; }
 
         ulong id = monster.NetworkObjectId;
-        monster.SetHP(0); // 0 → IsDead → 사망 처리(디스폰/드롭)는 기존 몬스터 사망 로직이 수행
-        GameDebug.Log($"[TestManager] V5 사망 트리거: monster id={id} HP=0");
+        // SetHP(0)은 m_HP만 설정할 뿐 OnDeathClientRpc(→OnDeath→ExecuteMonsterDrop+DeathState 전이→디스폰)를
+        // 호출하지 않는다(CharacterBase). 실제 사망 경로는 TakeDamage/ApplyEnvironmentDamage가 SetHP 후
+        // IsDead 체크로 OnDeathClientRpc를 명시 호출하는 구조다. 따라서 치명 데미지로 정상 사망 경로를 탄다.
+        monster.TakeDamage(9999, null);
+        GameDebug.Log($"[TestManager] V5 사망 트리거: monster id={id} TakeDamage(9999)");
     }
 
     // V6: 클론이 드롭아이템 수집(ServerRpc 왕복). 클론 측에서 호출해야 왕복 검증됨.
@@ -1626,6 +1629,18 @@ public class TestManager : MonoSingleton<TestManager>
         int before = player.Cold;
         player.SetCold(before + _delta);
         GameDebug.Log($"[TestManager] V7 Cold 변화: {before} → {player.Cold}");
+    }
+
+    // 무인자 실-delta 래퍼: u_play invoke가 인자를 0으로 전달하는 한계 우회.
+    // NetworkVariable 서버→클라 런타임 복제를 같은 run에서 측정 가능하게 한다.
+    public void TestMpV4_Damage10()
+    {
+        TestMpV4_DamageMonster(10);
+    }
+
+    public void TestMpV7_Cold20()
+    {
+        TestMpV7_ChangeCold(20);
     }
 
     // ===== 멀티 도면해금 검증: 클론 단독 줍기 → sender 단독 해금 =====
