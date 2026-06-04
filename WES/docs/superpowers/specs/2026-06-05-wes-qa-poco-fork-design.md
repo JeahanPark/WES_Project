@@ -138,7 +138,7 @@ game.invoke("SpawnItem", id="wood", count=3)   # InvokeBridge → Managers.Test
 - 각 게임 인스턴스가 `5001 + instanceIndex` 포트로 서버 기동.
   - 호스트(에디터) = instance 0 → 5001
   - 클라(복제본/Development Build) = instance 1.. → 5002..
-- instanceIndex 출처: 클론 식별자 또는 커맨드라인/환경변수 인자(구현 시 확정 — §9).
+- instanceIndex 출처: **Unity 6 MPPM(Multiplayer Play Mode) 공식 API로 가상 플레이어 index 획득** → 포트 매핑(§10-1 확정).
 - Python 테스트는 여러 `WesPoco`를 들고 인스턴스 간 상태 일치를 단언:
 ```python
 host   = WesPoco(instance=0)
@@ -176,6 +176,6 @@ assert client('dropped_item').exists()   # 동기화 검증
 
 ## 10. 미해결 (구현 시 확정)
 
-1. **멀티 인스턴스 산출 방식**: ParrelSync 클론 vs Unity Multiplayer Play Mode(MPPM) vs Development Build. instanceIndex→포트 매핑을 어디서 주입할지(클론 ID/커맨드라인/env).
+1. ~~멀티 인스턴스 산출 방식~~ → **확정: Unity 6 MPPM**. 가상 플레이어(최대 4) + 공식 API로 player index 획득 → `포트 = 5001 + index`. ParrelSync(풀에디터 복제) 대비 경량·공식·Netcode 지원. *(MPPM player index API 정확한 호출부는 M4 구현 시 확인)*
 2. **포크 배치**: `tools/wesqa/` 디렉터리 vs 별도 repo. (현재안: 프로젝트 내 `tools/wesqa/`)
 3. **MCP와 공존**: 에디터 플레이모드에서 MCP 입력과 Poco 입력 동시 사용 시 충돌 방지 가이드(둘 중 하나만 입력 주도).
