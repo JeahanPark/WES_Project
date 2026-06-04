@@ -98,8 +98,10 @@ model: opus
 4. `browser_take_screenshot`으로 결과 자가 평가 (톤·용도 적합?)
 5. 부적합 → 프롬프트 보정 후 2~4 반복. **최대 5회**.
 6. 5회 실패 → **보류**: 가장 비슷한 기존/무료 자산으로 placeholder, `document/asset-backlog/<주제>.md`에 정식 의뢰 등록.
-7. 성공 → 다운로드 버튼 클릭(`browser_click`) → 파일이 `.playwright-output/`에 저장됨 →
-   `AiTextureImportSetup.ImportAndPack(srcPng, categoryDir, assetName, atlasName)` 호출(Editor 메뉴/스크립트 경유)로 GameResource 저장·import·아틀라스 편입.
+7. 성공 → 다운로드 버튼 클릭(`browser_click`, 셀렉터 `button[aria-label="원본 크기 이미지 다운로드"]`) → 파일이 `.playwright-output/Gemini-Generated-Image-*.png`로 저장됨. **여러 장 동시 다운로드 시 파일명이 같은 패턴이라 다운로드 직후 바로 회수·rename**(다음 다운로드와 충돌 방지).
+   - 회수: `.playwright-output/`의 최신 png를 `Assets/GameResource/<카테고리>/<assetName>.png`로 복사.
+   - import: `u_editor_asset(action:refresh)` → 메뉴 `WES/AI Texture/Normalize ItemIcon Sprites And Pack Icons` 실행. (Unity 기본 import가 Default/Sprite를 비결정적으로 정하므로 이 메뉴로 폴더 전체를 Sprite(single)로 정규화 + Icons 아틀라스 편입.)
+   - ItemIcon 외 카테고리는 `AiTextureImportSetup.NormalizeFolderToSprite(categoryDir)` + `PackFolderIntoAtlas(categoryDir, atlasName)` 조합으로 동일 처리.
 8. 결과(성공·보류) team-lead에게 `SendMessage`로 보고.
 
 > Gemini DOM(전송 버튼·다운로드 버튼)은 변동 가능. 셀렉터를 하드코딩하지 말고 매 실행 `browser_snapshot`으로 현재 접근성 트리에서 대상을 식별한다.

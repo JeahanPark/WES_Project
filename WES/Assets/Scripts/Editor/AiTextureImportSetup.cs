@@ -69,6 +69,33 @@ public static class AiTextureImportSetup
         EditorUtility.SetDirty(atlas);
     }
 
+    /// <summary>
+    /// 폴더 내 모든 텍스처를 Sprite(single)로 정규화한다.
+    /// Unity 기본 import가 Default(0)/Sprite(8)를 비결정적으로 정하는 문제를 방지 —
+    /// AI 생성 이미지를 폴더에 떨군 뒤 이 메서드로 일괄 보정한다.
+    /// </summary>
+    /// <returns>Sprite로 바꾼 텍스처 수</returns>
+    public static int NormalizeFolderToSprite(string categoryDir)
+    {
+        int fixedCount = 0;
+        var guids = AssetDatabase.FindAssets("t:Texture2D", new[] { categoryDir });
+        foreach (var guid in guids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            var ti = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (ti == null) continue;
+            if (ti.textureType == TextureImporterType.Sprite && ti.spriteImportMode == SpriteImportMode.Single)
+                continue;
+            ti.textureType = TextureImporterType.Sprite;
+            ti.spriteImportMode = SpriteImportMode.Single;
+            ti.alphaIsTransparency = true;
+            ti.mipmapEnabled = false;
+            ti.SaveAndReimport();
+            fixedCount++;
+        }
+        return fixedCount;
+    }
+
     private static void EnsureDir(string dir)
     {
         if (!AssetDatabase.IsValidFolder(dir))
@@ -80,13 +107,15 @@ public static class AiTextureImportSetup
         }
     }
 
-    // ── 스모크 검증용 메뉴 (아틀라스 생성·폴더 편입만 단독 확인) ──
-    [MenuItem("WES/AI Texture/Smoke - Create Icons Atlas From ItemIcon")]
-    public static void SmokeCreateIconsAtlas()
+    // ── ItemIcon 폴더 Sprite 정규화 + Icons 아틀라스 편입 (AI 생성 후 일괄 처리) ──
+    [MenuItem("WES/AI Texture/Normalize ItemIcon Sprites And Pack Icons")]
+    public static void NormalizeAndPackItemIcons()
     {
-        PackFolderIntoAtlas("Assets/GameResource/Image/ItemIcon", "Icons");
+        const string dir = "Assets/GameResource/Image/ItemIcon";
+        int fixedCount = NormalizeFolderToSprite(dir);
+        PackFolderIntoAtlas(dir, "Icons");
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-        Debug.Log("[AiTexture] smoke: Icons.spriteatlas created/updated with ItemIcon folder");
+        Debug.Log($"[AiTexture] ItemIcon 정규화 {fixedCount}건 → Sprite, Icons.spriteatlas 편입 완료");
     }
 }
