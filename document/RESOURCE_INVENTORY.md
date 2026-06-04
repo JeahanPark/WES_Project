@@ -53,6 +53,8 @@
 필요 리소스가 발생하면 **순서대로** 확인 후 결정:
 
 ```
+[텍스처·2D 이미지] 0단계 — AI 생성 (Gemini × Playwright, 최우선)
+   ↓ (3D 메쉬는 0단계 건너뜀)
 1단계 — GameResource/ 재사용
    ↓ 없거나 불충분
 2단계 — Synty/polyperfect 차용 (복제 후 GameResource로 이동·rename)
@@ -61,6 +63,15 @@
    ↓ 불가능
 4단계 — 임시 placeholder + document/asset-backlog/<주제>.md 정식 의뢰
 ```
+
+### 0단계 — 텍스처·2D 이미지: AI 생성 (최우선)
+
+- **텍스처·2D sprite·아이콘·UI 이미지**는 재사용·차용·Procedural보다 **먼저 AI(Gemini 웹, Playwright MCP)로 생성**한다.
+- 3D 메쉬는 0단계 대상이 아니다 → 1~4단계 트리를 그대로 탄다.
+- 생성·세션·아틀라스 규칙의 단일 출처는 `.claude/agents/designer.md`의 "AI 텍스처 생성 (Gemini × Playwright)" 섹션.
+- 세트별 스타일 프리픽스는 `document/asset-style-guide/<세트명>.md`에 보관.
+- 아이콘류 sprite는 카테고리 Sprite Atlas(`Assets/GameResource/UI/Atlas/`)에 편입.
+- 최대 5회 재시도 후 실패 시 보류(placeholder + 백로그).
 
 ### 1단계 — GameResource 재사용
 

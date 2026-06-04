@@ -5,3 +5,7 @@ Build
 # Obsidian (vault root = document/)
 document/.obsidian/
 document/.trash/
+
+# Playwright MCP (designer AI texture gen)
+/.playwright-profile/
+/.playwright-output/
