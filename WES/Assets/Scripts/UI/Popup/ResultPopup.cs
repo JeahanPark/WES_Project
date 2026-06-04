@@ -10,6 +10,8 @@ public class ResultPopup : BasePopup
     [SerializeField] private TMP_Text m_TitleText;
     [SerializeField] private TMP_Text m_SubtitleText;
     [SerializeField] private Button m_ConfirmButton;
+    [SerializeField] private GameObject m_BgSuccess;
+    [SerializeField] private GameObject m_BgDefeat;
 
     private void Awake()
     {
@@ -42,6 +44,13 @@ public class ResultPopup : BasePopup
 
     public void ShowResult(GameState _state)
     {
+        bool isClear = _state == GameState.Clear;
+
+        if (m_BgSuccess != null)
+            m_BgSuccess.SetActive(isClear);
+        if (m_BgDefeat != null)
+            m_BgDefeat.SetActive(!isClear);
+
         if (_state == GameState.Clear)
         {
             if (m_TitleText != null)

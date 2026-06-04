@@ -2,6 +2,9 @@ Shader "WES/NightDarknessOverlay"
 {
     Properties
     {
+        // Unity UI Image가 머티리얼에 메인 텍스처를 항상 세팅하므로 _MainTex가 필수.
+        // 실제 샘플링은 하지 않지만(_Color 기반 단색 오버레이) 프로퍼티가 없으면 매 프레임 경고.
+        _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Darkness Color", Color) = (0, 0, 0, 0.85)
         _CircleCount ("Active Circle Count", Int) = 0
     }

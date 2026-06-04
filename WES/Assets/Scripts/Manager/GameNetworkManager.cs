@@ -41,6 +41,27 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
         EnsureInitInternalAsync().Forget();
     }
 
+#if UNITY_EDITOR
+    protected override void Awake()
+    {
+        base.Awake();
+        // 에디터 플레이 종료(Stop) 시 NGO를 확실히 Shutdown해 UDP 소켓(7777)을 해제한다.
+        // 베이스 MonoSingleton은 OnApplicationQuit에서 s_Instance=null만 하고 Clear()를 부르지 않아,
+        // 이어지는 OnDestroy에서 s_Instance!=this가 되어 Clear()(=Shutdown)가 스킵된다(소켓 누수).
+        // playModeStateChanged의 ExitingPlayMode 시점에 직접 Shutdown해 반복 플레이의 포트 점유를 막는다.
+        UnityEditor.EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+    }
+
+    private void OnPlayModeStateChanged(UnityEditor.PlayModeStateChange _change)
+    {
+        if (_change != UnityEditor.PlayModeStateChange.ExitingPlayMode)
+            return;
+
+        ShutdownNetwork();
+        UnityEditor.EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+    }
+#endif
+
     private void Start()
     {
         SetupNetworkManager();
@@ -123,22 +144,36 @@ public class GameNetworkManager : MonoSingleton<GameNetworkManager>
         }
     }
 
+    // 베이스 MonoSingleton.OnApplicationQuit은 s_Instance=null만 하고 Clear()를 부르지 않아
+    // 이어지는 OnDestroy에서 Shutdown이 스킵된다. 종료 시 직접 Shutdown해 소켓 누수를 막는다.
+    protected override void OnApplicationQuit()
+    {
+        ShutdownNetwork();
+        base.OnApplicationQuit();
+    }
+
+    // 활성 NGO 세션을 안전하게 종료한다(콜백 해제 + Shutdown). 중복 호출 안전.
+    private void ShutdownNetwork()
+    {
+        if (NetworkManager.Singleton == null)
+            return;
+
+        NetworkManager.Singleton.OnServerStarted -= HandleServerStarted;
+        NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
+        NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnected;
+
+        if (NetworkManager.Singleton.IsListening)
+        {
+            NetworkManager.Singleton.Shutdown();
+            GameDebug.Log("[GameNetworkManager] NetworkManager Shutdown (socket released)");
+        }
+    }
+
     public override void Clear()
     {
         base.Clear();
 
-        if (NetworkManager.Singleton != null)
-        {
-            NetworkManager.Singleton.OnServerStarted -= HandleServerStarted;
-            NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
-            NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnected;
-
-            if (NetworkManager.Singleton.IsListening)
-            {
-                NetworkManager.Singleton.Shutdown();
-                GameDebug.Log("NetworkManager Shutdown");
-            }
-        }
+        ShutdownNetwork();
 
         m_Code = null;
 

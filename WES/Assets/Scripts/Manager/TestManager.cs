@@ -2115,5 +2115,187 @@ public class TestManager : MonoSingleton<TestManager>
         if (materialIntact) GameDebug.Log($"[TestManager] GATE PASS: 재료(8) 미소비({mat8}=10 유지)");
         else GameDebug.LogError($"[TestManager] GATE FAIL: 재료(8) 소비됨({mat8})");
     }
+
+    // ===== 코어텐션 오버레이 (G-2/G-3/G-13/G-14) 와이어링 검증 =====
+    // CoreTensionOverlayWorker의 private SerializeField Image 슬롯 alpha 변화를
+    // 로컬 플레이어의 기존 public 메서드(SetCold/SetHP/TakeDamage) + DayNightWorker.ForcePhase로 구동해 확인.
+    public void TestCoreTensionOverlay()
+    {
+        StartCoroutine(CoTestCoreTensionOverlay());
+    }
+
+    private static float GetOverlayAlpha(CoreTensionOverlayWorker _worker, string _field)
+    {
+        var f = typeof(CoreTensionOverlayWorker).GetField(_field,
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var graphic = f?.GetValue(_worker) as UnityEngine.UI.Graphic;
+        return graphic != null ? graphic.color.a : -1f;
+    }
+
+    private IEnumerator CoTestCoreTensionOverlay()
+    {
+        GameDebug.Log("[TestManager] TestCoreTensionOverlay 시작");
+
+        int passed = 0;
+        int failed = 0;
+        void Mark(bool _condition, string _label)
+        {
+            if (_condition) { passed++; GameDebug.Log($"[TestManager] PASS: {_label}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+
+        var overlay = Object.FindFirstObjectByType<CoreTensionOverlayWorker>();
+        if (overlay == null) { GameDebug.LogError("[TestManager] CoreTensionOverlayWorker 없음 — 와이어링 누락"); yield break; }
+
+        var player = controller.PlayWorker?.LocalPlayer;
+        if (player == null) { GameDebug.LogError("[TestManager] LocalPlayer 없음"); yield break; }
+
+        // 죽지 않도록 HP 강화(추위 단계 테스트 동안)
+        player.SetMaxHP(99999);
+        player.SetHP(99999);
+
+        // 시나리오 0: 7개 슬롯 모두 reflection으로 연결 확인
+        string[] slots = { "m_ColdOverlay1", "m_ColdOverlay2", "m_ColdOverlay3", "m_HpVignette", "m_DeathOverlay", "m_DayNightTint", "m_AmbientFog" };
+        foreach (var s in slots)
+            Mark(GetOverlayAlpha(overlay, s) >= 0f, $"슬롯 {s} 연결됨(Graphic non-null)");
+
+        // 시나리오 1: 추위 단계별 누적 페이드 (Warning≥30 / Weak≥60 / Strong≥90)
+        player.SetCold(0);
+        yield return new WaitForSeconds(0.8f);
+        Mark(GetOverlayAlpha(overlay, "m_ColdOverlay1") < 0.05f, "Cold 0 → ColdOverlay1 alpha≈0");
+
+        player.SetCold(35);
+        yield return new WaitForSeconds(0.8f);
+        Mark(GetOverlayAlpha(overlay, "m_ColdOverlay1") > 0.8f, "Cold 35(Warning) → ColdOverlay1 페이드 인");
+        Mark(GetOverlayAlpha(overlay, "m_ColdOverlay2") < 0.05f, "Cold 35 → ColdOverlay2 아직 0");
+
+        player.SetCold(65);
+        yield return new WaitForSeconds(0.8f);
+        Mark(GetOverlayAlpha(overlay, "m_ColdOverlay2") > 0.8f, "Cold 65(Weak) → ColdOverlay2 누적 페이드 인");
+
+        player.SetCold(95);
+        yield return new WaitForSeconds(0.8f);
+        Mark(GetOverlayAlpha(overlay, "m_ColdOverlay3") > 0.7f, "Cold 95(Strong) → ColdOverlay3 페이드 인(펄스)");
+
+        // 시나리오 2: 추위 해제 시 전 단계 alpha 0 복귀
+        player.SetCold(0);
+        yield return new WaitForSeconds(0.8f);
+        Mark(GetOverlayAlpha(overlay, "m_ColdOverlay1") < 0.05f
+          && GetOverlayAlpha(overlay, "m_ColdOverlay2") < 0.05f
+          && GetOverlayAlpha(overlay, "m_ColdOverlay3") < 0.05f, "Cold 0 복귀 → 추위 오버레이 전부 alpha≈0");
+
+        // 시나리오 3: 저체력 적색 비네팅 (HP ≤ 30%)
+        player.SetMaxHP(100);
+        player.SetHP(100);
+        yield return new WaitForSeconds(0.3f);
+        player.SetHP(20); // 20% → 임계 30% 이하
+        yield return new WaitForSeconds(0.4f);
+        float vig = GetOverlayAlpha(overlay, "m_HpVignette");
+        Mark(vig > 0.05f, $"HP 20% → HpVignette 펄스 활성(alpha={vig:F2})");
+
+        // 시나리오 4: HP 회복 시 비네팅 해제
+        player.SetHP(100);
+        yield return new WaitForSeconds(0.3f);
+        Mark(GetOverlayAlpha(overlay, "m_HpVignette") < 0.05f, "HP 100% → HpVignette alpha≈0");
+
+        // 시나리오 5: 낮밤 틴트 — 페이즈 전환 시 색 변화 (★ 사망 전에 검증 — 사망 시 GameOver로 HUD 비활성화됨)
+        var dayNight = controller.DayNightWorker;
+        if (dayNight != null)
+        {
+            dayNight.ForcePhase(DayPhase.Day);
+            yield return new WaitForSeconds(1.8f);
+            var tintField = typeof(CoreTensionOverlayWorker).GetField("m_DayNightTint",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var tintImg = tintField?.GetValue(overlay) as UnityEngine.UI.Image;
+            Color dayColor = tintImg != null ? tintImg.color : Color.clear;
+
+            dayNight.ForcePhase(DayPhase.Night);
+            yield return new WaitForSeconds(1.8f);
+            Color nightColor = tintImg != null ? tintImg.color : Color.clear;
+            Mark(tintImg != null && (Mathf.Abs(dayColor.r - nightColor.r) > 0.1f || Mathf.Abs(dayColor.b - nightColor.b) > 0.05f),
+                $"낮→밤 틴트 색 변화 (day rgb={dayColor.r:F2},{dayColor.g:F2},{dayColor.b:F2} → night {nightColor.r:F2},{nightColor.g:F2},{nightColor.b:F2})");
+            Mark(tintImg != null && Mathf.Abs(tintImg.color.a - 0.18f) < 0.02f, $"틴트 alpha 0.18 유지(실제 {tintImg?.color.a:F2})");
+            dayNight.ForcePhase(DayPhase.Day);
+            yield return new WaitForSeconds(0.3f);
+        }
+        else
+        {
+            GameDebug.LogWarning("[TestManager] DayNightWorker 없음 — 시나리오 5 SKIP");
+        }
+
+        // 시나리오 6: 사망 시 death_overlay 암전 페이드 트리거 확인
+        // 주의: 사망은 GameOver를 유발 → ResultPopup.OnEnable이 HUDWorker(오버레이 부모)를 SetActive(false).
+        // 따라서 1.8s 페이드는 비활성화로 중단되어 완료 alpha(1.0)에 도달하지 못한다.
+        // 여기서는 "사망 콜백이 발화해 death 페이드가 시작됐는지"만 즉시(0.4s) 확인. informational.
+        player.SetMaxHP(100);
+        player.SetHP(100);
+        yield return new WaitForSeconds(0.2f);
+        player.TakeDamage(99999, player);
+        yield return new WaitForSeconds(0.4f); // 페이드 시작 직후 — HUD 비활성화 전 alpha 상승 포착
+        float death = GetOverlayAlpha(overlay, "m_DeathOverlay");
+        GameDebug.Log($"[TestManager] (informational) 사망 직후 DeathOverlay alpha={death:F2} " +
+                      "(GameOver→ResultPopup이 HUD 부모를 즉시 비활성화하므로 완전 암전은 미도달 — 설계 관찰)");
+
+        GameDebug.Log($"[TestManager] TestCoreTensionOverlay 결과: PASS {passed}, FAIL {failed}");
+    }
+
+    // ===== ResultPopup 성공/전멸 배경 토글 (C-1/C-2) =====
+    public void TestResultPopupBackground()
+    {
+        StartCoroutine(CoTestResultPopupBackground());
+    }
+
+    private static bool GetResultBgActive(ResultPopup _popup, string _field)
+    {
+        var f = typeof(ResultPopup).GetField(_field,
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var go = f?.GetValue(_popup) as GameObject;
+        return go != null && go.activeSelf;
+    }
+
+    private IEnumerator CoTestResultPopupBackground()
+    {
+        GameDebug.Log("[TestManager] TestResultPopupBackground 시작");
+
+        int passed = 0;
+        int failed = 0;
+        void Mark(bool _condition, string _label)
+        {
+            if (_condition) { passed++; GameDebug.Log($"[TestManager] PASS: {_label}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
+        }
+
+        Managers.Popup.CloseAll();
+        yield return new WaitForSeconds(0.2f);
+
+        // 시나리오 1: Clear 결과 → BgSuccess on, BgDefeat off
+        var popup = Managers.Popup.Open<ResultPopup>();
+        if (popup == null) { GameDebug.LogError("[TestManager] ResultPopup 열기 실패"); yield break; }
+        yield return new WaitForSeconds(0.2f);
+
+        var successField = typeof(ResultPopup).GetField("m_BgSuccess",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var defeatField = typeof(ResultPopup).GetField("m_BgDefeat",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        Mark(successField?.GetValue(popup) as GameObject != null, "m_BgSuccess 슬롯 연결됨");
+        Mark(defeatField?.GetValue(popup) as GameObject != null, "m_BgDefeat 슬롯 연결됨");
+
+        popup.ShowResult(GameState.Clear);
+        yield return new WaitForSeconds(0.2f);
+        Mark(GetResultBgActive(popup, "m_BgSuccess"), "Clear → BgSuccess active");
+        Mark(!GetResultBgActive(popup, "m_BgDefeat"), "Clear → BgDefeat inactive");
+
+        // 시나리오 2: GameOver 결과 → BgDefeat on, BgSuccess off
+        popup.ShowResult(GameState.GameOver);
+        yield return new WaitForSeconds(0.2f);
+        Mark(GetResultBgActive(popup, "m_BgDefeat"), "GameOver → BgDefeat active");
+        Mark(!GetResultBgActive(popup, "m_BgSuccess"), "GameOver → BgSuccess inactive");
+
+        Managers.Popup.CloseAll();
+        GameDebug.Log($"[TestManager] TestResultPopupBackground 결과: PASS {passed}, FAIL {failed}");
+    }
 }
 #endif

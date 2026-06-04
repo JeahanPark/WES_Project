@@ -12,6 +12,7 @@ public class InGameHUDWorker : MonoBehaviour
     [SerializeField] private QuickSlotHUD m_QuickSlotHUD;
     [SerializeField] private PhaseIconHUD m_PhaseIconHUD;
     [SerializeField] private BlueprintToast m_BlueprintToast;
+    [SerializeField] private CoreTensionOverlayWorker m_CoreTensionOverlay;
 
     private PlayerCharacter m_LocalPlayer;
     private System.IDisposable m_QuickSlotSubscription;
@@ -22,6 +23,8 @@ public class InGameHUDWorker : MonoBehaviour
         UnsubscribeEvents();
         UnsubscribeUnlockEvents();
     }
+
+    public CoreTensionOverlayWorker CoreTensionOverlay => m_CoreTensionOverlay;
 
     public void SetLocalPlayer(PlayerCharacter _player)
     {
@@ -34,6 +37,9 @@ public class InGameHUDWorker : MonoBehaviour
         InitializeQuickSlot();
         InitializeBlueprintToast();
 
+        if (m_CoreTensionOverlay != null)
+            m_CoreTensionOverlay.SetLocalPlayer(_player);
+
         GameDebug.Log($"[InGameHUDWorker] Local player set: PlayerIndex {_player.GetPlayerIndex()}");
     }
 
@@ -43,6 +49,9 @@ public class InGameHUDWorker : MonoBehaviour
         UnsubscribeUnlockEvents();
         m_LocalPlayer = null;
         m_QuickSlotSubscription?.Dispose();
+
+        if (m_CoreTensionOverlay != null)
+            m_CoreTensionOverlay.ClearLocalPlayer();
 
         GameDebug.Log("[InGameHUDWorker] Local player cleared");
     }

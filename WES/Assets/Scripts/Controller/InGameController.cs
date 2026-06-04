@@ -287,7 +287,14 @@ public class InGameController : NetworkGameController<InGameController>
     {
         m_GameState = GameState.GameOver;
         GameDebug.Log("[InGameController] GAME OVER!");
-        ShowResultPopup(GameState.GameOver);
+
+        // 전멸 연출(director 결정 2026-06-05): death_overlay 1.8초 암전 → 완료 후
+        // ResultPopup 표시(BgDefeat가 어둠에서 떠오름). 오버레이가 없으면 즉시 표시.
+        var overlay = m_HUDWorker != null ? m_HUDWorker.CoreTensionOverlay : null;
+        if (overlay != null)
+            overlay.PlayDeathFade(() => ShowResultPopup(GameState.GameOver));
+        else
+            ShowResultPopup(GameState.GameOver);
     }
 
     private void ShowResultPopup(GameState _state)
