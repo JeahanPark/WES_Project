@@ -18,6 +18,14 @@ public class CharacterBase : WorldEntityBase
     private const float ROTATION_SPEED = 15f;
     private const float PATH_CORNER_ARRIVE_DISTANCE = 0.4f;
 
+    // 이동 시 NavMesh 경계 판정.
+    // 수직(반경)은 언덕/슬로프 표면 높이차를 흡수할 만큼 넉넉히 두고,
+    // 수평 허용치는 바다(섬 외곽)로 새는 것을 막기 위해 좁게 유지한다.
+    private const float NAV_MOVE_SAMPLE_RADIUS = 3.0f;
+    private const float NAV_MOVE_HORIZONTAL_TOLERANCE = 0.6f;
+    // MoveTo 목적지를 NavMesh 표면에 투영할 때의 탐색 반경.
+    private const float MOVE_DEST_SAMPLE_RADIUS = 5.0f;
+
     [SerializeField] private CharacterScriptable m_CharacterData;
     [SerializeField] private int m_ATK = DEFAULT_ATK;
     [SerializeField] private int m_DEF = DEFAULT_DEF;
@@ -320,10 +328,21 @@ public class CharacterBase : WorldEntityBase
             m_MoveDirection = Vector2.zero;
             return;
         }
-        // 수동 방향 입력이 들어오면 경로 추종을 취소한다.
-        if (m_IsFollowingPath)
-            StopMove();
-        m_MoveDirection = _direction;
+
+        // 실제 수동 입력이 있을 때만 경로 추종을 취소하고 수동 이동으로 전환한다.
+        // (PlayerCharacter는 입력이 없어도 매 프레임 MoveWithDirection(zero)를 호출하므로,
+        //  0 입력에도 취소하면 MoveTo 경로 추종이 첫 프레임에 끊긴다.)
+        if (_direction.sqrMagnitude > 0.0001f)
+        {
+            if (m_IsFollowingPath)
+                StopMove();
+            m_MoveDirection = _direction;
+        }
+        else if (!m_IsFollowingPath)
+        {
+            // 경로 추종 중이 아닐 때만 정지를 반영한다(추종 중이면 추종 방향 유지).
+            m_MoveDirection = Vector2.zero;
+        }
     }
 
     /// <summary>
@@ -339,11 +358,18 @@ public class CharacterBase : WorldEntityBase
         if (m_NavAgent == null || !m_NavAgent.isOnNavMesh)
             return false;
 
+        // 목적지가 NavMesh 표면에서 벗어난 raw 좌표(예: 트리거 콜라이더 중심 y)면
+        // CalculatePath가 부분경로(PathPartial)를 반환해 추종이 즉시 끊긴다.
+        // 먼저 NavMesh에 투영해 도달 가능한 표면 좌표로 보정한다.
+        if (NavMesh.SamplePosition(_destination, out NavMeshHit destHit, MOVE_DEST_SAMPLE_RADIUS, NavMesh.AllAreas))
+            _destination = destHit.position;
+
         NavMeshPath path = new NavMeshPath();
         if (!NavMesh.CalculatePath(transform.position, _destination, NavMesh.AllAreas, path))
             return false;
 
-        if (path.status == NavMeshPathStatus.PathInvalid || path.corners == null || path.corners.Length < 2)
+        // 부분경로(PathPartial)는 목적지에 도달하지 못하므로 폴백 처리하게 한다.
+        if (path.status != NavMeshPathStatus.PathComplete || path.corners == null || path.corners.Length < 2)
             return false;
 
         m_PathCorners = path.corners;
@@ -430,10 +456,15 @@ public class CharacterBase : WorldEntityBase
                 Vector3 moveDirection = new Vector3(m_MoveDirection.x, 0f, m_MoveDirection.y).normalized;
                 Vector3 delta = moveDirection * (Time.deltaTime * m_MoveSpeed);
                 Vector3 nextPos = transform.position + delta;
-                // NavMesh 경계 차단: 다음 위치가 NavMesh 위가 아니면 이동 무시
-                if (NavMesh.SamplePosition(nextPos, out NavMeshHit nh, 0.5f, NavMesh.AllAreas))
+                // NavMesh 경계 차단: 다음 위치 근처에 NavMesh가 있어야 이동 허용.
+                // 언덕/슬로프로 표면이 솟은 구간(수직 차이)은 통과시키되,
+                // 바다(외곽)로 새는 것은 막기 위해 샘플점과의 '수평' 거리만 엄격히 본다.
+                if (NavMesh.SamplePosition(nextPos, out NavMeshHit nh, NAV_MOVE_SAMPLE_RADIUS, NavMesh.AllAreas))
                 {
-                    m_NavAgent.Move(delta);
+                    float dx = nh.position.x - nextPos.x;
+                    float dz = nh.position.z - nextPos.z;
+                    if (dx * dx + dz * dz <= NAV_MOVE_HORIZONTAL_TOLERANCE * NAV_MOVE_HORIZONTAL_TOLERANCE)
+                        m_NavAgent.Move(delta);
                 }
             }
         }

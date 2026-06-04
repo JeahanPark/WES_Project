@@ -14,6 +14,15 @@ vault 변경 이력. 시간 역순(최신이 위).
 
 ---
 
+## [2026-06-04] fix | 클리어 난이도(EscapePoint 종단) + 이동 경로추종 근본버그 수정
+
+- EscapePoint `(-3,1,-38)`→`(0,1.5,35)`: 스폰 옆 4u→종단 77u, Beach·Forest 몬스터 관통해야 클리어
+- 근본버그: [[PlayerCharacter]] `HandleInput`이 매 프레임 `MoveWithDirection(zero)` 호출 → [[CharacterBase]] 경로추종이 첫 프레임 취소됨
+- fix(3): `MoveWithDirection` 실입력 시만 추종 취소 / `MoveTo` 목적지 NavMesh 투영+PathComplete만 / `UpdateMovement` 게이트 수직흡수(3.0)+수평차단(0.6) 언덕 통과
+- infra: `ProjectSettings.runInBackground` 0→1 (플레이 중 포커스 상실 시 McpBridge 무응답 해소)
+- 검증: FullPlay E2E "실제 이동 도달 OK"(Warp 폴백 아님) PASS
+- 리포트: [[reports/2026-06-04-클리어난이도-이동추종버그]]
+
 ## [2026-06-03] ingest | 멀티 Transform frozen 버그 근본수정 (mppm V2~V7 PASS)
 
 - 근본원인: 비권위 인스턴스 NavMeshAgent가 NetworkTransform 적용 위치를 매 프레임 덮어씀(Player·Monster 공통)
