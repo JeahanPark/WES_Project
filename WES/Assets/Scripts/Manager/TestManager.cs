@@ -2242,6 +2242,66 @@ public class TestManager : MonoSingleton<TestManager>
         GameDebug.Log($"[TestManager] TestCoreTensionOverlay 결과: PASS {passed}, FAIL {failed}");
     }
 
+    // ===== 추위 단계3 완전차폐 금지 — 알파 상한 0.85 천장 검증 (director 결정 2026-06-06) =====
+    // StrongDot(Cold≥90) 도달 시 ColdOverlay3 alpha가 펄스 포함 0.85를 넘지 않는지 일정 시간 샘플링한다.
+    // 기존 public 메서드(SetCold) + 기존 reflection helper(GetOverlayAlpha)만 사용.
+    public void TestColdOverlayAlphaCap()
+    {
+        StartCoroutine(CoTestColdOverlayAlphaCap());
+    }
+
+    private IEnumerator CoTestColdOverlayAlphaCap()
+    {
+        GameDebug.Log("[TestManager] TestColdOverlayAlphaCap 시작");
+
+        const float CAP = 0.85f;
+        const float EPS = 0.001f; // 부동소수 여유
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+        var overlay = Object.FindFirstObjectByType<CoreTensionOverlayWorker>();
+        if (overlay == null) { GameDebug.LogError("[TestManager] CoreTensionOverlayWorker 없음"); yield break; }
+        var player = controller.PlayWorker?.LocalPlayer;
+        if (player == null) { GameDebug.LogError("[TestManager] LocalPlayer 없음"); yield break; }
+
+        player.SetMaxHP(99999);
+        player.SetHP(99999);
+
+        // StrongDot 진입(펄스 시작) — 페이드 완료까지 대기
+        player.SetCold(100);
+        yield return new WaitForSeconds(0.9f);
+
+        // 펄스 주기(약 1.4s) 2주기 이상 샘플링하며 천장 초과를 추적
+        float maxObserved = 0f;
+        float elapsed = 0f;
+        while (elapsed < 3.2f)
+        {
+            float a1 = GetOverlayAlpha(overlay, "m_ColdOverlay1");
+            float a2 = GetOverlayAlpha(overlay, "m_ColdOverlay2");
+            float a3 = GetOverlayAlpha(overlay, "m_ColdOverlay3");
+            maxObserved = Mathf.Max(maxObserved, Mathf.Max(a1, Mathf.Max(a2, a3)));
+            yield return null;
+            elapsed += Time.deltaTime;
+        }
+
+        bool capHeld = maxObserved <= CAP + EPS;
+        if (capHeld)
+            GameDebug.Log($"[TestManager] PASS: 추위 오버레이 알파 천장 0.85 준수 (관측 최대 {maxObserved:F4})");
+        else
+            GameDebug.LogError($"[TestManager] FAIL: 추위 오버레이 알파 0.85 초과 — 완전차폐 위험 (관측 최대 {maxObserved:F4})");
+
+        // 중앙 시야 여백 보증: 천장이 1.0 미만이어야 완전 불투명 불가
+        bool belowOpaque = maxObserved < 1.0f - EPS;
+        GameDebug.Log(belowOpaque
+            ? $"[TestManager] PASS: 완전 불투명(1.0) 미도달 — 중앙 시야 여백 보증 (최대 {maxObserved:F4})"
+            : $"[TestManager] FAIL: 알파 1.0 도달 — 완전차폐 (최대 {maxObserved:F4})");
+
+        player.SetCold(0);
+        yield return new WaitForSeconds(0.7f);
+
+        GameDebug.Log("[TestManager] TestColdOverlayAlphaCap 종료");
+    }
+
     // ===== ResultPopup 성공/전멸 배경 토글 (C-1/C-2) =====
     public void TestResultPopupBackground()
     {

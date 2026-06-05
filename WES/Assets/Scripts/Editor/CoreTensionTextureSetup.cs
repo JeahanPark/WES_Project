@@ -34,10 +34,12 @@ public static class CoreTensionTextureSetup
     {
         EnsureDir(DIR);
 
-        // G-2 추위 오버레이 3단계: 단색 틴트 + 가장자리 성에 비네팅(중앙 투명→가장자리 짙음)
-        WriteTex("cold_overlay_1", EdgeVignetteTint(ColdTint1, 0.15f, edgeBoost: 0.10f, innerRadius: 0.55f));
-        WriteTex("cold_overlay_2", EdgeVignetteTint(ColdTint2, 0.30f, edgeBoost: 0.18f, innerRadius: 0.45f));
-        WriteTex("cold_overlay_3", EdgeVignetteTint(ColdTint3, 0.50f, edgeBoost: 0.30f, innerRadius: 0.30f));
+        // G-2 추위 오버레이 3단계: 가장자리 성에 비네팅(중앙 투명→가장자리 짙음).
+        // 기획 §5.2/§8.1: 1·2단계는 "중앙 시야 깨끗"(centerAlpha=0/낮음), 3단계만 "전체 서리".
+        // centerAlpha = 중앙 알파(투명여백), edgeAlpha = 코너 최대 알파. 코드 캡 0.85가 위에 곱해짐.
+        WriteTex("cold_overlay_1", EdgeVignetteTint(ColdTint1, centerAlpha: 0.00f, edgeAlpha: 0.22f, innerRadius: 0.45f, power: 1.8f));
+        WriteTex("cold_overlay_2", EdgeVignetteTint(ColdTint2, centerAlpha: 0.05f, edgeAlpha: 0.45f, innerRadius: 0.32f, power: 1.6f));
+        WriteTex("cold_overlay_3", EdgeVignetteTint(ColdTint3, centerAlpha: 0.28f, edgeAlpha: 0.85f, innerRadius: 0.18f, power: 1.4f));
 
         // G-13 저체력 적색 비네팅(중앙 투명 → 가장자리 적색, 전투 채널)
         WriteTex("vignette_red", RadialVignette(VignetteRed, maxAlpha: 0.55f, innerRadius: 0.40f, power: 2.2f));
@@ -71,8 +73,10 @@ public static class CoreTensionTextureSetup
         return px;
     }
 
-    /// <summary>중앙은 옅고 가장자리로 갈수록 짙어지는 단색 틴트(추위 오버레이).</summary>
-    static Color[] EdgeVignetteTint(Color tint, float baseAlpha, float edgeBoost, float innerRadius)
+    /// <summary>중앙(centerAlpha)에서 가장자리(edgeAlpha)로 짙어지는 단색 비네트 틴트(추위 오버레이).
+    /// innerRadius 안쪽은 centerAlpha 평탄, 그 밖부터 코너까지 power 곡선으로 edgeAlpha까지 상승.
+    /// centerAlpha=0이면 중앙 완전 투명(시야 보존).</summary>
+    static Color[] EdgeVignetteTint(Color tint, float centerAlpha, float edgeAlpha, float innerRadius, float power)
     {
         var px = new Color[RES * RES];
         Vector2 c = new Vector2(0.5f, 0.5f);
@@ -82,8 +86,8 @@ public static class CoreTensionTextureSetup
         {
             Vector2 uv = new Vector2((x + 0.5f) / RES, (y + 0.5f) / RES);
             float d = Vector2.Distance(uv, c) / maxD; // 0 중앙 ~ 1 코너
-            float edge = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(innerRadius, 1f, d));
-            float a = baseAlpha + edge * edgeBoost;
+            float t = Mathf.Pow(Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(innerRadius, 1f, d)), power);
+            float a = Mathf.Lerp(centerAlpha, edgeAlpha, t);
             px[y * RES + x] = new Color(tint.r, tint.g, tint.b, Mathf.Clamp01(a));
         }
         return px;

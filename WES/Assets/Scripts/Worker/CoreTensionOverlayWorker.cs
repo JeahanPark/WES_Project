@@ -21,15 +21,20 @@ public class CoreTensionOverlayWorker : MonoBehaviour
     private const float VIGNETTE_PULSE_PERIOD = 1.1f;    // 저체력 적색 비네팅 심박 주기
     private const float FOG_SCROLL_SPEED = 0.015f;       // 앰비언트 안개 가로 스크롤(UV/sec)
     private const int VIGNETTE_HP_THRESHOLD = 30;        // 저체력 비네팅 발동 HP 임계(퍼센트)
+    private const float COLD_OVERLAY_MAX_ALPHA = 0.85f;  // 추위 오버레이 완전차폐 금지 천장(공정성: 중앙 시야 여백 보증). director 결정 2026-06-06.
+
+    // 임계 단일소스 폴백값(m_Config 미연결 시에만 사용). 정상 운용은 DayNightConfig 참조.
+    private const int FALLBACK_COLD_STAGE_WARNING = 30;
+    private const int FALLBACK_COLD_STAGE_WEAK = 60;
+    private const int FALLBACK_COLD_STAGE_STRONG = 90;
 
     // ── G-2 추위 오버레이 (3단계: Warning / WeakDot / StrongDot) ──
+    // 단계 임계는 DayNightConfig 단일소스(서버 ColdDamageWorker와 동일 SO). director 결정 2026-06-06.
     [Header("Cold Overlay (G-2)")]
+    [SerializeField] private DayNightConfig m_Config; // 서버 ColdDamageWorker와 동일 SO 연결(단일소스)
     [SerializeField] private Image m_ColdOverlay1; // cold_overlay_1 (Warning)
     [SerializeField] private Image m_ColdOverlay2; // cold_overlay_2 (WeakDot)
     [SerializeField] private Image m_ColdOverlay3; // cold_overlay_3 (StrongDot, 펄스)
-    [SerializeField] private int m_ColdStageWarning = 30;
-    [SerializeField] private int m_ColdStageWeak = 60;
-    [SerializeField] private int m_ColdStageStrong = 90;
     [SerializeField] private float m_ColdStage3PulseAmplitude = 0.15f;
     [SerializeField] private float m_ColdStage3PulsePeriod = 1.4f;
 
@@ -147,20 +152,26 @@ public class CoreTensionOverlayWorker : MonoBehaviour
 
     private ColdStage EvaluateColdStage(int _cold)
     {
-        if (_cold >= m_ColdStageStrong)
+        // 임계는 DayNightConfig 단일소스(서버 데미지와 동일). 미연결 시 폴백 상수.
+        int warning = m_Config != null ? m_Config.ColdStageWarning : FALLBACK_COLD_STAGE_WARNING;
+        int weak = m_Config != null ? m_Config.ColdStageWeak : FALLBACK_COLD_STAGE_WEAK;
+        int strong = m_Config != null ? m_Config.ColdStageStrong : FALLBACK_COLD_STAGE_STRONG;
+
+        if (_cold >= strong)
             return ColdStage.StrongDot;
-        if (_cold >= m_ColdStageWeak)
+        if (_cold >= weak)
             return ColdStage.WeakDot;
-        if (_cold >= m_ColdStageWarning)
+        if (_cold >= warning)
             return ColdStage.Warning;
         return ColdStage.None;
     }
 
     private void ApplyColdStage(ColdStage _stage)
     {
-        float a1 = _stage >= ColdStage.Warning ? 1f : 0f;
-        float a2 = _stage >= ColdStage.WeakDot ? 1f : 0f;
-        float a3 = _stage >= ColdStage.StrongDot ? 1f : 0f;
+        // 완전차폐 금지: 활성 단계 목표 알파를 COLD_OVERLAY_MAX_ALPHA로 캡(공정성 천장).
+        float a1 = _stage >= ColdStage.Warning ? COLD_OVERLAY_MAX_ALPHA : 0f;
+        float a2 = _stage >= ColdStage.WeakDot ? COLD_OVERLAY_MAX_ALPHA : 0f;
+        float a3 = _stage >= ColdStage.StrongDot ? COLD_OVERLAY_MAX_ALPHA : 0f;
 
         if (m_ColdFadeCoroutine != null)
             StopCoroutine(m_ColdFadeCoroutine);
@@ -197,8 +208,9 @@ public class CoreTensionOverlayWorker : MonoBehaviour
         if (m_ColdFadeCoroutine != null)
             return; // 페이드 중에는 펄스 미적용
 
-        float pulse = 1f + Mathf.Sin(Time.time * Mathf.PI * 2f / m_ColdStage3PulsePeriod) * m_ColdStage3PulseAmplitude;
-        SetAlpha(m_ColdOverlay3, Mathf.Clamp01(pulse));
+        // 펄스도 완전차폐 금지 천장(COLD_OVERLAY_MAX_ALPHA) 안에서 진동. 진폭은 천장 아래로 흔든다.
+        float pulse = COLD_OVERLAY_MAX_ALPHA + Mathf.Sin(Time.time * Mathf.PI * 2f / m_ColdStage3PulsePeriod) * m_ColdStage3PulseAmplitude;
+        SetAlpha(m_ColdOverlay3, Mathf.Clamp(pulse, 0f, COLD_OVERLAY_MAX_ALPHA));
     }
 
     private void OnHPChanged(int _hp, int _maxHP)

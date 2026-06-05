@@ -43,10 +43,12 @@ public class CraftPopup : BasePopup
         m_UnlockRegistry = null;
     }
 
-    // 도면 해금 발생 시: 열린 목록의 잠금 오버레이 + 현재 선택 디테일을 즉시 갱신한다.
+    // 도면 해금 발생 시: 열린 목록에서 해금된 칸만 반짝 연출(페이드+테두리), 나머지 칸은 잠금 상태 동기화.
+    // 현재 선택 디테일이 해금 대상이면 즉시 갱신한다.
     private void OnUnlockChanged(int _craftId)
     {
         m_CraftScroll.RefreshLockStates();
+        m_CraftScroll.PlayUnlockFlashFor(_craftId);
 
         if (m_SelectedCraftInfo != null && m_SelectedCraftInfo.Id == _craftId)
             m_DetailPanel.Show(m_SelectedCraftInfo);

@@ -46,4 +46,22 @@ public class CraftScroll : BaseScroll<CraftInfo>
             cell?.RefreshLockState();
         }
     }
+
+    // 방금 해금된 craftId가 현재 목록에 보이면 그 셀만 해금 반짝 연출. 안 보이면 무시(다음 표시 시 정상색).
+    public void PlayUnlockFlashFor(int _craftId)
+    {
+        var list = GetDataList();
+        if (list == null)
+            return;
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (list[i] == null || list[i].Id != _craftId)
+                continue;
+
+            var cell = GetCellAtIndex(i) as CraftScrollCell;
+            cell?.PlayUnlockFlash();
+            return;
+        }
+    }
 }
