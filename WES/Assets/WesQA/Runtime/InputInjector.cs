@@ -57,6 +57,43 @@ namespace WesQA
             return true;
         }
 
+        public static bool Swipe(double x1, double y1, double x2, double y2, double duration)
+        {
+            var p1 = ToScreen(x1, y1);
+            var p2 = ToScreen(x2, y2);
+            var go = Raycast(p1, out var hit);
+            if (go == null) return false;
+            var target = ExecuteEvents.GetEventHandler<IDragHandler>(go) ?? go;
+            var ev = MakePointer(p1, hit, PointerEventData.InputButton.Left);
+            ev.pressPosition = p1;
+            ExecuteEvents.Execute(target, ev, ExecuteEvents.beginDragHandler);
+            ev.position = p2;
+            ev.delta = p2 - p1;
+            ExecuteEvents.Execute(target, ev, ExecuteEvents.dragHandler);
+            ExecuteEvents.Execute(target, ev, ExecuteEvents.endDragHandler);
+            ExecuteEvents.Execute(go, ev, ExecuteEvents.pointerUpHandler);
+            return true;
+        }
+
+        public static bool Scroll(string direction, double percent, double duration)
+        {
+            var center = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+            var go = Raycast(center, out var hit);
+            if (go == null) return false;
+            var target = ExecuteEvents.GetEventHandler<IScrollHandler>(go);
+            if (target == null) return false;
+            var ev = MakePointer(center, hit, PointerEventData.InputButton.Left);
+            float amt = (float)percent;
+            ev.scrollDelta = direction == "horizontal" ? new Vector2(amt, 0) : new Vector2(0, amt);
+            return ExecuteEvents.Execute(target, ev, ExecuteEvents.scrollHandler);
+        }
+
+        // LongClick: 메인스레드 블로킹 방지 위해 즉시 down/up. 진짜 hold 지속은 후속 코루틴화.
+        public static bool LongClick(double x, double y, double duration)
+        {
+            return Click(x, y);
+        }
+
         public static bool KeyEvent(string keycode)
         {
             var sel = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;

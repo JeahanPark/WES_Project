@@ -28,6 +28,18 @@ namespace WesQA
                     return InputInjector.RClick(D(req, 0), D(req, 1));
                 case "DoubleClick":
                     return InputInjector.DoubleClick(D(req, 0), D(req, 1));
+                case "Swipe":
+                    return InputInjector.Swipe(D(req, 0), D(req, 1), D(req, 2), D(req, 3), D(req, 4));
+                case "LongClick":
+                    return InputInjector.LongClick(D(req, 0), D(req, 1), D(req, 2));
+                case "Scroll":
+                {
+                    var a = req.Args();
+                    string dir = a.Count > 0 ? a[0].ToObject<string>() : "vertical";
+                    double pct = a.Count > 1 ? a[1].ToObject<double>() : 1.0;
+                    double dur = a.Count > 2 ? a[2].ToObject<double>() : 2.0;
+                    return InputInjector.Scroll(dir, pct, dur);
+                }
                 case "KeyEvent":
                     return InputInjector.KeyEvent(S(req, 0));
                 case "SetText":
