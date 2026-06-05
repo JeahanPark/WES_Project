@@ -13,6 +13,7 @@ namespace WesQA
     /// 핸들러는 Unity API 접근을 위해 메인스레드에서 실행되도록 큐잉한다.</summary>
     public class WesPocoServer
     {
+        private const int MaxFrameBytes = 64 * 1024 * 1024; // 64MB 상한(스크린샷 등 여유)
         private readonly int _port;
         private TcpListener _listener;
         private Thread _accept;
@@ -70,6 +71,7 @@ namespace WesQA
                 {
                     if (!ReadExactly(stream, header, 4)) break;
                     int len = BitConverter.ToInt32(header, 0); // 프로토콜이 LE; Unity x64도 LE
+                    if (len < 0 || len > MaxFrameBytes) break; // 손상/악성 프레임 가드
                     var body = new byte[len];
                     if (!ReadExactly(stream, body, len)) break;
                     string json = Encoding.UTF8.GetString(body);

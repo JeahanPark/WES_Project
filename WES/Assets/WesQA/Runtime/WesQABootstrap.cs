@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace WesQA
 {
-    /// <summary>플레이모드 진입 시 WesPocoServer를 자동 기동. WES_QA define에서만 컴파일.</summary>
+    /// <summary>플레이모드 진입 시 WesPocoServer를 자동 기동. Editor 전용 어셈블리(릴리스 빌드 미포함).</summary>
     public static class WesQABootstrap
     {
         private static WesPocoServer _server;
