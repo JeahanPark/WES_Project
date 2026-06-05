@@ -11,7 +11,7 @@
 |---|---|---|---|
 | StartButton 삭제 | ✅ CAUGHT | StartButton 존재, StartButton 클릭가능(Button) | 2ms |
 | ExitButton 삭제 | ✅ CAUGHT | ExitButton 존재 | 2ms |
-| StartButton 이름변경 | ✅ CAUGHT | StartButton 존재, StartButton 클릭가능(Button) | 6ms |
+| StartButton 이름변경 | ✅ CAUGHT | StartButton 존재, StartButton 클릭가능(Button) | 5ms |
 | StartButton 타입손상 | ✅ CAUGHT | StartButton 클릭가능(Button) | 2ms |
 
 **검출율 4/4 (100%) · MTTD 3ms · 결정적(재실행 동일)**
