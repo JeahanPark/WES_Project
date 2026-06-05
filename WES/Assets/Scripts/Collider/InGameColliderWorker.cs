@@ -18,11 +18,12 @@ public class InGameColliderWorker : MonoBehaviour
     private const float DEBUG_CIRCLE_HEIGHT = 0.05f;
     private const float DEBUG_DISPLAY_DURATION = 0.5f;
 
-    private Queue<BaseColliderObject> m_Pool;
-    private List<BaseColliderObject> m_ActiveColliders;
+    // 필드 선언 시점에 생성 — Awake/Update 실행 순서와 무관하게 항상 non-null(Netcode 씬로드 레이스 NRE 방지)
+    private readonly Queue<BaseColliderObject> m_Pool = new Queue<BaseColliderObject>();
+    private readonly List<BaseColliderObject> m_ActiveColliders = new List<BaseColliderObject>();
 
-    private Queue<DebugCircle> m_DebugCirclePool;
-    private List<DebugCircle> m_ActiveDebugCircles;
+    private readonly Queue<DebugCircle> m_DebugCirclePool = new Queue<DebugCircle>();
+    private readonly List<DebugCircle> m_ActiveDebugCircles = new List<DebugCircle>();
     private Material m_DebugMaterial;
 
     private void Awake()
@@ -86,9 +87,6 @@ public class InGameColliderWorker : MonoBehaviour
 
     private void InitializePool()
     {
-        m_Pool = new Queue<BaseColliderObject>();
-        m_ActiveColliders = new List<BaseColliderObject>();
-
         for (int i = 0; i < INITIAL_POOL_SIZE; i++)
         {
             BaseColliderObject collider = new BaseColliderObject();
@@ -99,8 +97,6 @@ public class InGameColliderWorker : MonoBehaviour
     [Conditional("DEBUG_COLLIDER")]
     private void InitializeDebugCirclePool()
     {
-        m_DebugCirclePool = new Queue<DebugCircle>();
-        m_ActiveDebugCircles = new List<DebugCircle>();
         m_DebugMaterial = new Material(Shader.Find("Sprites/Default"));
 
         for (int i = 0; i < DEBUG_CIRCLE_POOL_SIZE; i++)
