@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -67,6 +68,8 @@ namespace WesQA
             if (go.GetComponent<Button>() != null) return "Button";
             if (go.GetComponent<Toggle>() != null) return "Toggle";
             if (go.GetComponent<InputField>() != null) return "InputField";
+            if (go.GetComponent<TMP_InputField>() != null) return "InputField";
+            if (go.GetComponent<TMP_Text>() != null) return "Text";
             if (go.GetComponent<Text>() != null) return "Text";
             if (go.GetComponent<Image>() != null) return "Image";
             return go.transform is RectTransform ? "Node" : "GameObject";
@@ -74,8 +77,12 @@ namespace WesQA
 
         private static string ResolveText(GameObject go)
         {
+            var tmp = go.GetComponent<TMP_Text>();
+            if (tmp != null) return tmp.text;
             var t = go.GetComponent<Text>();
             if (t != null) return t.text;
+            var tmpInput = go.GetComponent<TMP_InputField>();
+            if (tmpInput != null) return tmpInput.text;
             var inp = go.GetComponent<InputField>();
             if (inp != null) return inp.text;
             return null;

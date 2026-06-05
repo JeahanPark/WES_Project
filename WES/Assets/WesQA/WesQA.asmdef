@@ -1,7 +1,7 @@
 {
   "name": "WesQA",
   "rootNamespace": "WesQA",
-  "references": ["Unity.Nuget.Newtonsoft-Json"],
+  "references": ["Unity.Nuget.Newtonsoft-Json", "Unity.TextMeshPro"],
   "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "defineConstraints": [],
