@@ -2,9 +2,9 @@
   "name": "WesQA",
   "rootNamespace": "WesQA",
   "references": ["Unity.Nuget.Newtonsoft-Json"],
-  "includePlatforms": [],
+  "includePlatforms": ["Editor"],
   "excludePlatforms": [],
-  "defineConstraints": ["WES_QA"],
+  "defineConstraints": [],
   "versionDefines": [],
   "autoReferenced": true
 }
