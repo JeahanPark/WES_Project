@@ -20,3 +20,13 @@ class WesPoco(Poco):
 
     def sdk_version(self):
         return self.agent.get_sdk_version()
+
+    def screenshot(self, path=None, width=0):
+        """현재 화면 캡처 → BGR numpy 이미지. path 주면 파일로도 저장."""
+        from . import vision
+        b64, _fmt = self.agent.screen.getScreen(width)
+        img = vision.b64_to_image(b64)
+        if path:
+            import cv2
+            cv2.imwrite(path, img)
+        return img
