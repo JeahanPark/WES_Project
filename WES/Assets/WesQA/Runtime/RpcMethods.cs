@@ -22,6 +22,12 @@ namespace WesQA
                     if (args.Count >= 1) onlyVisible = args[0].ToObject<bool>();
                     return HierarchyDumper.Dump(onlyVisible);
                 }
+                case "Screenshot":
+                {
+                    var a = req.Args();
+                    int w = a.Count > 0 ? a[0].ToObject<int>() : 0;
+                    return Screenshotter.Capture(w);
+                }
                 case "Click":
                     return InputInjector.Click(D(req, 0), D(req, 1));
                 case "RClick":
