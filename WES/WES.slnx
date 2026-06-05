@@ -1,6 +1,7 @@
 ﻿<Solution>
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Polyperfect.People.csproj" />
+  <Project Path="WesQA.csproj" />
   <Project Path="Polyperfect.Common.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="MCP_Unity_Plugin.Editor.csproj" />

@@ -14,6 +14,8 @@ vault 변경 이력. 시간 역순(최신이 위).
 
 ---
 
+## [2026-06-05] ingest | Stop hook auto-update - new class=1, new signal=0
+
 ## [2026-06-04] fix | 클리어 난이도(EscapePoint 종단) + 이동 경로추종 근본버그 수정
 
 - EscapePoint `(-3,1,-38)`→`(0,1.5,35)`: 스폰 옆 4u→종단 77u, Beach·Forest 몬스터 관통해야 클리어
