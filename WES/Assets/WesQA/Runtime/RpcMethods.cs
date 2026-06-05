@@ -22,9 +22,29 @@ namespace WesQA
                     if (args.Count >= 1) onlyVisible = args[0].ToObject<bool>();
                     return HierarchyDumper.Dump(onlyVisible);
                 }
+                case "Click":
+                    return InputInjector.Click(D(req, 0), D(req, 1));
+                case "RClick":
+                    return InputInjector.RClick(D(req, 0), D(req, 1));
+                case "DoubleClick":
+                    return InputInjector.DoubleClick(D(req, 0), D(req, 1));
+                case "KeyEvent":
+                    return InputInjector.KeyEvent(S(req, 0));
                 default:
                     throw new NotSupportedException($"unknown method: {req.Method}");
             }
+        }
+
+        private static double D(RpcRequest req, int i)
+        {
+            var a = req.Args();
+            return i < a.Count ? a[i].ToObject<double>() : 0.0;
+        }
+
+        private static string S(RpcRequest req, int i)
+        {
+            var a = req.Args();
+            return i < a.Count ? a[i].ToObject<string>() : null;
         }
     }
 }
