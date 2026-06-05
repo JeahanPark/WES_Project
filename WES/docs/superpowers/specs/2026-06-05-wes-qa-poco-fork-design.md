@@ -173,6 +173,7 @@ assert client('dropped_item').exists()   # 동기화 검증
 | M3 | Screenshot + aircv template matching + 경량 HTML 리포트 | **시각 검증** |
 | M4 | 멀티클라 포트 매핑 + InvokeBridge→`Managers.Test` | **멀티플레이·시나리오 셋업** |
 | M5(선택) | 녹화, keypoint matching | 보강 |
+| **M-EVAL** | **심은 버그 검출 하니스**(`bench/`): seed 카탈로그 주입→스위트 실행→검출율·MTTD 측정→before/after 표. 사용자 선정 핵심 지표 = **심은 버그 검출**. M2(입력)·M4(Invoke 주입) 의존, M1 read-only seed로 최소 PoC 가능 | **효과 정량화** |
 
 ## 10. 미해결 (구현 시 확정)
 
