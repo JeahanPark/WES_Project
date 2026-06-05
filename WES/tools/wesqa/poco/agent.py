@@ -74,7 +74,7 @@ class PocoAgent(object):
 
     def on_bind_driver(self, driver):
         self._driver = driver
-        if isinstance(self.input, AirtestInput):
+        if AirtestInput is not None and isinstance(self.input, AirtestInput):
             self.input.add_preaction_cb(driver)
 
     @property
