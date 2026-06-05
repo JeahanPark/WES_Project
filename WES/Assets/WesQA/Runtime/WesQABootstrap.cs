@@ -16,7 +16,29 @@ namespace WesQA
             Debug.Log($"[WesQA] server starting on port {5001 + instance}");
         }
 
-        // M1: 단일 인스턴스 = 0. 멀티클라(MPPM) index 해석은 M4에서 구현.
-        private static int ResolveInstanceIndex() => 0;
+        // M4: MPPM 가상 플레이어 태그 `wes<N>`(예 wes1, wes2)에서 N을 파싱해 인덱스로 사용.
+        // 메인 에디터(태그 없음/미매칭)·예외·미사용 = 0. 항상 안전하게 0 폴백.
+        private static int ResolveInstanceIndex()
+        {
+            try
+            {
+                foreach (var tag in GetMppmTags())
+                {
+                    if (!string.IsNullOrEmpty(tag) && tag.StartsWith("wes") &&
+                        int.TryParse(tag.Substring(3), out int n))
+                        return n;
+                }
+            }
+            catch { }
+            return 0;
+        }
+
+        // 현재 MPPM 가상 플레이어에 부여된 태그 배열을 반환. 실패/미사용 시 빈 배열.
+        // API: Unity.Multiplayer.Playmode.CurrentPlayer.ReadOnlyTags() (어셈블리 Unity.Multiplayer.Playmode)
+        private static string[] GetMppmTags()
+        {
+            try { return Unity.Multiplayer.Playmode.CurrentPlayer.ReadOnlyTags() ?? new string[0]; }
+            catch { return new string[0]; }
+        }
     }
 }

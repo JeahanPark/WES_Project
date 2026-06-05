@@ -2,10 +2,15 @@
 from poco.pocofw import Poco
 from .agent import WesPocoAgent
 
-__all__ = ["WesPoco"]
+__all__ = ["WesPoco", "connect_all"]
 
 DEFAULT_HOST = "localhost"
 BASE_PORT = 5001
+
+
+def connect_all(count, host="localhost", **options):
+    """instance 0..count-1을 각각 WesPoco로 연결해 리스트 반환."""
+    return [WesPoco(instance=i, host=host, **options) for i in range(count)]
 
 
 class WesPoco(Poco):
