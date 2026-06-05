@@ -49,6 +49,18 @@ namespace WesQA
                     string txt = a.Count > 1 ? a[1].ToObject<string>() : "";
                     return InputInjector.SetText(id, txt);
                 }
+                case "Invoke":
+                {
+                    string listener = req.Params?["listener"]?.ToObject<string>();
+                    var data = req.Params?["data"] as Newtonsoft.Json.Linq.JObject;
+                    return InvokeBridge.Invoke(listener, data);
+                }
+                case "SendMessage":
+                {
+                    string msg = req.Params?["message"]?.ToObject<string>();
+                    if (msg == null && req.Args().Count > 0) msg = req.Args()[0].ToObject<string>();
+                    return InvokeBridge.Invoke(msg, null);
+                }
                 default:
                     throw new NotSupportedException($"unknown method: {req.Method}");
             }

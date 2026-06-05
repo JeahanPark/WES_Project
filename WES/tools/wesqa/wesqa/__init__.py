@@ -21,6 +21,14 @@ class WesPoco(Poco):
     def sdk_version(self):
         return self.agent.get_sdk_version()
 
+    def invoke(self, listener, **kwargs):
+        """게임 내 TestManager.<listener>(**kwargs)를 호출. 반환값 또는 None."""
+        cb = self.agent.rpc.call("Invoke", listener=listener, data=kwargs)
+        value, error = cb.wait()
+        if error is not None:
+            raise RuntimeError("invoke '%s' failed: %s" % (listener, error))
+        return value
+
     def screenshot(self, path=None, width=0):
         """현재 화면 캡처 → BGR numpy 이미지. path 주면 파일로도 저장."""
         from . import vision
