@@ -10,16 +10,17 @@ using UnityEngine;
 namespace WesQA
 {
     /// <summary>TcpListener + [4B LE len][utf-8] 프레이밍 + JSON-RPC 디스패치.
-    /// 핸들러는 Unity API 접근을 위해 메인스레드에서 실행되도록 큐잉한다.</summary>
+    /// 핸들러는 메인스레드(펌프)에서 실행. 동기 메서드는 즉시 응답, Screenshot는 end-of-frame 코루틴으로 비동기 응답.</summary>
     public class WesPocoServer
     {
-        private const int MaxFrameBytes = 64 * 1024 * 1024; // 64MB 상한(스크린샷 등 여유)
+        private const int MaxFrameBytes = 64 * 1024 * 1024;
         private readonly int _port;
         private TcpListener _listener;
         private Thread _accept;
         private volatile bool _running;
         private readonly ConcurrentQueue<Action> _mainThread = new ConcurrentQueue<Action>();
         private GameObject _pump;
+        private WesQAPump _pumpComp;
 
         public WesPocoServer(int port) { _port = port; }
 
@@ -33,7 +34,8 @@ namespace WesQA
 
             _pump = new GameObject("[WesQA.Pump]");
             UnityEngine.Object.DontDestroyOnLoad(_pump);
-            _pump.AddComponent<WesQAPump>().Bind(this);
+            _pumpComp = _pump.AddComponent<WesQAPump>();
+            _pumpComp.Bind(this);
         }
 
         public void Stop()
@@ -42,7 +44,6 @@ namespace WesQA
             try { _listener?.Stop(); } catch { }
         }
 
-        // 메인스레드에서 매 프레임 호출(WesQAPump.Update)
         internal void PumpMainThread()
         {
             while (_mainThread.TryDequeue(out var act)) act();
@@ -66,50 +67,60 @@ namespace WesQA
             using (client)
             using (var stream = client.GetStream())
             {
+                var streamLock = new object();
                 var header = new byte[4];
                 while (_running)
                 {
                     if (!ReadExactly(stream, header, 4)) break;
-                    int len = BitConverter.ToInt32(header, 0); // 프로토콜이 LE; Unity x64도 LE
-                    if (len < 0 || len > MaxFrameBytes) break; // 손상/악성 프레임 가드
+                    int len = BitConverter.ToInt32(header, 0);
+                    if (len < 0 || len > MaxFrameBytes) break;
                     var body = new byte[len];
                     if (!ReadExactly(stream, body, len)) break;
                     string json = Encoding.UTF8.GetString(body);
-                    DispatchOnMainThread(stream, json);
+                    _mainThread.Enqueue(() => HandleOnMainThread(stream, streamLock, json));
                 }
             }
         }
 
-        private void DispatchOnMainThread(NetworkStream stream, string json)
+        // 메인스레드에서 실행. 동기 메서드는 즉시 응답. Screenshot는 코루틴 위임(end-of-frame).
+        private void HandleOnMainThread(NetworkStream stream, object streamLock, string json)
         {
-            var done = new ManualResetEventSlim(false);
-            string response = null;
-            _mainThread.Enqueue(() =>
+            RpcRequest req = null;
+            try
             {
-                RpcRequest req = null;
-                try
+                req = RpcRequest.Parse(json);
+                if (req.Method == "Screenshot" && _pumpComp != null)
                 {
-                    req = RpcRequest.Parse(json);
-                    object result = RpcMethods.Invoke(req);
-                    response = RpcResponse.Result(req.Id, result);
+                    int w = 0;
+                    var a = req.Args();
+                    if (a.Count > 0) w = a[0].ToObject<int>();
+                    _pumpComp.StartCoroutine(ScreenshotCoroutine.Run(w, req.Id, stream, streamLock));
+                    return;
                 }
-                catch (Exception e)
-                {
-                    response = RpcResponse.Error(req != null ? req.Id : null, e.Message);
-                }
-                done.Set();
-            });
-            done.Wait();
-            Send(stream, response);
+                object result = RpcMethods.Invoke(req);
+                Send(stream, streamLock, RpcResponse.Result(req.Id, result));
+            }
+            catch (Exception e)
+            {
+                Send(stream, streamLock, RpcResponse.Error(req != null ? req.Id : null, e.Message));
+            }
         }
 
-        private static void Send(NetworkStream stream, string json)
+        // 스트림 쓰기는 streamLock으로 직렬화(동기 응답 + 코루틴 응답 경쟁 방지)
+        internal static void Send(NetworkStream stream, object streamLock, string json)
         {
             var payload = Encoding.UTF8.GetBytes(json);
-            var header = BitConverter.GetBytes(payload.Length); // 4B LE
-            stream.Write(header, 0, 4);
-            stream.Write(payload, 0, payload.Length);
-            stream.Flush();
+            var headerBytes = BitConverter.GetBytes(payload.Length);
+            lock (streamLock)
+            {
+                try
+                {
+                    stream.Write(headerBytes, 0, 4);
+                    stream.Write(payload, 0, payload.Length);
+                    stream.Flush();
+                }
+                catch { }
+            }
         }
 
         private static bool ReadExactly(Stream s, byte[] buf, int count)
@@ -125,7 +136,7 @@ namespace WesQA
         }
     }
 
-    /// <summary>메인스레드 큐를 매 프레임 비우는 펌프 컴포넌트.</summary>
+    /// <summary>메인스레드 큐를 매 프레임 비우는 펌프. 코루틴 호스트.</summary>
     public class WesQAPump : MonoBehaviour
     {
         private WesPocoServer _server;
