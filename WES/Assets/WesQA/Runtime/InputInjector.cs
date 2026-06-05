@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace WesQA
 {
@@ -64,6 +66,31 @@ namespace WesQA
                 return ExecuteEvents.Execute(sel, ev, ExecuteEvents.submitHandler);
             if (keycode == "escape" || keycode == "cancel")
                 return ExecuteEvents.Execute(sel, ev, ExecuteEvents.cancelHandler);
+            return false;
+        }
+
+        /// <summary>_instanceId로 GameObject를 찾아 InputField/TMP_InputField에 텍스트 설정.</summary>
+        public static bool SetText(long instanceId, string text)
+        {
+            var obj = Resources.InstanceIDToObject((int)instanceId) as GameObject;
+            if (obj == null) return false;
+
+            var tmp = obj.GetComponent<TMP_InputField>();
+            if (tmp != null)
+            {
+                tmp.text = text;
+                tmp.onValueChanged.Invoke(text);
+                tmp.onEndEdit.Invoke(text);
+                return true;
+            }
+            var input = obj.GetComponent<InputField>();
+            if (input != null)
+            {
+                input.text = text;
+                input.onValueChanged.Invoke(text);
+                input.onEndEdit.Invoke(text);
+                return true;
+            }
             return false;
         }
     }

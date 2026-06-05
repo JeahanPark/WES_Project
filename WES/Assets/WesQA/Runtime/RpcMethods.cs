@@ -30,6 +30,13 @@ namespace WesQA
                     return InputInjector.DoubleClick(D(req, 0), D(req, 1));
                 case "KeyEvent":
                     return InputInjector.KeyEvent(S(req, 0));
+                case "SetText":
+                {
+                    var a = req.Args();
+                    long id = a.Count > 0 ? a[0].ToObject<long>() : 0;
+                    string txt = a.Count > 1 ? a[1].ToObject<string>() : "";
+                    return InputInjector.SetText(id, txt);
+                }
                 default:
                     throw new NotSupportedException($"unknown method: {req.Method}");
             }
