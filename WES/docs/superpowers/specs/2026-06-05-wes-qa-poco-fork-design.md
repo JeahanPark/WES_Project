@@ -25,7 +25,7 @@
 | 언어 경계 | QA측 Python(최소 포크) + 게임내 C#(자작) | 검증된 selector/매칭은 재사용, 배포되는 코드만 자작 |
 | 연결 대상 | 에디터 플레이모드 + 멀티클라 | 사용자가 선택한 범위 |
 | 입력/스크린샷 경로 | `use_airtest_input=False` → 전부 RPC | `airtest` device 백엔드(pywinauto 등) 의존 제거 |
-| 신뢰 가드 | `WES_QA` scripting define + 에디터/Development Build 한정 | 릴리스 빌드에 서버·검사 코드 0 |
+| 신뢰 가드 | **(M1 구현 변경)** asmdef `includePlatforms: ["Editor"]` = 에디터 전용 어셈블리 | 릴리스 빌드에 서버·검사 코드 0. *원안의 `WES_QA` scripting define은 폐기 — 프로젝트 define symbol은 dev/release가 공유되어 릴리스에도 새어들어감. Editor 전용 어셈블리가 신뢰 목표를 더 확실히 달성. M4 dev-build 멀티클라 필요 시 `#if UNITY_EDITOR \|\| DEVELOPMENT_BUILD` 소스 가드로 전환* |
 | 이미지 매칭 | `aircv`의 template matching부터 | keypoint(SIFT 등)는 필요 시 후속 |
 
 ## 3. 아키텍처
