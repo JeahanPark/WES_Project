@@ -60,21 +60,6 @@ public class LobbyRoomPopup : BasePopup
     {
         UpdateRoomCode();
         UpdatePlayerSlots();
-        TestAddChatMessages();
-    }
-
-    private void TestAddChatMessages()
-    {
-        for (int i = 1; i <= 20; i++)
-        {
-            LobbyRoomChatScrollData testData = new LobbyRoomChatScrollData
-            {
-                SenderId = (ulong)i,
-                Message = $"Test message {i}",
-                IsMyMessage = i % 3 == 0
-            };
-            m_ChatMessages.Add(testData);
-        }
         m_ChatScroll.SetData(m_ChatMessages);
     }
 
