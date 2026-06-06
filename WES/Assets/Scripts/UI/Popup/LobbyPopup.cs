@@ -11,6 +11,7 @@ public class LobbyPopup : BasePopup
     [SerializeField] private GameObject m_CodeInputPanel;
     [SerializeField] private TMP_InputField m_CodeInputField;
     [SerializeField] private Button m_CodeConfirmButton;
+    [SerializeField] private Button m_CodeBackButton;
 
     private bool m_IsCreatingRoom;
     private bool m_IsJoiningRoom;
@@ -21,14 +22,30 @@ public class LobbyPopup : BasePopup
         m_CreateButton.onClick.AddListener(OnClickCreate);
         m_CodeConfirmButton.onClick.AddListener(OnClickCodeConfirm);
 
+        if (m_CodeBackButton != null)
+            m_CodeBackButton.onClick.AddListener(OnClickCodeBack);
+
         m_CodeInputPanel.SetActive(false);
     }
 
     private void OnClickEnter()
     {
+        ShowMainButtons(false);
         m_CodeInputPanel.SetActive(true);
         m_CodeInputField.text = string.Empty;
         m_CodeInputField.ActivateInputField();
+    }
+
+    private void OnClickCodeBack()
+    {
+        m_CodeInputPanel.SetActive(false);
+        ShowMainButtons(true);
+    }
+
+    private void ShowMainButtons(bool _show)
+    {
+        m_CreateButton.gameObject.SetActive(_show);
+        m_EnterButton.gameObject.SetActive(_show);
     }
 
     private void OnClickCreate()
