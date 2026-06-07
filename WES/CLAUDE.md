@@ -10,8 +10,8 @@
   → [.claude/agents/client.md](.claude/agents/client.md) 의 "WES 코딩 규칙" 섹션
 - **게임 디자인 / 콘텐츠 / 톤 / 코어 비전**:
   → [.claude/agents/director.md](.claude/agents/director.md), [document/WES_GDD.md](document/WES_GDD.md), [document/design/CORE_자원투자_트레이드오프_설계.md](document/design/CORE_자원투자_트레이드오프_설계.md)
-- **팀 에이전트 운영 (디렉터/클라이언트/디자이너/QA 4-에이전트 작업)**:
-  → [.claude/agents/TEAM_PROCESS.md](.claude/agents/TEAM_PROCESS.md) — 4 Phase 표준 절차 (부트스트랩·기획 합의·슬라이스 구현·리소스 명세서 갱신·통합 QA·마무리)
+- **팀 에이전트 운영 (최대 7인 풀: director/client/designer/qa/sound/story/level-design — 주제별 선택 spawn)**:
+  → [.claude/agents/TEAM_PROCESS.md](.claude/agents/TEAM_PROCESS.md) — Phase 표준 절차 (부트스트랩·기획 합의·슬라이스 구현·리소스 명세서 갱신·통합 QA·마무리). 매번 전원 spawn 금지, 주제에 필요한 멤버만.
 - **리소스 인벤토리 정책 (디자이너 에이전트가 참조)**:
   → [../document/RESOURCE_INVENTORY.md](../document/RESOURCE_INVENTORY.md) — 폴더 정책·외부 에셋 출처·자산 우선순위 트리
 
