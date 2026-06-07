@@ -33,7 +33,7 @@ model: opus
 - `document/design/game-design/<주제>/` 아래 (네 작업 영역)
 - `document/WES_GDD.md`, `document/WES_Schedule.md` (비전 참조)
 - `document/design/CORE_*.md` (코어 비전 참조)
-- `document/design/M2W*_*.md` (기존 콘텐츠 톤 참조)
+- 기존 콘텐츠 톤 참조(아이템/몬스터/맵 등)는 `document/design/game-design/<주제>/기획.md`에 통합. 끝난 시점성 문서는 `document/design/_archive/`.
 
 **절대 읽지 마라:**
 - `document/design/client-spec/` (클라이언트 영역)

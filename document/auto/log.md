@@ -14,6 +14,13 @@ vault 변경 이력. 시간 역순(최신이 위).
 
 ---
 
+## [2026-06-08] update | 기획문서 구조 재편 — M2W 평면 → game-design/<주제>/ 통일
+
+- `design/` 직속 M2W 8개 → `game-design/<주제>/기획.md`로 git mv (client-spec 쌍 구조와 1:1 정합). design/ 직속엔 CORE 비전 2개만 잔존.
+- 시점성·완료 문서 3개(NEXT_기획작업_스케줄·M2W2_콘텐츠확장_구현계획·mppm-qa-design-brief) → `design/_archive/`.
+- 신규 출시 기획: [[출시_9시간_관통구조]](트레이드오프 압박 곡선+난이도 공식) · [[날씨_시스템]](불완전정보 척추).
+- 링크 수정: catalog/Design/index.md 경로·상태 갱신, 지형경사 코드링크 깊이 보정, director.md 경로 규칙 갱신.
+
 ## [2026-06-05] ingest | Stop hook auto-update - new class=1, new signal=0
 
 ## [2026-06-04] fix | 클리어 난이도(EscapePoint 종단) + 이동 경로추종 근본버그 수정
