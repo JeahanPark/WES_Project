@@ -25,3 +25,11 @@ MonoBehaviour:
   m_VisionRadiusNight: 0.4
   m_CampfireLightRadius: 5
   m_TorchLightRadius: 3
+  m_AmbientColorDay: {r: 0.32, g: 0.38, b: 0.46, a: 1}
+  m_AmbientColorDusk: {r: 0.5, g: 0.25, b: 0.15, a: 1}
+  m_AmbientColorNight: {r: 0.05, g: 0.07, b: 0.15, a: 1}
+  m_AmbientColorDawn: {r: 0.3, g: 0.3, b: 0.35, a: 1}
+  m_LightIntensityDay: 0.7
+  m_LightIntensityDusk: 0.5
+  m_LightIntensityNight: 0.05
+  m_LightIntensityDawn: 0.3

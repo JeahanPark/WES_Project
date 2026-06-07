@@ -47,13 +47,19 @@ public class CoreTensionOverlayWorker : MonoBehaviour
     [SerializeField] private Image m_DeathOverlay; // death_overlay
 
     // ── G-3 낮밤 톤 (글로벌 화면 틴트, daynight_gradient U샘플) ──
+    // 단일 레이어(m_DayNightTint)의 색·알파만 페이즈별로 크로스페이드 → 주/야 톤이 합산 겹칠 수 없다(배타 자동 보장).
+    // 알파를 페이즈별로 분리해 designer가 "차갑고 흐린 낮"(D-3) 등을 페이즈마다 독립 튜닝한다.
     [Header("DayNight Tint (G-3)")]
     [SerializeField] private Image m_DayNightTint;            // daynight_gradient 단색 틴트 레이어
-    [SerializeField] private float m_DayNightTintAlpha = 0.18f;
     [SerializeField] private Color m_TintDay = new Color(0.49f, 0.54f, 0.59f);
     [SerializeField] private Color m_TintDusk = new Color(0.60f, 0.42f, 0.32f);
     [SerializeField] private Color m_TintNight = new Color(0.12f, 0.15f, 0.25f);
     [SerializeField] private Color m_TintDawn = new Color(0.56f, 0.65f, 0.72f);
+    // 페이즈별 틴트 알파(기존 단일값 0.18 유지가 기본 → 회귀 0). designer는 주로 m_TintAlphaDay를 튜닝한다(D-3).
+    [SerializeField, Range(0f, 1f)] private float m_TintAlphaDay = 0.18f;
+    [SerializeField, Range(0f, 1f)] private float m_TintAlphaDusk = 0.18f;
+    [SerializeField, Range(0f, 1f)] private float m_TintAlphaNight = 0.18f;
+    [SerializeField, Range(0f, 1f)] private float m_TintAlphaDawn = 0.18f;
 
     // ── I-5 앰비언트 안개 (가로 스크롤 타일) ──
     [Header("Ambient Fog (I-5)")]
@@ -282,7 +288,7 @@ public class CoreTensionOverlayWorker : MonoBehaviour
             return;
 
         Color target = GetPhaseTint(_phase);
-        target.a = m_DayNightTintAlpha;
+        target.a = GetPhaseAlpha(_phase);
 
         if (_instant)
         {
@@ -320,6 +326,18 @@ public class CoreTensionOverlayWorker : MonoBehaviour
             DayPhase.Night => m_TintNight,
             DayPhase.Dawn => m_TintDawn,
             _ => m_TintDay,
+        };
+    }
+
+    private float GetPhaseAlpha(DayPhase _phase)
+    {
+        return _phase switch
+        {
+            DayPhase.Day => m_TintAlphaDay,
+            DayPhase.Dusk => m_TintAlphaDusk,
+            DayPhase.Night => m_TintAlphaNight,
+            DayPhase.Dawn => m_TintAlphaDawn,
+            _ => m_TintAlphaDay,
         };
     }
 

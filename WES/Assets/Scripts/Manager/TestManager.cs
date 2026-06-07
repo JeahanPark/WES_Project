@@ -16,6 +16,9 @@ public class TestManager : MonoSingleton<TestManager>
     public const float FULLPLAY_ARRIVE_DISTANCE = 1.5f;
     public const int FULLPLAY_INVINCIBLE_HP = 999999;
 
+    // 합성캡처 hold(팝업 셀 미선택 노출 구간 — MCP u_screenshot 왕복지연 흡수)
+    public const float POPUP_CAPTURE_HOLD = 3f;
+
     private bool m_IsFullPlayRunning = false;
 
     // ===== 범용 입력 시뮬레이션 =====
@@ -1461,6 +1464,104 @@ public class TestManager : MonoSingleton<TestManager>
         GameDebug.Log("[TestManager] ===== QA FullPlay PASS =====");
 
         m_IsFullPlayRunning = false;
+    }
+
+    // 자동 탈출 클리어 없이 Ingame에 진입해 머무는 QA 진입 메서드.
+    // CoTestFullPlayClear의 S0~S1(씬 점프 + 스폰 대기 + 무적)만 재사용하고
+    // S2~S4(탈출 이동/클리어)는 하지 않는다 → qa가 인벤/제작 팝업을 열어 합성캡처를 잡을 수 있게 머문다.
+    // 기존 public 조합(RequestTestModeOnLoad / LoadScene / MoveTo 미사용 / ApplyFullPlayInvincible)만 — 테스트 전용 로직 없음.
+    public void TestEnterIngameAndHold()
+    {
+        if (m_IsFullPlayRunning)
+        {
+            GameDebug.LogWarning("[TestManager] FullPlay 진행 중 — EnterIngameAndHold 중복 호출 무시");
+            return;
+        }
+        StartCoroutine(CoTestEnterIngameAndHold());
+    }
+
+    private IEnumerator CoTestEnterIngameAndHold()
+    {
+        m_IsFullPlayRunning = true;
+        GameDebug.Log("[TestManager] ===== EnterIngameAndHold 시작 (탈출 클리어 없음) =====");
+
+        float startTime = Time.realtimeSinceStartup;
+        bool TotalTimedOut() => Time.realtimeSinceStartup - startTime > FULLPLAY_TOTAL_TIMEOUT;
+
+        // ---- S0: Intro 시작 → Ingame 점프 ----
+        InGameController.RequestTestModeOnLoad();
+        GameSceneManager.Instance.LoadScene(GameSceneManager.SCENE_INGAME);
+
+        // ---- S1: Ingame 진입 + 스폰 대기 ----
+        InGameController controller = null;
+        while (controller == null || !controller.IsGameStarted || controller.PlayWorker?.LocalPlayer == null)
+        {
+            if (TotalTimedOut())
+            {
+                GameDebug.LogError("[EnterIngameAndHold][FAIL] S1 스폰 대기 타임아웃");
+                m_IsFullPlayRunning = false;
+                yield break;
+            }
+            controller = Object.FindFirstObjectByType<InGameController>();
+            yield return null;
+        }
+
+        var player = controller.PlayWorker.LocalPlayer;
+        // 머무는 동안 추위/사망으로 상태가 바뀌지 않도록 무적·추위0 고정(기존 API 재사용).
+        ApplyFullPlayInvincible(player);
+
+        GameDebug.Log($"[EnterIngameAndHold] Ingame 진입·스폰 OK — LocalPlayer index {player.GetPlayerIndex()}. 탈출 없이 대기. qa가 팝업 캡처 가능.");
+
+        // 자동 탈출/클리어를 하지 않고 코루틴을 종료 → 씬은 그대로 머문다.
+        // 다른 테스트(팝업 열기 등)가 실행될 수 있도록 진행 플래그는 해제한다.
+        m_IsFullPlayRunning = false;
+    }
+
+    // C-1(본문 배경판 유지+안내문구)·D-2(셀) 합성캡처 전용 시퀀스.
+    // 제작·인벤 팝업을 셀 미선택 상태로 각 POPUP_CAPTURE_HOLD초 머물러 MCP u_screenshot 왕복지연(~1s+)을 흡수한다.
+    // 기존 public 조합만(Managers.Popup.Open/Close·SelectCategory·WaitForSeconds) — 테스트 전용 로직 없음.
+    // 인게임 진입 상태 전제(TestEnterIngameAndHold 등으로 먼저 진입). 미진입 시 에러 로그 후 종료.
+    public void TestPopupHoldForCapture()
+    {
+        StartCoroutine(CoTestPopupHoldForCapture());
+    }
+
+    private IEnumerator CoTestPopupHoldForCapture()
+    {
+        GameDebug.Log("[TestManager] ===== TestPopupHoldForCapture 시작 =====");
+
+        if (InGameController.Instance == null || InGameController.Instance.ObjectDataWorker == null)
+        {
+            GameDebug.LogError("[PopupHold][FAIL] 인게임 미진입 — TestEnterIngameAndHold로 먼저 진입 필요");
+            yield break;
+        }
+
+        // 사전 정리: 떠 있는 제작/인벤 팝업 닫기
+        var preCraft = Managers.Popup.FindOpen<CraftPopup>();
+        if (preCraft != null) Managers.Popup.Close(preCraft);
+        var preInv = Managers.Popup.FindOpen<InventoryPopup>();
+        if (preInv != null) Managers.Popup.Close(preInv);
+        yield return new WaitForSeconds(0.3f);
+
+        // 1) CraftPopup 셀 미선택 hold (C-1: 배경판 유지 + "제작할 항목을 선택하세요")
+        var craft = Managers.Popup.Open<CraftPopup>();
+        if (craft != null)
+            craft.SelectCategory(CraftCategoryType.Building);
+        GameDebug.Log($"[PopupHold] CraftPopup 셀 미선택 hold {POPUP_CAPTURE_HOLD}s — 지금 캡처");
+        yield return new WaitForSeconds(POPUP_CAPTURE_HOLD);
+
+        if (craft != null) Managers.Popup.Close(craft);
+        yield return new WaitForSeconds(0.3f);
+
+        // 2) InventoryPopup 셀 미선택 hold (C-1: 배경판 유지 + "아이템을 선택하세요")
+        Managers.Popup.Open<InventoryPopup>();
+        GameDebug.Log($"[PopupHold] InventoryPopup 셀 미선택 hold {POPUP_CAPTURE_HOLD}s — 지금 캡처");
+        yield return new WaitForSeconds(POPUP_CAPTURE_HOLD);
+
+        var inv = Managers.Popup.FindOpen<InventoryPopup>();
+        if (inv != null) Managers.Popup.Close(inv);
+
+        GameDebug.Log("[TestManager] ===== TestPopupHoldForCapture 완료 =====");
     }
 
     private void ApplyFullPlayInvincible(PlayerCharacter _player)

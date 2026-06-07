@@ -27,6 +27,10 @@ public class CraftDetailPanel : MonoBehaviour
         gameObject.SetActive(true);
         m_CurrentCraftInfo = _craftInfo;
 
+        // ShowEmptyState에서 꺼졌을 수 있는 콘텐츠 요소를 복구한다.
+        if (m_CraftButton != null)
+            m_CraftButton.gameObject.SetActive(true);
+
         if (_craftInfo == null)
         {
             Clear();
@@ -92,9 +96,45 @@ public class CraftDetailPanel : MonoBehaviour
             m_ConditionsContainer.gameObject.SetActive(false);
     }
 
+    // 셀 미선택 상태: 배경판(이 GameObject의 Image)은 유지하고 콘텐츠만 비운다.
+    // 과거엔 SetActive(false)로 패널 전체를 꺼서 본문 배경까지 사라져 게임월드가 비쳤다(C-1).
+    // 안내문구는 CraftPopup의 HintText가 이 패널 위에 겹쳐 표시한다.
+    public void ShowEmptyState()
+    {
+        gameObject.SetActive(true);
+        m_CurrentCraftInfo = null;
+        Clear();
+
+        if (m_IconImage != null)
+            m_IconImage.enabled = false;
+
+        ClearContainer(m_MaterialsContainer, m_MaterialItemTemplate);
+        ClearContainer(m_ConditionsContainer, m_ConditionItemTemplate);
+
+        if (m_ConditionsLabel != null)
+            m_ConditionsLabel.gameObject.SetActive(false);
+        if (m_CraftButton != null)
+            m_CraftButton.gameObject.SetActive(false);
+    }
+
     public void Hide()
     {
-        gameObject.SetActive(false);
+        // 배경판을 끄지 않는다. 콘텐츠만 비우는 ShowEmptyState로 위임(C-1 수정).
+        ShowEmptyState();
+    }
+
+    // 컨테이너의 동적 생성 행을 제거하고 템플릿은 비활성으로 남긴다.
+    private void ClearContainer(Transform _container, TextMeshProUGUI _template)
+    {
+        if (_container == null || _template == null)
+            return;
+
+        foreach (Transform child in _container)
+        {
+            if (child.gameObject != _template.gameObject)
+                Destroy(child.gameObject);
+        }
+        _template.gameObject.SetActive(false);
     }
 
     private void OnClickCraft()

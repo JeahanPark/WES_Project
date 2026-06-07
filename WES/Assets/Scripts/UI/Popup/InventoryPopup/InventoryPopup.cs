@@ -61,7 +61,8 @@ public class InventoryPopup : BasePopup
         var slotList = new List<ItemData>(slots);
         m_InventoryScroll.SetData(slotList);
 
-        m_DetailPanel.gameObject.SetActive(false);
+        // 배경판은 유지하고 안내문구만 표시한다(C-1: SetActive(false) 시 본문이 투명해지는 문제).
+        m_DetailPanel.ShowEmpty("아이템을 선택하세요");
     }
 
     public void OnClickClose()

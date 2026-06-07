@@ -77,6 +77,8 @@ public class CraftHUDTab : MonoBehaviour
         }
         else
         {
+            // 제작창과 인벤창은 같은 본문 영역을 덮어 동시 표시가 의미없다 → 상대 팝업을 닫고 연다(C-2).
+            Managers.Popup.FindOpen<InventoryPopup>()?.Close();
             var popup = Managers.Popup.Open<CraftPopup>();
             if (popup != null)
                 popup.SelectCategory(CraftCategoryType.Building);
@@ -87,6 +89,10 @@ public class CraftHUDTab : MonoBehaviour
     {
         var existing = Managers.Popup.FindOpen<InventoryPopup>();
         if (existing == null)
+        {
+            // 제작창이 떠 있으면 닫고 인벤을 연다(C-2: 동시 오픈 겹침 방지).
+            Managers.Popup.FindOpen<CraftPopup>()?.Close();
             Managers.Popup.Open<InventoryPopup>();
+        }
     }
 }

@@ -402,9 +402,15 @@ public class PlayerCharacter : CharacterBase
     {
         var existing = Managers.Popup.FindOpen<InventoryPopup>();
         if (existing != null)
+        {
             existing.Close();
+        }
         else
+        {
+            // 제작창과 인벤창은 같은 본문 영역을 덮어 동시 표시가 의미없다 → 제작창이 떠 있으면 닫고 연다(C-2).
+            Managers.Popup.FindOpen<CraftPopup>()?.Close();
             Managers.Popup.Open<InventoryPopup>();
+        }
     }
 
     private void UpdateMouseLook()

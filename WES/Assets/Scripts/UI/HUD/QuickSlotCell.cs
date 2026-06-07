@@ -8,7 +8,6 @@ using TMPro;
 /// </summary>
 public class QuickSlotCell : MonoBehaviour, IDropHandler, IPointerClickHandler
 {
-    private static readonly Color SLOT_BG_COLOR = new Color(0.15f, 0.15f, 0.2f, 0.85f);
     private static readonly Color SLOT_BORDER_COLOR = new Color(0.4f, 0.4f, 0.5f, 1f);
     private static readonly Color KEY_NUMBER_COLOR = new Color(1f, 0.9f, 0.5f, 1f);
 
@@ -40,10 +39,12 @@ public class QuickSlotCell : MonoBehaviour, IDropHandler, IPointerClickHandler
 
     private void ApplyStyle()
     {
-        // 배경색 적용
+        // 셀 루트 Image는 slot_frame(나무 프레임) sprite를 갖는다.
+        // 과거엔 여기에 SLOT_BG_COLOR(다크블루 0.85)를 곱해 프레임이 죽었다(C-3).
+        // 인벤·제작 셀과 동일한 나무 프레임 톤을 위해 화이트로 유지해 sprite 원톤을 살린다.
         var bgImage = GetComponent<Image>();
         if (bgImage != null)
-            bgImage.color = SLOT_BG_COLOR;
+            bgImage.color = Color.white;
 
         // 테두리 추가
         m_Outline = GetComponent<Outline>();
