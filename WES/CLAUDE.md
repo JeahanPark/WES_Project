@@ -14,6 +14,8 @@
   → [.claude/agents/TEAM_PROCESS.md](.claude/agents/TEAM_PROCESS.md) — Phase 표준 절차 (부트스트랩·기획 합의·슬라이스 구현·리소스 명세서 갱신·통합 QA·마무리). 매번 전원 spawn 금지, 주제에 필요한 멤버만.
 - **리소스 인벤토리 정책 (디자이너 에이전트가 참조)**:
   → [../document/RESOURCE_INVENTORY.md](../document/RESOURCE_INVENTORY.md) — 폴더 정책·외부 에셋 출처·자산 우선순위 트리
+- **문서 양식 (스케줄·작업·에이전트 문서를 쓸 때)**:
+  → [../document/문서양식.md](../document/문서양식.md) — 3종 frontmatter·위치·표준 섹션·컨벤션. 새 문서는 이 양식으로 시작.
 
 본 파일에는 메인 세션이 직접 다루는 워크플로우 규칙(리소스 / MCP / Dev-QA)만 유지한다.
 
