@@ -52,7 +52,7 @@ Intro (START)  →  Lobby (방 생성/참가 · 방장 START)  →  InGame
 | **에셋 로딩** | Addressables 2.7 |
 | **비동기 / 리액티브** | UniTask, UniRx |
 | **AI 네비게이션** | Unity AI Navigation (NavMesh) |
-| **데이터** | CSV → ScriptableObject 변환 (커스텀 에디터 파이프라인) |
+| **데이터** | CSV → C# 클래스 코드 생성 (커스텀 에디터) + 런타임 Reflection 파싱 |
 
 ---
 
@@ -69,7 +69,7 @@ Intro (START)  →  Lobby (방 생성/참가 · 방장 START)  →  InGame
 
 **핵심 설계 포인트**
 - **씬 컨트롤러 제네릭 베이스**: `GameController<T>` / `NetworkGameController<T> : NetworkBehaviour` 로 일반 씬과 네트워크 씬을 분리
-- **데이터 주도**: 아이템·제작·건물·몬스터·드롭테이블·지역을 모두 CSV로 관리(`WES/Assets/CSVInfo/`), 커스텀 에디터로 ScriptableObject 변환
+- **데이터 주도**: 아이템·제작·건물·몬스터·드롭테이블·지역을 모두 CSV로 관리(`WES/Assets/CSVInfo/`) — 커스텀 에디터(`InfoConvertEditor`)가 CSV를 C# 클래스로 코드 생성하고, 런타임에 `InfoManager`가 Reflection으로 파싱해 `List<T>`로 적재
 - **코딩 규칙**: `m_` 멤버 접두사, `_` 매개변수 접두사, public 필드 금지, 9단계 클래스 레이아웃 통일
 
 ---
