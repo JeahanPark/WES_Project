@@ -8,6 +8,7 @@ public class CraftDetailPanel : MonoBehaviour
     [SerializeField] private Image m_IconImage;
     [SerializeField] private TextMeshProUGUI m_NameText;
     [SerializeField] private TextMeshProUGUI m_DescriptionText;
+    [SerializeField] private TextMeshProUGUI m_MaterialsLabel;
     [SerializeField] private TextMeshProUGUI m_ConditionsLabel;
     [SerializeField] private Transform m_MaterialsContainer;
     [SerializeField] private Transform m_ConditionsContainer;
@@ -90,6 +91,9 @@ public class CraftDetailPanel : MonoBehaviour
             row.gameObject.SetActive(true);
         }
 
+        // 도면 안내가 재료 영역에 표시되므로 "필요 자원" 헤더는 유지한다.
+        if (m_MaterialsLabel != null)
+            m_MaterialsLabel.gameObject.SetActive(true);
         if (m_ConditionsLabel != null)
             m_ConditionsLabel.gameObject.SetActive(false);
         if (m_ConditionsContainer != null)
@@ -111,6 +115,9 @@ public class CraftDetailPanel : MonoBehaviour
         ClearContainer(m_MaterialsContainer, m_MaterialItemTemplate);
         ClearContainer(m_ConditionsContainer, m_ConditionItemTemplate);
 
+        // 미선택(빈) 상태에서는 "필요 자원"·"제작 조건" 헤더를 숨긴다(안내문구만 노출).
+        if (m_MaterialsLabel != null)
+            m_MaterialsLabel.gameObject.SetActive(false);
         if (m_ConditionsLabel != null)
             m_ConditionsLabel.gameObject.SetActive(false);
         if (m_CraftButton != null)
@@ -252,6 +259,10 @@ public class CraftDetailPanel : MonoBehaviour
 
         var inventory = InGameController.Instance?.ObjectDataWorker?.GetInventoryRegistry();
         var materials = Managers.Info.GetMaterialsByCraftId(_craftId);
+
+        // 재료가 있는 레시피를 선택했을 때만 "필요 자원" 헤더를 노출한다.
+        if (m_MaterialsLabel != null)
+            m_MaterialsLabel.gameObject.SetActive(materials != null && materials.Count > 0);
 
         foreach (var material in materials)
         {

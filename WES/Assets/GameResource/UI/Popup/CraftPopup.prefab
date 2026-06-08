@@ -1965,6 +1965,7 @@ MonoBehaviour:
   m_IconImage: {fileID: 100079}
   m_NameText: {fileID: 100083}
   m_DescriptionText: {fileID: 100087}
+  m_MaterialsLabel: {fileID: 100091}
   m_ConditionsLabel: {fileID: 100103}
   m_MaterialsContainer: {fileID: 100093}
   m_ConditionsContainer: {fileID: 100105}
