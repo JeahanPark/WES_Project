@@ -129,7 +129,22 @@ Intro (START)  →  Lobby (방 생성/참가 · 방장 START)  →  InGame
 
 ### 5.3 플레이모드 QA 자동화
 
-`TestManager`(`#if UNITY_EDITOR` 전용 `MonoSingleton`)로 플레이모드 검증 시나리오를 관리합니다. **테스트 전용 로직을 새로 만들지 않고 기존 public 메서드만 조합**하는 원칙으로, 기능 추가 시 회귀 검증이 자동으로 돌도록 했습니다. (개발 → QA → 판정 사이클)
+**개발 → QA → 판정** 사이클로, AI가 실제 플레이모드에서 기능을 검증합니다. 핵심은 단언(assert) 기반 시나리오와 MCP 구동 루프입니다.
+
+**① 시나리오 — `TestManager`** (`#if UNITY_EDITOR` 전용 `MonoSingleton`)
+- **테스트 전용 게임 로직을 새로 만들지 않고 기존 public 메서드만 조합**하는 원칙 (`inventory.AddItem`, `player.TakeDamage`, `Managers.Popup.Open` 등)
+- 각 시나리오는 코루틴으로 동작을 실행하고 단계마다 `Mark(기대조건, 라벨)`로 **결과 상태를 단언**한 뒤 `PASS n / FAIL n`으로 집계
+- 검증 대상 예: HP·스탯 변화, 제작 시 **재료 차감 + 결과 아이템 지급**, 팝업 스택 `OpenedCount`, 건축 `IsPlacing` 전이, NavMesh 적재·carving — 정상 경로뿐 아니라 **재료 부족·조건 미충족·빈 스택 같은 엣지 케이스까지** 시나리오로 분리
+
+**② 구동 — MCP 루프**
+- `u_play` 로 플레이모드 진입 후 런타임에서 테스트 메서드 호출
+- `u_console` 로 `PASS/FAIL`·런타임 에러 로그 수집 → 판정
+- `u_screenshot` / `u_editor_sceneview` 로 시각 결과까지 교차 확인
+
+**③ 범위 — QA 에이전트 3모드**
+- **function**: 위 `TestManager` 시나리오 + 컴파일·씬 와이어링 검증
+- **ui**: UI 자동 검사 + 시각 검수 리포트 (수정 없이 리포트 전용)
+- **e2e**: 자작 도구 `wesqa`로 유저 관점 풀플레이(스폰→탈출 도달, 타임아웃·도착 판정) 및 seeded-bug 효과 측정
 
 ### 5.4 Obsidian 자동 문서화 (Karpathy LLM Wiki 패턴)
 
@@ -138,6 +153,29 @@ Intro (START)  →  Lobby (방 생성/참가 · 방장 START)  →  InGame
 - **Wiki-First**: 작업 전 vault부터 확인 → 부족하면 코드 탐색 후 vault 반영
 - **Trust-but-Verify**: vault는 빠른 참조용, 진실은 항상 코드 — 코드 수정 시 실제 코드 재검증
 - **작업 어휘**: Ingest(코드 변경 시 카탈로그 갱신) / Query(작업 전 파악) / Lint(주기적 모순 점검)
+
+### 5.5 자작 E2E QA 도구 — `wesqa`
+
+플레이모드 QA(5.3)가 코드 내부 상태를 단언한다면, `wesqa`는 **유저 관점에서 화면을 보고·누르고·검증**하는 E2E 자동화 도구입니다. 오픈소스 [Poco](https://github.com/AirtestProject/Poco)에서 모바일 드라이버·airtest 의존을 걷어낸 **최소 포크**에, WES 전용으로 직접 만든 게임 내장 서버를 붙여 구성했습니다.
+
+**① 게임 내장 C# 서버** (`Assets/WesQA/Runtime/`)
+- `WesPocoServer` — 게임에 TCP 서버(`localhost:5001`)를 직접 내장, `JsonRpc`로 통신
+- `HierarchyDumper` — 런타임 UI 계층을 덤프해 **이름으로 노드 조회**를 노출
+- `InputInjector` — 조회한 노드에 클릭·입력 주입
+- `Screenshotter` — 화면을 캡처해 base64로 전송
+- `InvokeBridge` / `RpcMethods` — 런타임 메서드 원격 호출
+
+**② Python 클라이언트** (`tools/wesqa/`)
+- `poco/` — Poco 최소 포크 (위 자작 서버에만 TCP로 접속)
+- `aircv/` + `vision.py` — 스크린샷 base64를 OpenCV로 디코드하고, **템플릿 매칭·SIFT 키포인트 매칭으로 "특정 UI가 화면에 떴는지"를 이미지로 판정**
+
+```
+Python(WesPoco)  ──TCP / JSON-RPC──▶  게임 내장 서버(WesPocoServer)
+  game('btn_inventory').click()         HierarchyDumper(노드 조회) + InputInjector(클릭)
+  vision.find_template(shot, tpl)  ◀──  Screenshotter(base64 스크린샷) → aircv 매칭
+```
+
+MCP `u_screenshot`(에디터 단발 캡처)과 달리, **노드 조회 → 입력 → 이미지 매칭**을 코드로 묶어 스폰부터 탈출까지 유저 플로우를 자동 검증하고, seeded-bug로 검출력까지 측정합니다.
 
 ---
 
@@ -154,11 +192,14 @@ WES_Project/
 │     │  ├─ Component/       # 오브젝트 단위 동작 (네트워크 트랜스폼 등)
 │     │  ├─ WorldBaseObject/ # 캐릭터·몬스터·건물·드롭아이템 베이스
 │     │  ├─ UI/              # HUD · Popup · Scroll · WorldUI
-│     │  ├─ Info/            # CSV → ScriptableObject 변환 데이터 레이어
+│     │  ├─ Info/            # CSV → C# 클래스 코드 생성 + Reflection 파싱 데이터 레이어
 │     │  └─ Editor/          # 맵 생성·아이콘 생성 등 커스텀 에디터 툴
 │     ├─ CSVInfo/            # 아이템·제작·건물·몬스터·드롭·지역 데이터
 │     ├─ GameResource/       # 게임 리소스 (프리팹·이미지·애니메이션)
-│     └─ MCP_Unity_Plugin/   # AI ↔ Unity Editor 브리지 (MCP)
+│     ├─ MCP_Unity_Plugin/   # AI ↔ Unity Editor 브리지 (MCP)
+│     └─ WesQA/Runtime/      # E2E QA 도구의 게임 내장 TCP 서버 (자작)
+├─ tools/
+│  └─ wesqa/                 # E2E QA Python 클라이언트 (Poco 최소 포크 + aircv 비전)
 └─ document/
    ├─ WES_GDD.md             # 게임 기획서
    └─ auto/                  # AI 자동 문서 위키 (Obsidian)
