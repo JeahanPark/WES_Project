@@ -18,7 +18,8 @@
 
 ---
 
-## 1. 게임 개요
+<details>
+<summary><h2>1. 게임 개요</h2></summary>
 
 폭풍에 난파되어 섬 해변에 떠밀려 온 생존자들이, 혹한과 맹수·끝없는 밤을 견디며 **섬 반대편의 안전한 마을(목표지점)까지 협력해 탈출**하는 게임입니다.
 
@@ -38,9 +39,10 @@ Intro (START)  →  Lobby (방 생성/참가 · 방장 START)  →  InGame
                           └─ [전멸] 전원 사망 → 게임오버 → 로비
 ```
 
----
+</details>
 
-## 2. 기술 스택
+<details>
+<summary><h2>2. 기술 스택</h2></summary>
 
 | 분류 | 기술 |
 |------|------|
@@ -54,9 +56,10 @@ Intro (START)  →  Lobby (방 생성/참가 · 방장 START)  →  InGame
 | **AI 네비게이션** | Unity AI Navigation (NavMesh) |
 | **데이터** | CSV → C# 클래스 코드 생성 (커스텀 에디터) + 런타임 Reflection 파싱 |
 
----
+</details>
 
-## 3. 아키텍처
+<details>
+<summary><h2>3. 아키텍처</h2></summary>
 
 게임 로직을 **역할별 4계층**으로 분리해, 1인 개발에서도 책임이 섞이지 않도록 구성했습니다.
 
@@ -72,9 +75,10 @@ Intro (START)  →  Lobby (방 생성/참가 · 방장 START)  →  InGame
 - **데이터 주도**: 아이템·제작·건물·몬스터·드롭테이블·지역을 모두 CSV로 관리(`WES/Assets/CSVInfo/`) — 커스텀 에디터(`InfoConvertEditor`)가 CSV를 C# 클래스로 코드 생성하고, 런타임에 `InfoManager`가 Reflection으로 파싱해 `List<T>`로 적재
 - **코딩 규칙**: `m_` 멤버 접두사, `_` 매개변수 접두사, public 필드 금지, 9단계 클래스 레이아웃 통일
 
----
+</details>
 
-## 4. 주요 시스템
+<details>
+<summary><h2>4. 주요 시스템</h2></summary>
 
 | 시스템 | 내용 |
 |--------|------|
@@ -85,9 +89,10 @@ Intro (START)  →  Lobby (방 생성/참가 · 방장 START)  →  InGame
 | **낮밤 / 생존 압박** | `DayNightWorker`(네트워크 동기화 페이즈), 밤 전용 몬스터·시야(`NightVisionComponent`) |
 | **탈출** | `EscapePoint` 도달 시 클리어 판정 |
 
----
+</details>
 
-## 5. 🤖 AI 개발 파이프라인 (이 프로젝트의 핵심 실험)
+<details open>
+<summary><h2>5. 🤖 AI 개발 파이프라인 (이 프로젝트의 핵심 실험)</h2></summary>
 
 1인 개발의 속도·완성도를 끌어올리기 위해, **AI를 단순 코드 생성 도구가 아니라 개발 파이프라인 전체에 결합**했습니다. 핵심 설계와 판단은 직접 쥐되, 반복 작업·검증·문서화를 AI가 자동화하는 구조입니다.
 
@@ -177,9 +182,10 @@ Python(WesPoco)  ──TCP / JSON-RPC──▶  게임 내장 서버(WesPocoServ
 
 MCP `u_screenshot`(에디터 단발 캡처)과 달리, **노드 조회 → 입력 → 이미지 매칭**을 코드로 묶어 스폰부터 탈출까지 유저 플로우를 자동 검증하고, seeded-bug로 검출력까지 측정합니다.
 
----
+</details>
 
-## 6. 저장소 구조
+<details>
+<summary><h2>6. 저장소 구조</h2></summary>
 
 ```
 WES_Project/
@@ -205,9 +211,10 @@ WES_Project/
    └─ auto/                  # AI 자동 문서 위키 (Obsidian)
 ```
 
----
+</details>
 
-## 7. 개발 현황
+<details>
+<summary><h2>7. 개발 현황</h2></summary>
 
 핵심 루프(채집·제작·건축·전투·탈출)와 멀티플레이 동기화, 낮밤 시스템이 동작하는 상태이며, AI 파이프라인을 활용해 콘텐츠를 지속 확장 중입니다. (현재 버전 0.1.0)
 
@@ -225,3 +232,5 @@ WES_Project/
 **다음 단계** — UI/UX 정리 · 사운드 · 네트워크 안정화(4인) · 채팅
 
 > 전체 시스템 명세는 [document/WES_GDD.md](document/WES_GDD.md) 참조.
+
+</details>
