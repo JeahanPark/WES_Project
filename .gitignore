@@ -9,3 +9,7 @@ document/.trash/
 # Playwright MCP (designer AI texture gen)
 /.playwright-profile/
 /.playwright-output/
+
+# 브라우저 접근성 스냅샷 덤프 (개인정보 포함 가능 — 커밋 금지)
+chat-tree.md
+**/chat-tree.md
