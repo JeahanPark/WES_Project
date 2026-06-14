@@ -98,6 +98,8 @@ Intro (START)  →  Lobby (방 생성/참가 · 방장 START)  →  InGame
 
 ### 5.1 MCP — AI가 Unity Editor를 직접 제어
 
+> 📦 **MCP 서버 저장소**: [github.com/JeahanPark/MCP_Unity](https://github.com/JeahanPark/MCP_Unity) (직접 구현 · C# / .NET)
+
 직접 구현한 **MCP(Model Context Protocol) 서버**(C# / .NET)를 통해 AI가 Unity Editor를 명령으로 조작합니다. Named Pipe로 에디터 내 `McpBridge`와 통신하며, **14종 도구**를 제공합니다.
 
 | 영역 | 도구 | 하는 일 |
