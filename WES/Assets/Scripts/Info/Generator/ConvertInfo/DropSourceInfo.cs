@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-public class DropSourceInfo
+public partial class DropSourceInfo
 {
     public WorldObjectType WorldObjectType;
     public int SourceId;

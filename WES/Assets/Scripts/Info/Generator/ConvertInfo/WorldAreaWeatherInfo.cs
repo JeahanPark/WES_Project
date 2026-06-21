@@ -2,17 +2,17 @@
 
 using System.Collections.Generic;
 
-public partial class WorldAreaMonsterInfo
+public partial class WorldAreaWeatherInfo
 {
     public int Id;
     public int AreaId;
-    public int MonsterId;
-    public string PhaseCondition;
+    public WeatherType WeatherType;
+    public float Chance;
 }
 
 
 
 public partial class InfoManager
 {
-    public List<WorldAreaMonsterInfo> WorldAreaMonsterInfoList = new List<WorldAreaMonsterInfo>();
+    public List<WorldAreaWeatherInfo> WorldAreaWeatherInfoList = new List<WorldAreaWeatherInfo>();
 }

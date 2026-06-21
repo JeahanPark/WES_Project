@@ -204,8 +204,8 @@ public class InfoConvertEditor
         sb.AppendLine("using System.Collections.Generic;");
         sb.AppendLine();
 
-        // 클래스 시작
-        sb.AppendLine($"public class {className}");
+        // 클래스 시작 (partial — 커스텀 멤버는 별도 partial 파일에 두어 재생성 시 보존)
+        sb.AppendLine($"public partial class {className}");
         sb.AppendLine("{");
 
         // 필드 선언 (클래스 레벨)

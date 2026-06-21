@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-public class CraftMaterialInfo
+public partial class CraftMaterialInfo
 {
     public int Id;
     public int CraftId;

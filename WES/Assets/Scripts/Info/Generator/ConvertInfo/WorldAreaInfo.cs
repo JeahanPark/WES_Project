@@ -2,12 +2,13 @@
 
 using System.Collections.Generic;
 
-public class WorldAreaInfo
+public partial class WorldAreaInfo
 {
     public int Id;
     public string Name;
     public int MaxCount;
     public float RespawnDelay;
+    public float MoveCostMultiplier;
 }
 
 

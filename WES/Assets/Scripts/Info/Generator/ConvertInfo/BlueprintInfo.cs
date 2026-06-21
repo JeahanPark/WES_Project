@@ -2,11 +2,13 @@
 
 using System.Collections.Generic;
 
-public class BlueprintInfo
+public partial class BlueprintInfo
 {
     public int Id;
     public int BlueprintItemId;
     public int UnlockCraftId;
+    public int SpawnAreaId;
+    public float SpawnChance;
 }
 
 

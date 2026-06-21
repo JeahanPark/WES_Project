@@ -1,4 +1,4 @@
-Id.INT,BlueprintItemId.INT,UnlockCraftId.INT
-1,401,5
-2,402,6
-3,403,7
+Id.INT,BlueprintItemId.INT,UnlockCraftId.INT,SpawnAreaId.INT,SpawnChance.FLOAT
+1,401,5,2,0.5
+2,402,6,3,0.45
+3,403,7,3,0.4

@@ -2,13 +2,14 @@
 
 using System.Collections.Generic;
 
-public class DropTableItemInfo
+public partial class DropTableItemInfo
 {
     public int DropTableId;
     public RewardType RewardType;
     public int RewardId;
     public int Min;
     public int Max;
+    public float Chance;
 }
 
 

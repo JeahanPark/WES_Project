@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-public class ItemInfo
+public partial class ItemInfo
 {
     public int Id;
     public string Name;
@@ -12,8 +12,6 @@ public class ItemInfo
     public string PrefabKey;
     public string IconKey;
     public int BuildingInfoId;
-
-    public bool IsBuilding => BuildingInfoId > 0;
 }
 
 

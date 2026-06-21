@@ -19,8 +19,10 @@ public partial class InfoManager
         DropTableItemInfoList = await LoadInfo<DropTableItemInfo>();
         ItemInfoList = await LoadInfo<ItemInfo>();
         MonsterInfoList = await LoadInfo<MonsterInfo>();
+        WeatherInfoList = await LoadInfo<WeatherInfo>();
         WorldAreaInfoList = await LoadInfo<WorldAreaInfo>();
         WorldAreaMonsterInfoList = await LoadInfo<WorldAreaMonsterInfo>();
+        WorldAreaWeatherInfoList = await LoadInfo<WorldAreaWeatherInfo>();
         WorldObjectInfoList = await LoadInfo<WorldObjectInfo>();
     }
 

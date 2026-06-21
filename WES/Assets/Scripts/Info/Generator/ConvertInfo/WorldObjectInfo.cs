@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-public class WorldObjectInfo
+public partial class WorldObjectInfo
 {
     public int Id;
     public WorldObjectType WorldObjectType;

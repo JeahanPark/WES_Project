@@ -1,0 +1,9 @@
+Id.INT,AreaId.INT,WeatherType.ENUM,Chance.FLOAT
+1,1,Clear,0.7
+2,1,Cloudy,0.3
+3,2,Cloudy,0.5
+4,2,Rain,0.3
+5,2,Clear,0.2
+6,3,Cloudy,0.5
+7,3,Fog,0.3
+8,3,Clear,0.2

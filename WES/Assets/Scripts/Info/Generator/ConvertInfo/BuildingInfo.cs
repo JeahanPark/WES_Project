@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-public class BuildingInfo
+public partial class BuildingInfo
 {
     public int Id;
     public string Name;
