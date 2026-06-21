@@ -28,4 +28,5 @@ public static class AudioKey
     public const string STINGER_BOSS_APPEAR = "stinger_boss_appear"; // 보스 등장
     public const string STINGER_ALLY_DOWN = "stinger_ally_down";     // 동료 사망
     public const string STINGER_ESCAPE = "stinger_escape";           // 탈출 성공
+    public const string STINGER_AREA_ENTER = "stinger_area_enter";   // 새 지역 진입
 }

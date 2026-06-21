@@ -275,6 +275,8 @@ public class CharacterBase : WorldEntityBase
     /// </summary>
     protected virtual void OnDamaged(int _damage, CharacterBase _attacker, bool _isCritical)
     {
+        Managers.Audio?.PlaySfx(AudioKey.SFX_HIT); // R4 ③ 피격 SFX(모든 클라 로컬, 음원0=무음)
+
         if (InGameController.Instance == null || InGameController.Instance.WorldUIWorker == null)
             return;
 

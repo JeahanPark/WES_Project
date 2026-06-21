@@ -46,6 +46,10 @@ public class ResultPopup : BasePopup
     {
         bool isClear = _state == GameState.Clear;
 
+        // R4 ③ 엔딩 stinger(로컬, 음원0=무음). 탈출 성공 시에만.
+        if (isClear)
+            Managers.Audio?.PlayStinger(AudioKey.STINGER_ESCAPE);
+
         if (m_BgSuccess != null)
             m_BgSuccess.SetActive(isClear);
         if (m_BgDefeat != null)

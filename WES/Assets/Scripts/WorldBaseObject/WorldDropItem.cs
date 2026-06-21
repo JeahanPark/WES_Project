@@ -71,6 +71,8 @@ public class WorldDropItem : WorldBaseObject
         if (objectData == null)
             return;
 
+        Managers.Audio?.PlaySfx(AudioKey.SFX_COLLECT); // R4 ③ 수집 완료 SFX(sender 로컬, 음원0=무음)
+
         BlueprintInfo blueprint = Managers.Info.GetBlueprintByItemId(_itemInfoId);
         if (blueprint != null)
         {

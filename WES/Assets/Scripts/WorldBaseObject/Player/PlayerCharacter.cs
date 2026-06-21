@@ -257,6 +257,9 @@ public class PlayerCharacter : CharacterBase
     {
         base.OnDeath();
 
+        // R4 ③ 플레이어 사망 stinger. IsOwner 가드 밖 — 모든 클라가 동료 사망을 로컬 발화(음원0=무음).
+        Managers.Audio?.PlayStinger(AudioKey.STINGER_ALLY_DOWN);
+
         if (!IsOwner)
             return;
 

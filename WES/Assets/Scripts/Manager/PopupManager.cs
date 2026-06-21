@@ -80,6 +80,8 @@ public class PopupManager : MonoSingleton<PopupManager>
             m_PopupRoot.SetAsLastSibling();
         popup.transform.SetAsLastSibling();
 
+        Managers.Audio?.PlaySfx(AudioKey.SFX_UI_OPEN); // R4 ③ UI 열기 SFX(음원0=무음 통과)
+
         return popup;
     }
 
@@ -100,6 +102,7 @@ public class PopupManager : MonoSingleton<PopupManager>
 
         m_OpenedPopups.Remove(_popup);
         Managers.Resource.Destroy(_popup.gameObject);
+        Managers.Audio?.PlaySfx(AudioKey.SFX_UI_CLOSE); // R4 ③ UI 닫기 SFX
     }
 
     public void CloseTop()

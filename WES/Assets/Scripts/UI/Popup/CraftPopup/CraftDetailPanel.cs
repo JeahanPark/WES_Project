@@ -210,6 +210,8 @@ public class CraftDetailPanel : MonoBehaviour
             inventory.AddItem(m_CurrentCraftInfo.Value01, m_CurrentCraftInfo.ResultCount);
         }
 
+        Managers.Audio?.PlaySfx(AudioKey.SFX_CRAFT); // R4 ③ 제작 성공 SFX(로컬, 음원0=무음)
+
         Show(m_CurrentCraftInfo);
     }
 

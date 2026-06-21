@@ -177,5 +177,9 @@ public class InGameAreaBandWorker : NetworkBehaviour
     {
         GameDebug.Log($"[InGameAreaBandWorker] Area changed: {_prev} -> {_cur}");
         OnAreaChanged?.Invoke(_prev, _cur);
+
+        // R4 ③ 지역 진입 stinger(모든 클라 로컬, 음원0=무음). 초기화(prev==cur) 시엔 생략.
+        if (_prev != _cur)
+            Managers.Audio?.PlayStinger(AudioKey.STINGER_AREA_ENTER);
     }
 }
