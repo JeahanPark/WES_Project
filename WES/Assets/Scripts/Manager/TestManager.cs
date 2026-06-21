@@ -1600,6 +1600,29 @@ public class TestManager : MonoSingleton<TestManager>
         }
     }
 
+    // 날씨 전이 검증 프로브 (R1-T6). 공개 API(WeatherWorker.SetArea/StepWeather) 조합 — 전이 단계성·지역 분포 준수 확인.
+    public void TestWeatherTransitions()
+    {
+        var ww = Object.FindFirstObjectByType<WeatherWorker>();
+        if (ww == null)
+        {
+            GameDebug.LogError("[T6][Weather] WeatherWorker 없음 (씬에 컴포넌트/스폰 확인)");
+            return;
+        }
+
+        int[] areas = { 2, 3 }; // 숲(Clear/Cloudy/Rain), 산지(Clear/Cloudy/Fog)
+        foreach (int a in areas)
+        {
+            ww.SetArea(a);
+            GameDebug.Log($"[T6][Weather] ===== area={a} 12틱 전이 =====");
+            for (int i = 0; i < 12; i++)
+            {
+                ww.StepWeather();
+                GameDebug.Log($"[T6][Weather] area={a} step{i:D2} -> {ww.CurrentWeather}");
+            }
+        }
+    }
+
     private void ApplyFullPlayInvincible(PlayerCharacter _player)
     {
         if (_player == null) return;
