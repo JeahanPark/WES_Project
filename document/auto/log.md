@@ -14,6 +14,8 @@ vault 변경 이력. 시간 역순(최신이 위).
 
 ---
 
+## [2026-06-21] ingest | Stop hook auto-update - new class=2, new signal=0
+
 ## [2026-06-21] ingest | Stop hook auto-update - new class=2, new signal=1
 
 ## [2026-06-21] ingest | Stop hook auto-update - new class=1, new signal=0
@@ -136,3 +138,4 @@ vault 변경 이력. 시간 역순(최신이 위).
 2026-06-21 R3-C 완료 — 몬스터 행동 5종(Poison DoT/Ranged 히트스캔/Stealth 가시성NV/WeatherBuff 가속/Boss 페이즈66·33%) + 도면 월드스폰(A안 세션1회 area스폰·결핍) + 산~폐허 BehaviorType. 검증 PASS: 도면스폰5/0·Poison3/0·Boss4/0·Stealth3/0. 투사체·보스모델·Transparent머티리얼·ATK강화 백로그.
 2026-06-21 R3 통합보고 — 콘텐츠 기능 완료(도구등급·몬스터행동6+보스·도면스폰), 근본버그(MonsterId) 수정으로 R1/R2 몬스터 차별화 소급 유효. 비주얼/메쉬 R4 백로그. reports/2026-06-21-R3-콘텐츠-통합보고.md
 2026-06-21 R4 ①②③ 골격 — ①CoreTensionOverlayWorker 날씨(OnWeatherChanged)/이동 연출+가시성천장0.6 ②NarrationData SO(폴백25)+ItemInfo 플레이버8+BlueprintToast 오버로드 ③AudioManager(4채널 무음 null가드)+AudioKey+Managers.Audio. AudioManager 미등록 Addressable키 InvalidKeyException→location 사전확인으로 무음완주 수정(team-lead). 검증: 컴파일0, 날씨전환 시 훅 무에러. MCP 무응답 중 client_r4 코드레벨작업→복구 후 검증. 후킹12·designer슬롯3·실음원 백로그.
+2026-06-21 R4 날씨 오버레이 시각화(designer) — rain_edge/fog_veil/snowstorm_white procedural 텍스처 + Canvas_CoreTension(-10)에 Image3 생성·CoreTensionOverlayWorker m_RainEdge/FogVeil/SnowstormOverlay 와이어링. 검증: 날씨전환 시 fog_veil 화면 렌더 확인(실경로 OnWeatherChanged→Worker, 가시성천장). 에러0.
