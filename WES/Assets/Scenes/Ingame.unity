@@ -52999,6 +52999,7 @@ GameObject:
   - component: {fileID: 1128444549}
   - component: {fileID: 1128444550}
   - component: {fileID: 1128444551}
+  - component: {fileID: 1128444552}
   m_Layer: 0
   m_Name: DayNightWorker
   m_TagString: Untagged
@@ -53107,6 +53108,22 @@ MonoBehaviour:
   m_NightMul: 1.5
   m_DuskDawnMul: 1.2
   m_AreaId: 1
+--- !u!114 &1128444552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1128444545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0eb73f24eb1b224880163a3a31b7836, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  m_BandHysteresis: 1.5
+  m_AreaCheckInterval: 0
+  m_StartAreaId: 1
 --- !u!1001 &1128643916
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -94273,6 +94290,7 @@ MonoBehaviour:
   m_ColliderWorker: {fileID: 463070868}
   m_SpawnWorker: {fileID: 1027419905}
   m_AreaWorker: {fileID: 1723341987}
+  m_AreaBandWorker: {fileID: 1128444552}
   m_BuildingPlacementWorker: {fileID: 1180124271}
   m_DayNightWorker: {fileID: 1128444548}
   m_DayNightRenderWorker: {fileID: 1639454701}

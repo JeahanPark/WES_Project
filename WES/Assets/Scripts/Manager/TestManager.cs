@@ -1623,6 +1623,59 @@ public class TestManager : MonoSingleton<TestManager>
         }
     }
 
+    // 지역 밴드 전환 검증 프로브 (R2 슬라이스1). 로컬(선두) 플레이어를 종단축(Z)으로 이동 →
+    // InGameAreaBandWorker가 AxisMin/AxisMax(CSV)로 지역 d 판정 → WeatherWorker/MoveCostWorker.SetArea 반영 확인.
+    // 공개 API 조합: PlayWorker.LocalPlayer 이동 + AreaBandWorker.CurrentAreaId 관찰.
+    public void TestAreaBandTransition()
+    {
+        StartCoroutine(CoTestAreaBandTransition());
+    }
+
+    private IEnumerator CoTestAreaBandTransition()
+    {
+        var band = InGameController.Instance?.AreaBandWorker;
+        if (band == null)
+        {
+            GameDebug.LogError("[R2][AreaBand] InGameAreaBandWorker 없음 — 씬 와이어링/스폰 확인");
+            yield break;
+        }
+        var player = InGameController.Instance?.PlayWorker?.LocalPlayer;
+        if (player == null)
+        {
+            GameDebug.LogError("[R2][AreaBand] LocalPlayer 없음 — 인게임 먼저 진입");
+            yield break;
+        }
+
+        // CSV(WorldAreaInfo) 기준 각 지역 중앙 Z로 순차 텔레포트하며 전환 확인.
+        // 해안가(z~-40, area1) → 숲(z~10, area2) → 산지(z~50, area3). 단조증가(전진만)라 z 증가 방향으로.
+        // NavMeshAgent가 활성(오너)이면 transform 직접 설정은 agent가 되돌리므로 Warp 사용.
+        var agent = player.GetComponent<NavMeshAgent>();
+        void WarpZ(float _z)
+        {
+            Vector3 p = player.transform.position;
+            p.z = _z;
+            if (agent != null && agent.enabled && agent.isOnNavMesh)
+                agent.Warp(p);
+            else
+                player.transform.position = p;
+        }
+
+        float[] zTargets = { -40f, 10f, 50f };
+        GameDebug.Log($"[R2][AreaBand] 시작 area={band.CurrentAreaId}");
+        for (int i = 0; i < zTargets.Length; i++)
+        {
+            WarpZ(zTargets[i]);
+            // 판정 + NetworkVariable 동기 대기
+            yield return new WaitForSeconds(0.5f);
+            GameDebug.Log($"[R2][AreaBand] z={zTargets[i]:F0}(실제 z={player.transform.position.z:F0}) → area={band.CurrentAreaId} (기대 area={i + 1}, 단조증가)");
+        }
+
+        GameDebug.Log($"[R2][AreaBand] 역행 테스트: z=-40으로 복귀 → 단조증가라 area 유지 기대");
+        WarpZ(-40f);
+        yield return new WaitForSeconds(0.5f);
+        GameDebug.Log($"[R2][AreaBand] z=-40 복귀 후 area={band.CurrentAreaId} (후퇴 없어야 PASS)");
+    }
+
     // 이동비용 검증 프로브 (R1-T5). 로컬 플레이어를 실제 이동시켜 이동 중 Cold 누적을 확인.
     public void TestMoveCostProbe()
     {

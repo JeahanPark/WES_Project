@@ -124,3 +124,4 @@ vault 변경 이력. 시간 역순(최신이 위).
 2026-06-21 R1-T3 도구 등급(① 효율) — ToolTierSystem(보유 최대 ItemInfo.ToolTier→채집 배수 1+0.5·tier) + WorldEntityBase.ExecuteDrop 채집 스케일 연동. ItemInfo.ToolTier 컬럼(전 항목 0). TestLogToolTier 검증 PASS. 실제 도구 아이템은 R3
 2026-06-21 R1-T4(부분) 덫 — TrapSystem.TriggerTrapDamage(범위 몬스터 피해 코어) + TestTrapDamage 검증 PASS(적중1, HP100→83). 덫 건물 프리팹·설치·근접발동·표지 UI는 R2~R4
 2026-06-21 R1-T7 통합 QA — 전 시스템 1세션 공존·프로브 일괄 에러0. R1 통합보고(reports/2026-06-21-R1-통합보고.md). 코드 토대 완료, 콘텐츠·6지역 연동 R2~R4
+2026-06-21 R2 Phase1 합의(6지역 공간, 미결0)·Phase2 슬라이스1 코드토대 — InGameAreaBandWorker(선두Z→지역d→Weather/MoveCost.SetArea, 단조증가+히스테리시스)·AreaGateComponent 스켈레톤·WorldAreaInfo AxisMin/Max(CSV 단일진실원). 씬 부착+와이어링(team-lead MCP)·플레이검증 PASS(z-40→a1, z10→a2, z51→a3, 역행 a3유지). 프로브 Warp 수정.

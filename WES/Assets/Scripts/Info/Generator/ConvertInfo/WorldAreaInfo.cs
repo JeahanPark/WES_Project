@@ -9,6 +9,8 @@ public partial class WorldAreaInfo
     public int MaxCount;
     public float RespawnDelay;
     public float MoveCostMultiplier;
+    public float AxisMin;
+    public float AxisMax;
 }
 
 

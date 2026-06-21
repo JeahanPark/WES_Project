@@ -23,6 +23,7 @@ public class InGameController : NetworkGameController<InGameController>
     [SerializeField] private InGameColliderWorker m_ColliderWorker;
     [SerializeField] private InGameSpawnWorker m_SpawnWorker;
     [SerializeField] private InGameAreaWorker m_AreaWorker;
+    [SerializeField] private InGameAreaBandWorker m_AreaBandWorker;
     [SerializeField] private BuildingPlacementWorker m_BuildingPlacementWorker;
     [SerializeField] private DayNightWorker m_DayNightWorker;
     [SerializeField] private DayNightRenderWorker m_DayNightRenderWorker;
@@ -53,6 +54,7 @@ public class InGameController : NetworkGameController<InGameController>
     public InGameColliderWorker ColliderWorker => m_ColliderWorker;
     public InGameSpawnWorker SpawnWorker => m_SpawnWorker;
     public InGameAreaWorker AreaWorker => m_AreaWorker;
+    public InGameAreaBandWorker AreaBandWorker => m_AreaBandWorker;
     public BuildingPlacementWorker BuildingPlacementWorker => m_BuildingPlacementWorker;
     public DayNightWorker DayNightWorker => m_DayNightWorker;
     public DayNightRenderWorker DayNightRenderWorker => m_DayNightRenderWorker;
@@ -209,6 +211,8 @@ public class InGameController : NetworkGameController<InGameController>
             m_AlivePlayerCount = connectedCount;
             m_PlayWorker.StartGame();
             m_AreaWorker.Initialize();
+            if (m_AreaBandWorker != null)
+                m_AreaBandWorker.Initialize();
             StartGameClientRpc();
         }
     }
