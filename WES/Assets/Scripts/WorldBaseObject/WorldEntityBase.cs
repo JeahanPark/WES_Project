@@ -38,6 +38,14 @@ public class WorldEntityBase : WorldBaseObject
             if (count <= 0)
                 continue;
 
+            // ① 도구 등급: 채집(WorldObject)일 때 보유 최대 도구 등급으로 수확량 증가(CORE §4.1).
+            // 전투(Monster) 드롭은 도구 무관 — 채집만 스케일. 도구 없으면 배수 1.0.
+            if (m_WorldObjectType == WorldObjectType.WorldObject)
+            {
+                float toolMul = ToolTierSystem.GatheringMultiplier(ToolTierSystem.GetCurrentToolTier());
+                count = Mathf.Max(1, Mathf.RoundToInt(count * toolMul));
+            }
+
             Vector3 spawnPos = _position + new Vector3(
                 Random.Range(-0.5f, 0.5f), 0f, Random.Range(-0.5f, 0.5f));
 

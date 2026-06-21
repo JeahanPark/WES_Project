@@ -14,6 +14,8 @@ vault 변경 이력. 시간 역순(최신이 위).
 
 ---
 
+## [2026-06-21] ingest | Stop hook auto-update - new class=1, new signal=0
+
 ## [2026-06-21] ingest | Stop hook auto-update - new class=1, new signal=1
 
 ## [2026-06-08] update | 기획문서 구조 재편 — M2W 평면 → game-design/<주제>/ 통일
@@ -119,3 +121,4 @@ vault 변경 이력. 시간 역순(최신이 위).
 2026-06-21 R1-T2 난이도 공식 D=TP/CAP 코드화 — DifficultyFormula(순수 모듈, PhaseMul/WeatherMul 어댑터, WeatherMul은 T1 WeatherInfo 조회) + TestManager.TestLogDifficulty 프로브. 런타임 검증 PASS(D 구성요소 명세 일치)
 2026-06-21 R1-T6 날씨 시스템 — WeatherWorker(서버권위 NetworkVariable, 페이즈 전환 틱, 지역 분포 샘플→심각도 사다리 1단계 이동=전조 보장) Ingame씬 DayNightWorker GO에 부착. TestWeatherTransitions 검증 PASS(점프0·분포내)
 2026-06-21 R1-T5 이동비용 — MoveCostWorker(서버, 위치델타 이동감지→Cold 가속, WorldAreaInfo.MoveCostMultiplier·WeatherInfo.MoveCostMul·야간 배수) Ingame씬 부착. TestMoveCostProbe 검증 PASS(정지-6 vs 이동-1, 이동비용 격리)
+2026-06-21 R1-T3 도구 등급(① 효율) — ToolTierSystem(보유 최대 ItemInfo.ToolTier→채집 배수 1+0.5·tier) + WorldEntityBase.ExecuteDrop 채집 스케일 연동. ItemInfo.ToolTier 컬럼(전 항목 0). TestLogToolTier 검증 PASS. 실제 도구 아이템은 R3

@@ -12,6 +12,7 @@ public partial class ItemInfo
     public string PrefabKey;
     public string IconKey;
     public int BuildingInfoId;
+    public int ToolTier;
 }
 
 

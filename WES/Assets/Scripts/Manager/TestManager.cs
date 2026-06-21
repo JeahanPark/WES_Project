@@ -1668,6 +1668,15 @@ public class TestManager : MonoSingleton<TestManager>
         GameDebug.Log($"[T5][MoveCost] 정지 ΔCold={aEnd - aStart} (감쇠만) / 이동 ΔCold={bEnd - bStart} (감쇠+이동비용) — 이동Δ가 정지Δ보다 크면(추위 더 누적) PASS");
     }
 
+    // 도구 등급 검증 프로브 (R1-T3). 공개 API(ToolTierSystem) 조합 — 보유 등급 + 채집 배수 곡선 확인.
+    public void TestLogToolTier()
+    {
+        int cur = ToolTierSystem.GetCurrentToolTier();
+        GameDebug.Log($"[T3][ToolTier] 현재 보유 최대 도구등급={cur} → 채집배수 x{ToolTierSystem.GatheringMultiplier(cur)}");
+        for (int t = 0; t <= 3; t++)
+            GameDebug.Log($"[T3][ToolTier] tier{t} → 채집배수 x{ToolTierSystem.GatheringMultiplier(t)}");
+    }
+
     private void ApplyFullPlayInvincible(PlayerCharacter _player)
     {
         if (_player == null) return;
