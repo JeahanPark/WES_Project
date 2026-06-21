@@ -133,3 +133,4 @@ vault 변경 이력. 시간 역순(최신이 위).
 2026-06-21 R2 Phase3 통합 QA PASS(6지역 밴드전환·6스폰·에러0, 2b 편집 후 무회귀) + R2 통합보고(reports/2026-06-21-R2-6지역공간-통합보고.md). R2 기능코어 완료, 아트/몬스터메쉬/관문/튜닝 R3~백로그.
 2026-06-21 R3 Phase1 콘텐츠 스코프 합의(슬라이스 A/B/C, director 결정: 등급만/leash×1.5/도면중복무효/평화반격) + R3-A 도구 실아이템(도끼501~503·곡괭이511~513 ToolTier1/2/3 + 레시피6종). 검증 PASS(인벤24종, 철도구 보유→채집배수 x2.5, R1-T3 실아이템 활성화). 실수치 R5·아이콘 designer 백로그.
 2026-06-21 R3-B 몬스터 추격/공격 행동 — MonsterChase/AttackState+Perception+BehaviorType(Pack/Charge)+MonsterInfo 5컬럼(MoveSpeed/DetectRange/AttackRange/AttackCooldown/BehaviorType)+leash×1.5+피격반격. ★근본버그 수정: 전 몬스터가 placeholder프리팹 baked id=1로 고정→SetMonsterId 스폰주입(몬스터별 HP/ATK/드롭/행동 활성, R1/R2부터 잠재). 검증 PASS6/0(추격 4.0→1.0·공격 HP감소·leash·반격, 몬스터별 스탯).
+2026-06-21 R3-C 완료 — 몬스터 행동 5종(Poison DoT/Ranged 히트스캔/Stealth 가시성NV/WeatherBuff 가속/Boss 페이즈66·33%) + 도면 월드스폰(A안 세션1회 area스폰·결핍) + 산~폐허 BehaviorType. 검증 PASS: 도면스폰5/0·Poison3/0·Boss4/0·Stealth3/0. 투사체·보스모델·Transparent머티리얼·ATK강화 백로그.

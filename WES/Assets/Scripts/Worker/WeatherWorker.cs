@@ -19,6 +19,11 @@ public class WeatherWorker : NetworkBehaviour
 
     public static event Action<WeatherType, WeatherType> OnWeatherChanged;
 
+    // R3-C: 현재 활성 날씨의 정적 스냅샷(서버·클라 공통, OnWeatherChanged로 갱신).
+    // 몬스터 행동(은신 안개 노출·날씨강화)이 매 프레임 Find 없이 참조하기 위한 전역 접근.
+    private static WeatherType s_CurrentWeather = WeatherType.Clear;
+    public static WeatherType GlobalWeather => s_CurrentWeather;
+
     private NetworkVariable<int> m_Weather = new(
         (int)WeatherType.Clear,
         NetworkVariableReadPermission.Everyone,
@@ -32,6 +37,7 @@ public class WeatherWorker : NetworkBehaviour
         base.OnNetworkSpawn();
         m_Weather.OnValueChanged += OnWeatherValueChanged;
         DayNightWorker.OnPhaseChanged += OnPhaseChanged;
+        s_CurrentWeather = CurrentWeather; // 스폰 시점 스냅샷 동기.
     }
 
     public override void OnNetworkDespawn()
@@ -138,6 +144,7 @@ public class WeatherWorker : NetworkBehaviour
     {
         WeatherType prev = (WeatherType)_prev;
         WeatherType cur = (WeatherType)_cur;
+        s_CurrentWeather = cur; // 전역 스냅샷 갱신(몬스터 행동 참조용).
         GameDebug.Log($"[WeatherWorker] Weather changed: {prev} -> {cur} (area {m_AreaId})");
         OnWeatherChanged?.Invoke(prev, cur);
     }

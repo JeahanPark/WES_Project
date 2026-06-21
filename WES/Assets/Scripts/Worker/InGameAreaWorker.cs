@@ -17,6 +17,8 @@ public class InGameAreaWorker : MonoBehaviour
     private Dictionary<int, int> m_AreaAliveCount = new();
     private List<MonsterBase> m_NightMonsters = new();
     private List<MonsterBase> m_AliveMonsters = new();
+    // R3-C 도면 월드스폰: 세션 내 이미 스폰한 BlueprintInfo.Id(중복 스폰 방지 — 도면=1회성 트리거).
+    private HashSet<int> m_SpawnedBlueprintIds = new();
 
     private void OnEnable()
     {
@@ -44,7 +46,61 @@ public class InGameAreaWorker : MonoBehaviour
             TrySpawnForArea(area, false);
         }
 
+        SpawnAreaBlueprints();
+
         GameDebug.Log($"[InGameAreaWorker] Initialized with {m_SpawnAreas.Length} spawn areas.");
+    }
+
+    /// <summary>
+    /// R3-C 도면 월드스폰(서버, 세션 시작 시 1회). BlueprintInfo.SpawnAreaId가 활성 area면
+    /// SpawnChance 판정 후 BlueprintItemId 드롭을 area 내 임의 위치에 스폰한다.
+    /// 도면=1회성 트리거이므로 area당 1회만(m_SpawnedBlueprintIds로 중복 차단 — director 결정 A).
+    /// 줍는 즉시 해금(WorldDropItem.AddItemClientRpc 경로), 해금 중복은 RecipeUnlockRegistry 멱등.
+    /// </summary>
+    public void SpawnAreaBlueprints()
+    {
+        if (!Managers.Network.IsServer)
+            return;
+
+        var blueprints = Managers.Info.BlueprintInfoList;
+        if (blueprints == null)
+            return;
+
+        foreach (var bp in blueprints)
+        {
+            if (m_SpawnedBlueprintIds.Contains(bp.Id))
+                continue;
+
+            var area = System.Array.Find(m_SpawnAreas, x => x.AreaId == bp.SpawnAreaId);
+            if (area == null)
+                continue;
+
+            if (Random.value > bp.SpawnChance)
+                continue;
+
+            Vector3 pos = area.GetRandomSpawnPosition();
+            InGameController.Instance.PlayWorker.SpawnDropItem(bp.BlueprintItemId, 1, pos);
+            m_SpawnedBlueprintIds.Add(bp.Id);
+
+            GameDebug.Log($"[InGameAreaWorker] Blueprint spawned: Id={bp.Id}, ItemId={bp.BlueprintItemId}, Area={bp.SpawnAreaId} at {pos}");
+        }
+    }
+
+    /// <summary>QA/프로브용: 특정 도면을 확률 무시하고 강제 스폰(이미 스폰분은 스킵). 서버 전용.</summary>
+    public bool ForceSpawnBlueprint(int _blueprintId)
+    {
+        if (!Managers.Network.IsServer)
+            return false;
+
+        var bp = Managers.Info.BlueprintInfoList?.Find(x => x.Id == _blueprintId);
+        if (bp == null)
+            return false;
+
+        var area = System.Array.Find(m_SpawnAreas, x => x.AreaId == bp.SpawnAreaId);
+        Vector3 pos = area != null ? area.GetRandomSpawnPosition() : Vector3.zero;
+        InGameController.Instance.PlayWorker.SpawnDropItem(bp.BlueprintItemId, 1, pos);
+        m_SpawnedBlueprintIds.Add(bp.Id);
+        return true;
     }
 
     public void OnMonsterDied(MonsterBase _monster, int _areaId)

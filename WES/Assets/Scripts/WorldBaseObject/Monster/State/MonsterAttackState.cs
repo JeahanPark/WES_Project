@@ -4,6 +4,8 @@ using UnityEngine;
 /// 몬스터 공격 상태.
 /// 사거리 유지 시 쿨다운마다 TakeDamage + Attack 애니. 사거리 이탈 → Chase, 타깃 null → Idle.
 /// Charge: 진입 시 1회 가속 직선 돌진(예고 후 충돌/시간만료까지) 후 일반 공격.
+/// R3-C Poison: 적중 시 대상에 DoT 부여. Ranged: AttackRange(넓음)에서 히트스캔 즉시판정.
+///       Boss: 페이즈 데미지 배수 적용. (모두 동일 공격 루프, PerformAttack 후처리/배수로 분기)
 /// </summary>
 public class MonsterAttackState : MonsterStateBase
 {
@@ -12,6 +14,11 @@ public class MonsterAttackState : MonsterStateBase
     private const float CHARGE_DAMAGE_MULTIPLIER = 2.5f;
     private const float CHARGE_TELEGRAPH_TIME = 1f;   // 돌진 예고(정지) 시간
     private const float CHARGE_DASH_TIME = 0.6f;      // 직선 돌진 지속
+
+    // R3-C Poison DoT 골격값(상수 — 실수치 튜닝은 level-design). 틱당 피해·틱수·간격.
+    private const int POISON_DAMAGE_PER_TICK = 3;
+    private const int POISON_TICKS = 3;
+    private const float POISON_INTERVAL = 1f;
 
     private float m_CooldownTimer;
     private bool m_IsCharger;
@@ -129,7 +136,16 @@ public class MonsterAttackState : MonsterStateBase
         if (_target == null || _target.IsDead)
             return;
 
+        // R3-C Boss: 페이즈 데미지 배수 적용(비보스는 ×1).
+        int finalDamage = Mathf.Max(1, Mathf.RoundToInt(_damage * _owner.GetBossDamageMultiplier()));
+
         _owner.StateAnimationComponent.PlayAnimation(AnimationType.Attack);
-        _target.TakeDamage(_damage, _owner);
+        _target.TakeDamage(finalDamage, _owner);
+
+        // R3-C Poison: 적중 후 대상에 DoT 부여(환경 데미지 경로, DEF 무시). 재적중 시 갱신.
+        if (_owner.BehaviorType == MonsterBehaviorType.Poison)
+        {
+            _target.ApplyPoison(POISON_DAMAGE_PER_TICK, POISON_TICKS, POISON_INTERVAL);
+        }
     }
 }

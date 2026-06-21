@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
@@ -10,16 +11,34 @@ public abstract class MonsterBase : CharacterBase
     // SpawnRadius 미지정(0) 시 leash 계산용 기본 반경
     private const float DEFAULT_LEASH_BASE_RADIUS = 5f;
 
+    // R3-C 은신: 평시 반투명 알파. 노출 시 1.0. (가시성=NetworkVariable<bool>로 동기)
+    private const float STEALTH_HIDDEN_ALPHA = 0.18f;
+    // 은신 노출 근접 반경(이 거리 안에 플레이어가 들어오면 은신 해제).
+    private const float STEALTH_REVEAL_RANGE = 2.5f;
+    // R3-C 보스 페이즈 임계(HP 비율). 골격값 — 실수치 튜닝은 level-design.
+    private const float BOSS_PHASE2_RATIO = 0.66f;
+    private const float BOSS_PHASE3_RATIO = 0.33f;
+    // R3-C 날씨강화: 강화 날씨일 때 이동속도 가속 배수(골격값 — 튜닝은 level-design).
+    private const float WEATHER_BUFF_SPEED_MULTIPLIER = 1.4f;
+
     [SerializeField] private int m_MonsterId;
     [SerializeField] private StateAnimationComponent m_StateAnimationComponent;
     [SerializeField] private MonsterStateMachine m_StateMachine;
     [SerializeField] private Renderer m_Renderer;
     [SerializeField] private MonsterPerceptionComponent m_Perception;
 
+    // R3-C 은신 가시성(서버 권위, 전원 동기). true=노출, false=은신(반투명). None/비은신은 항상 true.
+    private NetworkVariable<bool> m_IsVisible = new(true, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    // NOTE(R3-C 백로그): 은신 반투명은 m_Renderer 머티리얼 알파를 낮춘다. placeholder 머티리얼이
+    // Standard Opaque면 알파가 시각적으로 안 보일 수 있다(가시성 로직·IsVisible NetworkVariable은 정상).
+    // 메쉬/머티리얼 교체(designer 백로그) 시 Transparent 렌더 모드로 알파가 반영된다.
     private MonsterInfo m_MonsterInfo;
     private Color m_OriginalColor;
     private int m_SpawnAreaId;
     private float m_LeashBaseRadius = DEFAULT_LEASH_BASE_RADIUS;
+    private int m_BossPhase = 1;
+    private bool m_WeatherBuffActive;
 
     public int MonsterId => m_MonsterId;
     public int SpawnAreaId => m_SpawnAreaId;
@@ -34,6 +53,10 @@ public abstract class MonsterBase : CharacterBase
     public MonsterBehaviorType BehaviorType => m_MonsterInfo != null ? m_MonsterInfo.BehaviorType : MonsterBehaviorType.None;
     public float LeashRadius => m_LeashBaseRadius * LEASH_RADIUS_MULTIPLIER;
 
+    // R3-C 상태 노출용 getter(프로브/QA).
+    public bool IsVisible => m_IsVisible.Value;
+    public int BossPhase => m_BossPhase;
+
     protected virtual void Awake()
     {
         if (m_Renderer != null)
@@ -45,6 +68,8 @@ public abstract class MonsterBase : CharacterBase
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+
+        m_IsVisible.OnValueChanged += OnVisibilityChanged;
 
         if (IsServer)
         {
@@ -58,6 +83,13 @@ public abstract class MonsterBase : CharacterBase
         }
 
         SetHitColor(false);
+        ApplyVisibility(m_IsVisible.Value);
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        m_IsVisible.OnValueChanged -= OnVisibilityChanged;
     }
 
     public void SetSpawnAreaId(int _areaId)
@@ -124,6 +156,7 @@ public abstract class MonsterBase : CharacterBase
 
         if (IsServer)
         {
+            UnsubscribeOnHPChanged(OnBossHPChanged);
             ExecuteMonsterDrop(transform.position);
             InGameController.Instance.AreaWorker.OnMonsterDied(this, m_SpawnAreaId);
         }
@@ -177,5 +210,136 @@ public abstract class MonsterBase : CharacterBase
 
         if (m_Perception != null)
             m_Perception.Configure(this);
+
+        // R3-C: 행동별 초기화(서버 권위).
+        SetupBehavior();
+    }
+
+    // ============ R3-C 행동 분기 ============
+
+    /// <summary>스폰/재로드 시 행동별 초기 상태(은신 가시성·보스 페이즈 구독)를 세팅한다(서버).</summary>
+    private void SetupBehavior()
+    {
+        if (!IsServer)
+            return;
+
+        m_BossPhase = 1;
+
+        // 은신: 평시 비가시(반투명). 추격/근접/안개 시 노출은 UpdateStealthVisibility(서버 Tick)에서 판정.
+        m_IsVisible.Value = BehaviorType != MonsterBehaviorType.Stealth;
+
+        // 보스: HP 변화로 페이즈 전환 — 중복 구독 방지 위해 먼저 해제 후 등록.
+        UnsubscribeOnHPChanged(OnBossHPChanged);
+        if (BehaviorType == MonsterBehaviorType.Boss)
+            SubscribeOnHPChanged(OnBossHPChanged);
+    }
+
+    /// <summary>
+    /// R3-C 행동 Tick(서버, 상태머신 Update 경로). 은신 가시성·날씨강화를 매 프레임 갱신한다.
+    /// 비해당 BehaviorType은 즉시 반환(비파괴).
+    /// </summary>
+    public void UpdateBehaviorTick(bool _isChasing)
+    {
+        if (!IsServer)
+            return;
+
+        if (BehaviorType == MonsterBehaviorType.Stealth)
+            UpdateStealthVisibility(_isChasing);
+        else if (BehaviorType == MonsterBehaviorType.WeatherBuff)
+            UpdateWeatherBuff();
+    }
+
+    /// <summary>은신 가시성 갱신. 추격중·근접·안개면 노출, 아니면 은신.</summary>
+    private void UpdateStealthVisibility(bool _isChasing)
+    {
+        bool isFog = WeatherWorker.GlobalWeather == WeatherType.Fog;
+        bool playerNearby = IsPlayerWithin(STEALTH_REVEAL_RANGE);
+        bool exposed = _isChasing || playerNearby || isFog;
+
+        if (m_IsVisible.Value != exposed)
+            m_IsVisible.Value = exposed;
+    }
+
+    /// <summary>날씨강화: 눈보라/안개일 때 이동속도 가속(상태 변화 시에만 재적용).</summary>
+    private void UpdateWeatherBuff()
+    {
+        WeatherType w = WeatherWorker.GlobalWeather;
+        bool shouldBuff = w == WeatherType.Snowstorm || w == WeatherType.Fog;
+        if (shouldBuff == m_WeatherBuffActive)
+            return;
+
+        m_WeatherBuffActive = shouldBuff;
+        if (m_StateMachine != null)
+            m_StateMachine.SetMoveSpeedMultiplier(shouldBuff ? WEATHER_BUFF_SPEED_MULTIPLIER : 1f);
+
+        GameDebug.Log($"[MonsterBase] WeatherBuff {(shouldBuff ? "ON" : "OFF")} (Id={m_MonsterId}, weather={w}).");
+    }
+
+    private bool IsPlayerWithin(float _range)
+    {
+        var registry = InGameController.Instance?.ObjectDataWorker?.GetCharacterRegistry();
+        if (registry == null)
+            return false;
+
+        Vector3 pos = transform.position;
+        float sqrRange = _range * _range;
+        foreach (var player in registry.GetAlivePlayers())
+        {
+            if (player == null)
+                continue;
+            if ((player.transform.position - pos).sqrMagnitude <= sqrRange)
+                return true;
+        }
+        return false;
+    }
+
+    private void OnVisibilityChanged(bool _prev, bool _cur)
+    {
+        ApplyVisibility(_cur);
+    }
+
+    private void ApplyVisibility(bool _visible)
+    {
+        if (m_Renderer == null)
+            return;
+
+        Color c = m_Renderer.material.color;
+        c.a = _visible ? 1f : STEALTH_HIDDEN_ALPHA;
+        m_Renderer.material.color = c;
+    }
+
+    // 보스 HP 비율에 따라 페이즈 전환(66% / 33%). 페이즈마다 가속·공격 강화는 상태머신 속도 재적용으로 표현.
+    private void OnBossHPChanged(int _current, int _max)
+    {
+        if (!IsServer || _max <= 0)
+            return;
+
+        float ratio = (float)_current / _max;
+        int targetPhase = ratio <= BOSS_PHASE3_RATIO ? 3 : (ratio <= BOSS_PHASE2_RATIO ? 2 : 1);
+
+        if (targetPhase <= m_BossPhase)
+            return;
+
+        m_BossPhase = targetPhase;
+        OnBossPhaseEntered(targetPhase);
+    }
+
+    /// <summary>보스 페이즈 진입 시 강화(이동속도 가속). ATK 강화는 페이즈 배수로 GetATK 보정.</summary>
+    private void OnBossPhaseEntered(int _phase)
+    {
+        // 페이즈별 이동속도 가속 = 기본 ×(1 + 0.25*(phase-1)).
+        float speedMul = 1f + 0.25f * (_phase - 1);
+        if (m_StateMachine != null)
+            m_StateMachine.SetMoveSpeedMultiplier(speedMul);
+
+        GameDebug.Log($"[MonsterBase] Boss phase {_phase} entered (Id={m_MonsterId}, speedMul={speedMul:F2}).");
+    }
+
+    /// <summary>보스 페이즈 ATK 배수(공격 강화). 비보스는 1.</summary>
+    public float GetBossDamageMultiplier()
+    {
+        if (BehaviorType != MonsterBehaviorType.Boss)
+            return 1f;
+        return 1f + 0.3f * (m_BossPhase - 1);
     }
 }

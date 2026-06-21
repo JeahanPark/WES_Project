@@ -35,17 +35,17 @@ public enum MonsterStateType
     Death
 }
 
-// 몬스터 행동 분기 (R3-B: None/Pack/Charge만 코드 처리, 나머지는 R3-C 분기 추가용 선언만).
+// 몬스터 행동 분기 (R3-B: None/Pack/Charge, R3-C: Poison/Ranged/Stealth/WeatherBuff/Boss 구현 완료).
 public enum MonsterBehaviorType
 {
     None,        // 평화 — Chase/Attack 미사용(기존 배회). DetectRange=0과 함께 비파괴 디폴트.
     Pack,        // 무리 — Chase 진입 시 같은 SpawnAreaId 몬스터에 타깃 전파
     Charge,      // 돌진 — Attack 진입 시 1회 가속 직선 돌진(예고)
-    Poison,      // R3-C
-    Ranged,      // R3-C
-    Stealth,     // R3-C
-    WeatherBuff, // R3-C
-    Boss,        // R3-C
+    Poison,      // 독 — 근접 공격 적중 시 대상에 DoT(지속 피해) 부여
+    Ranged,      // 원거리 — AttackRange 밖에서 히트스캔 즉시판정(투사체 프리팹은 백로그)
+    Stealth,     // 은신 — 평시 반투명(NetworkVariable 가시성). 안개·근접·추격 시 노출
+    WeatherBuff, // 날씨강화 — 특정 날씨에서 ATK/MoveSpeed 강화(WeatherWorker 연동)
+    Boss,        // 보스 — HP 66%/33% 페이즈 전환(가속·공격 강화)
 }
 
 public enum WorldObjectType

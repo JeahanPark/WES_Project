@@ -14,14 +14,19 @@ public class MonsterStateMachine : MonoBehaviour
 
     private Dictionary<MonsterStateType, MonsterStateBase> m_States;
     private MonsterStateBase m_CurrentState;
+    private MonsterStateType m_CurrentStateType = MonsterStateType.Idle;
 
     private Vector3 m_TargetPosition;
     private Vector3 m_SpawnPosition;
     private NavMeshAgent m_Agent;
-    private float m_MoveSpeed = DEFAULT_MOVE_SPEED;
+    private float m_BaseMoveSpeed = DEFAULT_MOVE_SPEED;  // MonsterInfo 기본값
+    private float m_SpeedMultiplier = 1f;                // R3-C: 보스 페이즈/날씨강화 가속 배수
+    private float m_MoveSpeed = DEFAULT_MOVE_SPEED;      // 최종 적용 속도 = base × multiplier
 
     public MonsterBase Owner => m_Owner;
     public Vector3 SpawnPosition => m_SpawnPosition;
+    public float MoveSpeed => m_MoveSpeed;
+    public MonsterStateType CurrentStateType => m_CurrentStateType;
 
     private void Awake()
     {
@@ -46,6 +51,13 @@ public class MonsterStateMachine : MonoBehaviour
         if (m_Owner != null && m_Owner.Perception != null)
             m_Owner.Perception.Tick();
 
+        // R3-C 행동 Tick(서버) — 은신 가시성·날씨강화. 추격 여부 = Chase/Attack 상태.
+        if (m_Owner != null)
+        {
+            bool isChasing = m_CurrentStateType == MonsterStateType.Chase || m_CurrentStateType == MonsterStateType.Attack;
+            m_Owner.UpdateBehaviorTick(isChasing);
+        }
+
         m_CurrentState?.Update();
     }
 
@@ -55,7 +67,21 @@ public class MonsterStateMachine : MonoBehaviour
         if (_owner == null)
             return;
 
-        m_MoveSpeed = _owner.ConfiguredMoveSpeed;
+        m_BaseMoveSpeed = _owner.ConfiguredMoveSpeed;
+        m_SpeedMultiplier = 1f;
+        ApplyFinalSpeed();
+    }
+
+    /// <summary>R3-C: 보스 페이즈/날씨강화 가속 배수 적용(서버). base × multiplier로 최종 속도 재계산.</summary>
+    public void SetMoveSpeedMultiplier(float _multiplier)
+    {
+        m_SpeedMultiplier = _multiplier > 0f ? _multiplier : 1f;
+        ApplyFinalSpeed();
+    }
+
+    private void ApplyFinalSpeed()
+    {
+        m_MoveSpeed = m_BaseMoveSpeed * m_SpeedMultiplier;
         if (m_Agent != null)
             m_Agent.speed = m_MoveSpeed;
     }
@@ -67,6 +93,7 @@ public class MonsterStateMachine : MonoBehaviour
 
         m_CurrentState?.Exit();
         m_CurrentState = newState;
+        m_CurrentStateType = _stateType;
         m_CurrentState?.Enter();
     }
 

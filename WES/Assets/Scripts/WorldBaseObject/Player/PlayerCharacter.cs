@@ -26,6 +26,9 @@ public class PlayerCharacter : CharacterBase
 
     private event System.Action<int, int> m_OnColdChanged;
 
+    // R3-C 독 DoT 코루틴(서버). 재적중 시 갱신(중복 스택 방지).
+    private Coroutine m_PoisonCoroutine;
+
     // Properties
     public int GetPlayerIndex() => m_PlayerIndex.Value;
     public int Cold => m_Cold.Value;
@@ -132,6 +135,34 @@ public class PlayerCharacter : CharacterBase
     public void TakeEnvironmentDamage(int _damage, bool _allowDeath)
     {
         ApplyEnvironmentDamageServer(_damage, _allowDeath);
+    }
+
+    /// <summary>
+    /// R3-C 독(Poison) DoT: 일정 간격으로 환경 데미지를 _ticks회 적용한다(서버 전용).
+    /// 독개구리 등 Poison 몬스터의 근접 적중 후처리에서 호출. 환경 데미지 경로 재사용(DEF 무시·즉사 가능).
+    /// 갱신(재적중) 시 새 코루틴을 덧대지 않고 직전 DoT를 갱신해 스택 폭주를 막는다.
+    /// </summary>
+    public void ApplyPoison(int _damagePerTick, int _ticks, float _interval)
+    {
+        if (!IsServer || IsDead || _damagePerTick <= 0 || _ticks <= 0)
+            return;
+
+        if (m_PoisonCoroutine != null)
+            StopCoroutine(m_PoisonCoroutine);
+
+        m_PoisonCoroutine = StartCoroutine(CoPoisonDot(_damagePerTick, _ticks, _interval));
+    }
+
+    private System.Collections.IEnumerator CoPoisonDot(int _damagePerTick, int _ticks, float _interval)
+    {
+        for (int i = 0; i < _ticks; i++)
+        {
+            yield return new WaitForSeconds(_interval);
+            if (IsDead || !IsSpawned)
+                break;
+            ApplyEnvironmentDamageServer(_damagePerTick, true);
+        }
+        m_PoisonCoroutine = null;
     }
 
     /// <summary>

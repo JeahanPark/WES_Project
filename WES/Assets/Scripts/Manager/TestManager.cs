@@ -2803,5 +2803,202 @@ public class TestManager : MonoSingleton<TestManager>
         var sm = _monster.GetComponentInChildren<MonsterStateMachine>();
         return sm != null ? sm.SpawnPosition : _monster.transform.position;
     }
+
+    // ============ R3-C 프로브 ============
+
+    /// <summary>지정 MonsterId의 몬스터를 플레이어 근처에 직접 스폰(placeholder 프리팹 + SetMonsterId). 서버 전용.</summary>
+    // R3-C 프로브 헬퍼
+    private MonsterBase SpawnMonsterWithId(int _monsterId, Vector3 _position)
+    {
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) return null;
+
+        var spawned = controller.SpawnWorker.SpawnObject<MonsterBase>("Test01Monster", _position);
+        if (spawned != null)
+            spawned.SetMonsterId(_monsterId);
+        return spawned;
+    }
+
+    // R3-C: 도면 월드스폰 — ForceSpawnBlueprint로 월드에 도면 드롭이 생기는지 확인.
+    public void TestBlueprintWorldSpawn()
+    {
+        StartCoroutine(CoTestBlueprintWorldSpawn());
+    }
+
+    private IEnumerator CoTestBlueprintWorldSpawn()
+    {
+        GameDebug.Log("[TestManager] TestBlueprintWorldSpawn 시작");
+        int passed = 0, failed = 0;
+        void Mark(bool _c, string _l)
+        {
+            if (_c) { passed++; GameDebug.Log($"[TestManager] PASS: {_l}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_l}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+
+        var areaWorker = controller.AreaWorker;
+        Mark(areaWorker != null, "AreaWorker 존재");
+        if (areaWorker == null) yield break;
+
+        var blueprints = Managers.Info.BlueprintInfoList;
+        Mark(blueprints != null && blueprints.Count > 0, $"BlueprintInfo 행 존재 ({blueprints?.Count ?? 0}개)");
+        if (blueprints == null || blueprints.Count == 0) yield break;
+
+        int firstBpId = blueprints[0].Id;
+        int firstBpItemId = blueprints[0].BlueprintItemId;
+
+        int beforeDrops = Object.FindObjectsByType<WorldDropItem>(FindObjectsSortMode.None).Length;
+        bool spawned = areaWorker.ForceSpawnBlueprint(firstBpId);
+        Mark(spawned, $"ForceSpawnBlueprint(Id={firstBpId}) 호출 성공");
+        yield return new WaitForSeconds(0.5f);
+
+        var drops = Object.FindObjectsByType<WorldDropItem>(FindObjectsSortMode.None);
+        Mark(drops.Length > beforeDrops, $"월드 도면 드롭 증가 ({beforeDrops} → {drops.Length})");
+
+        bool foundBlueprintDrop = false;
+        foreach (var d in drops)
+        {
+            if (d.ItemInfoId == firstBpItemId) { foundBlueprintDrop = true; break; }
+        }
+        Mark(foundBlueprintDrop, $"도면 ItemId={firstBpItemId} 드롭이 월드에 존재");
+
+        GameDebug.Log($"[TestManager] TestBlueprintWorldSpawn 결과: PASS {passed}, FAIL {failed}");
+    }
+
+    // R3-C: 독(Poison) DoT — 독개구리(Id=13) 공격 후 플레이어 HP가 틱마다 지속 감소.
+    public void TestPoisonDot()
+    {
+        StartCoroutine(CoTestPoisonDot());
+    }
+
+    private IEnumerator CoTestPoisonDot()
+    {
+        GameDebug.Log("[TestManager] TestPoisonDot 시작");
+        int passed = 0, failed = 0;
+        void Mark(bool _c, string _l)
+        {
+            if (_c) { passed++; GameDebug.Log($"[TestManager] PASS: {_l}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_l}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+        var registry = controller.ObjectDataWorker?.GetCharacterRegistry();
+        var players = registry?.GetAlivePlayers();
+        if (players == null || players.Count == 0) { GameDebug.LogError("[TestManager] 플레이어 없음"); yield break; }
+        var player = players[0];
+        player.SetHP(99999);
+
+        // Poison 몬스터(독개구리 Id=13) 직접 스폰 + 검증.
+        var poison = SpawnMonsterWithId(13, player.transform.position + Vector3.forward * 3f);
+        yield return new WaitForSeconds(0.3f);
+        Mark(poison != null && poison.BehaviorType == MonsterBehaviorType.Poison, $"Poison 몬스터 스폰 (Behavior={poison?.BehaviorType})");
+
+        // ApplyPoison 직접 호출(공격 적중 후처리 경로와 동일 API) → HP 틱 감소 검증.
+        int hpBefore = player.HP;
+        player.ApplyPoison(3, 3, 0.5f);
+        yield return new WaitForSeconds(0.7f);
+        int hpAfter1 = player.HP;
+        Mark(hpAfter1 < hpBefore, $"독 1틱 후 HP 감소 ({hpBefore} → {hpAfter1})");
+        yield return new WaitForSeconds(1.2f);
+        int hpAfter3 = player.HP;
+        Mark(hpAfter3 < hpAfter1, $"독 지속 틱 후 HP 추가 감소 ({hpAfter1} → {hpAfter3})");
+
+        GameDebug.Log($"[TestManager] TestPoisonDot 결과: PASS {passed}, FAIL {failed}");
+    }
+
+    // R3-C: 보스 페이즈 — 관문보스(Id=19) HP를 66%/33% 아래로 낮춰 BossPhase 전환 확인.
+    public void TestBossPhase()
+    {
+        StartCoroutine(CoTestBossPhase());
+    }
+
+    private IEnumerator CoTestBossPhase()
+    {
+        GameDebug.Log("[TestManager] TestBossPhase 시작");
+        int passed = 0, failed = 0;
+        void Mark(bool _c, string _l)
+        {
+            if (_c) { passed++; GameDebug.Log($"[TestManager] PASS: {_l}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_l}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+        var registry = controller.ObjectDataWorker?.GetCharacterRegistry();
+        var players = registry?.GetAlivePlayers();
+        if (players == null || players.Count == 0) { GameDebug.LogError("[TestManager] 플레이어 없음"); yield break; }
+        var player = players[0];
+
+        var boss = SpawnMonsterWithId(19, player.transform.position + Vector3.forward * 5f);
+        yield return new WaitForSeconds(0.3f);
+        Mark(boss != null && boss.BehaviorType == MonsterBehaviorType.Boss, $"보스 스폰 (Behavior={boss?.BehaviorType})");
+        if (boss == null) { GameDebug.LogError($"[TestManager] TestBossPhase 결과: PASS {passed}, FAIL {failed}"); yield break; }
+
+        Mark(boss.BossPhase == 1, $"초기 페이즈 1 (실제 {boss.BossPhase})");
+
+        int maxHP = boss.MaxHP;
+        // HP를 65%로 낮춤 → 페이즈 2.
+        boss.SetHP(Mathf.RoundToInt(maxHP * 0.65f));
+        yield return new WaitForSeconds(0.3f);
+        Mark(boss.BossPhase == 2, $"HP 65% → 페이즈 2 (실제 {boss.BossPhase})");
+
+        // HP를 30%로 낮춤 → 페이즈 3.
+        boss.SetHP(Mathf.RoundToInt(maxHP * 0.30f));
+        yield return new WaitForSeconds(0.3f);
+        Mark(boss.BossPhase == 3, $"HP 30% → 페이즈 3 (실제 {boss.BossPhase})");
+
+        GameDebug.Log($"[TestManager] TestBossPhase 결과: PASS {passed}, FAIL {failed}");
+    }
+
+    // R3-C: 은신 — 망령(Id=18) 스폰 시 비가시(반투명), 플레이어 근접 시 노출.
+    public void TestStealthVisibility()
+    {
+        StartCoroutine(CoTestStealthVisibility());
+    }
+
+    private IEnumerator CoTestStealthVisibility()
+    {
+        GameDebug.Log("[TestManager] TestStealthVisibility 시작");
+        int passed = 0, failed = 0;
+        void Mark(bool _c, string _l)
+        {
+            if (_c) { passed++; GameDebug.Log($"[TestManager] PASS: {_l}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_l}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+        var registry = controller.ObjectDataWorker?.GetCharacterRegistry();
+        var players = registry?.GetAlivePlayers();
+        if (players == null || players.Count == 0) { GameDebug.LogError("[TestManager] 플레이어 없음"); yield break; }
+        var player = players[0];
+        player.SetHP(99999);
+
+        var playerAgent = player.GetComponent<NavMeshAgent>();
+        void WarpPlayer(Vector3 _p)
+        {
+            if (playerAgent != null && playerAgent.enabled && playerAgent.isOnNavMesh) playerAgent.Warp(_p);
+            else player.transform.position = _p;
+        }
+
+        // 멀리서 망령(Stealth Id=18) 스폰 → 평시 비가시.
+        WarpPlayer(player.transform.position);
+        var stealth = SpawnMonsterWithId(18, player.transform.position + Vector3.forward * 30f);
+        yield return new WaitForSeconds(0.5f);
+        Mark(stealth != null && stealth.BehaviorType == MonsterBehaviorType.Stealth, $"은신 몬스터 스폰 (Behavior={stealth?.BehaviorType})");
+        if (stealth == null) { GameDebug.LogError($"[TestManager] TestStealthVisibility 결과: PASS {passed}, FAIL {failed}"); yield break; }
+
+        Mark(!stealth.IsVisible, $"평시(원거리) 은신 = 비가시 (IsVisible={stealth.IsVisible})");
+
+        // 플레이어를 근접시키면 노출.
+        WarpPlayer(stealth.transform.position + Vector3.forward * 1.5f);
+        yield return new WaitForSeconds(0.5f);
+        Mark(stealth.IsVisible, $"근접 시 노출 = 가시 (IsVisible={stealth.IsVisible})");
+
+        GameDebug.Log($"[TestManager] TestStealthVisibility 결과: PASS {passed}, FAIL {failed}");
+    }
 }
 #endif
