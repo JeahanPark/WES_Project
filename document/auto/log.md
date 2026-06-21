@@ -114,3 +114,4 @@ vault 변경 이력. 시간 역순(최신이 위).
 - `auto/README.md` 작성
 - 상위 [[../obsidian_agent_plan|스펙 문서]] v3.1로 정착 (Notion → Obsidian, lat.md 제거)
 2026-06-21 R1-T1 CSV 스키마 확장(신규 컬럼 5종+신규 CSV 2종 WeatherInfo/WorldAreaWeatherInfo)·InfoConvert partial화·파싱 검증 — reports/2026-06-21-R1T1-CSV스키마확장.md
+2026-06-21 R1-T2 난이도 공식 D=TP/CAP 코드화 — DifficultyFormula(순수 모듈, PhaseMul/WeatherMul 어댑터, WeatherMul은 T1 WeatherInfo 조회) + TestManager.TestLogDifficulty 프로브. 런타임 검증 PASS(D 구성요소 명세 일치)

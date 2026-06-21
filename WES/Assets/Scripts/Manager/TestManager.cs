@@ -1564,6 +1564,42 @@ public class TestManager : MonoSingleton<TestManager>
         GameDebug.Log("[TestManager] ===== TestPopupHoldForCapture 완료 =====");
     }
 
+    // 난이도 공식 D=TP/CAP 런타임 검증/튜닝 프로브 (R1-T2). 공개 API(DifficultyFormula) 조합만 — 테스트 전용 로직 없음.
+    // 지역깊이/밀도/날씨는 R2/R3 데이터 전까지 명세값(6지역 밸런스 §2)을 직접 주입해 공식 동작을 확인.
+    public void TestLogDifficulty()
+    {
+        DayPhase phase = DayPhase.Day;
+        var dn = Object.FindFirstObjectByType<DayNightWorker>();
+        if (dn != null) phase = dn.CurrentPhase;
+        float phaseMul = DifficultyFormula.PhaseMul(phase);
+
+        (int d, float density, WeatherType w)[] cases =
+        {
+            (0, 1.00f, WeatherType.Clear),
+            (1, 0.85f, WeatherType.Rain),
+            (4, 0.40f, WeatherType.Snowstorm),
+        };
+
+        GameDebug.Log($"[T2][Difficulty] phase={phase} phaseMul={phaseMul} (CAP 입력은 ToolTier=1/Gear=1/Tech=0/Stock=0 기준)");
+        foreach (var c in cases)
+        {
+            var inp = new DifficultyFormula.DifficultyInputs
+            {
+                Depth = c.d,
+                ResourceDensity = c.density,
+                ColdDrain = 1.0f,
+                PhaseMul = phaseMul,
+                WeatherMul = DifficultyFormula.WeatherMul(c.w),
+                ToolTier = 1f,
+                GearScore = 1f,
+                TechUnlocked = 0f,
+                StockpileBuffer = 0f,
+            };
+            var r = DifficultyFormula.Compute(inp);
+            GameDebug.Log($"[T2][Difficulty] d={c.d} {c.w} weatherMul={inp.WeatherMul:F2} | EnemyScale={r.EnemyScale:F2} Env={r.EnvPressure:F2} Scarcity={r.ScarcityPressure:F2} TP={r.TP:F2} CAP={r.CAP:F2} D={r.D:F2}");
+        }
+    }
+
     private void ApplyFullPlayInvincible(PlayerCharacter _player)
     {
         if (_player == null) return;
