@@ -1677,6 +1677,45 @@ public class TestManager : MonoSingleton<TestManager>
             GameDebug.Log($"[T3][ToolTier] tier{t} → 채집배수 x{ToolTierSystem.GatheringMultiplier(t)}");
     }
 
+    // 덫 발동 검증 프로브 (R1-T4). 몬스터 스폰 후 TrapSystem 발동 → 피해 적용 확인. 공개 API 조합.
+    public void TestTrapDamage()
+    {
+        StartCoroutine(CoTestTrapDamage());
+    }
+
+    private IEnumerator CoTestTrapDamage()
+    {
+        var controller = InGameController.Instance;
+        var player = controller?.PlayWorker?.LocalPlayer;
+        if (controller == null || player == null)
+        {
+            GameDebug.LogError("[T4][Trap] 인게임/플레이어 없음");
+            yield break;
+        }
+
+        var minfo = Managers.Info.MonsterInfoList.Find(x => x.Id == 1);
+        if (minfo == null)
+        {
+            GameDebug.LogError("[T4][Trap] MonsterInfo(1) 없음");
+            yield break;
+        }
+
+        Vector3 pos = player.transform.position + player.transform.forward * 5f;
+        var monster = controller.SpawnWorker.SpawnObject<MonsterBase>(minfo.PrefabKey, pos);
+        if (monster == null)
+        {
+            GameDebug.LogError("[T4][Trap] 몬스터 스폰 실패");
+            yield break;
+        }
+
+        yield return new WaitForSeconds(0.5f);
+        int before = monster.HP;
+        int hit = TrapSystem.TriggerTrapDamage(pos, 3f, 20);
+        yield return null;
+        int after = monster.HP;
+        GameDebug.Log($"[T4][Trap] 덫 발동 적중={hit}, 몬스터 HP {before}->{after} (Δ={after - before}) — 피해 적용이면 PASS");
+    }
+
     private void ApplyFullPlayInvincible(PlayerCharacter _player)
     {
         if (_player == null) return;
