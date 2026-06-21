@@ -1,17 +1,17 @@
 Id.INT,Name.STRING,Description.STRING,IsStackable.BOOL,MaxStack.INT,PrefabKey.STRING,IconKey.STRING,BuildingInfoId.INT,ToolTier.INT
-1,나무,나무를 가공하여 만든 재료,true,99,TestItem,wood_icon,0,0
-2,돌,단단한 돌 재료,true,99,TestItem,stone_icon,0,0
+1,나무,젖은 장작. 불이 붙으려면 손이 간다.,true,99,TestItem,wood_icon,0,0
+2,돌,차가운 돌. 무엇이든 되기 전의 것.,true,99,TestItem,stone_icon,0,0
 3,검,날카로운 검,false,1,TestItem,sword_icon,0,0
-4,모닥불,설치 가능한 모닥불,true,9,TestItem,campfire_icon,1,0
-5,약초,숲에서 채집하는 치유 허브,true,99,TestItem,herb_icon,0,0
-6,가죽,몬스터에서 얻는 질긴 가죽,true,99,TestItem,leather_icon,0,0
-7,뼈,몬스터에서 얻는 단단한 뼈,true,99,TestItem,bone_icon,0,0
-8,철광석,광석 바위에서 채굴,true,99,TestItem,ironore_icon,0,0
+4,모닥불,작은 불. 어둠과 추위를 잠시 밀어낸다.,true,9,TestItem,campfire_icon,1,0
+5,약초,쓴 잎. 상처에도 추위에도 듣는다.,true,99,TestItem,herb_icon,0,0
+6,가죽,질긴 짐승 가죽. 몸을 지킬 수 있다.,true,99,TestItem,leather_icon,0,0
+7,뼈,단단한 뼈. 날을 세우면 무기가 된다.,true,99,TestItem,bone_icon,0,0
+8,철광석,붉게 슨 광석. 불이 있어야 쓸모가 생긴다.,true,99,TestItem,ironore_icon,0,0
 101,회복 포션,HP를 30 회복하는 포션,true,10,TestItem,potion_hp_icon,0,0
 102,체온 포션,체온을 20 회복하는 포션,true,10,TestItem,potion_cold_icon,0,0
 103,붕대,HP를 15 회복하는 붕대,true,20,TestItem,bandage_icon,0,0
 201,나무 방패,방어력을 올려주는 방패,false,1,TestItem,shield_icon,0,0
-202,철검,강력한 철제 검,false,1,TestItem,ironsword_icon,0,0
+202,철검,차게 벼린 칼. 손이 시리도록 무겁다.,false,1,TestItem,ironsword_icon,0,0
 203,가죽 갑옷,가죽으로 만든 방어구,false,1,TestItem,leatherarmor_icon,0,0
 301,횃불,주변을 밝히는 횃불,true,9,TestItem,torch_icon,2,0
 401,나무 방패 도면,바랜 양피지에 그려진 방패 설계도,false,1,TestItem,blueprint_shield_icon,0,0

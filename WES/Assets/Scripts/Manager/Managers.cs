@@ -100,6 +100,7 @@ public class Managers : MonoSingleton<Managers>
     public static ResourceManager Resource => ResourceManager.Instance;
     public static ChatManager Chat => ChatManager.Instance;
     public static GameSceneManager Scene => GameSceneManager.Instance;
+    public static AudioManager Audio => AudioManager.Instance;
 
 #if UNITY_EDITOR
     public static TestManager Test => TestManager.Instance;
@@ -121,6 +122,7 @@ public class Managers : MonoSingleton<Managers>
         Resource.Init();
         Chat.Init();
         Scene.Init();
+        Audio.Init();
 
 #if UNITY_EDITOR
         Test.Init();
@@ -143,6 +145,7 @@ public class Managers : MonoSingleton<Managers>
         Resource?.Clear();
         if (Chat) Chat.Clear();
         if (Scene) Scene.Clear();
+        if (Audio) Audio.Clear();
 
 #if UNITY_EDITOR
         if (Test) Test.Clear();

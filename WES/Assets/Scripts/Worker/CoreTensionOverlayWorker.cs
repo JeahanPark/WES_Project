@@ -23,6 +23,10 @@ public class CoreTensionOverlayWorker : MonoBehaviour
     private const int VIGNETTE_HP_THRESHOLD = 30;        // 저체력 비네팅 발동 HP 임계(퍼센트)
     private const float COLD_OVERLAY_MAX_ALPHA = 0.85f;  // 추위 오버레이 완전차폐 금지 천장(공정성: 중앙 시야 여백 보증). director 결정 2026-06-06.
 
+    // ── R4 ① 날씨/이동 연출 상수 (director 확정 2026-06-21) ──
+    private const float WEATHER_FADE_DURATION = 1.2f;    // 날씨 오버레이 전환 페이드(WeatherWorker는 한 단계씩만 이동)
+    private const float MOVE_SPEED_THRESHOLD = 0.4f;     // 로컬 이동 판정 속도(units/sec) — 이동중 추위 맥동 가속
+
     // 임계 단일소스 폴백값(m_Config 미연결 시에만 사용). 정상 운용은 DayNightConfig 참조.
     private const int FALLBACK_COLD_STAGE_WARNING = 30;
     private const int FALLBACK_COLD_STAGE_WEAK = 60;
@@ -65,29 +69,53 @@ public class CoreTensionOverlayWorker : MonoBehaviour
     [Header("Ambient Fog (I-5)")]
     [SerializeField] private RawImage m_AmbientFog; // ambient_fog (Repeat, uvRect 스크롤)
 
+    // ── R4 ① 날씨 오버레이 레이어 (designer 프리팹에서 슬롯 연결) ──
+    // 비=가장자리 얼룩, 안개=풀스크린 회백 베일(I-5 위 추가 강화), 눈보라=백색 차폐(가시성 천장 적용).
+    [Header("Weather Overlay (R4 ①)")]
+    [SerializeField] private Image m_RainEdge;        // rain_edge (가장자리 빗물 얼룩)
+    [SerializeField] private Image m_FogVeil;         // fog_veil (풀스크린 회백 베일)
+    [SerializeField] private Image m_SnowstormOverlay; // snowstorm_white (백색 흩날림 차폐)
+    [SerializeField, Range(0f, 1f)] private float m_RainEdgeAlpha = 0.4f;
+    [SerializeField, Range(0f, 1f)] private float m_FogVeilAlpha = 0.35f;
+    [SerializeField, Range(0f, 1f)] private float m_SnowstormAlpha = 0.5f;
+    // 가시성 천장: 날씨 오버레이의 화면 차폐 상한(눈보라+밤+저체력 3중첩에도 중앙 시야 보장). director 절대보호 §5-1·§9.
+    [SerializeField, Range(0.3f, 0.85f)] private float m_OverlayVisibilityCeiling = 0.6f;
+    // 이동중 추위 맥동 가속 배수(이동 시 StrongDot 펄스 주기를 이 배수로 단축).
+    [SerializeField, Range(1f, 3f)] private float m_ColdPulseMoveMul = 1.6f;
+
     private PlayerCharacter m_LocalPlayer;
     private ColdStage m_CurrentColdStage = ColdStage.None;
     private bool m_HpVignetteActive;
     private bool m_DeathTriggered;
     private float m_FogScrollOffset;
 
+    // R4 ① 날씨/이동 상태
+    private WeatherType m_CurrentWeather = WeatherType.Clear;
+    private Vector3 m_LastLocalPos;
+    private bool m_HasLastPos;
+    private bool m_IsLocalMoving;
+
     private Coroutine m_ColdFadeCoroutine;
     private Coroutine m_DayNightFadeCoroutine;
     private Coroutine m_DeathFadeCoroutine;
+    private Coroutine m_WeatherFadeCoroutine;
 
     private void OnEnable()
     {
         DayNightWorker.OnPhaseChanged += OnPhaseChanged;
+        WeatherWorker.OnWeatherChanged += OnWeatherChanged;
     }
 
     private void OnDisable()
     {
         DayNightWorker.OnPhaseChanged -= OnPhaseChanged;
+        WeatherWorker.OnWeatherChanged -= OnWeatherChanged;
         UnsubscribePlayer();
     }
 
     private void Update()
     {
+        UpdateLocalMovement();
         UpdateFogScroll();
         UpdateColdStage3Pulse();
         UpdateHpVignettePulse();
@@ -110,12 +138,20 @@ public class CoreTensionOverlayWorker : MonoBehaviour
         OnColdChanged(m_LocalPlayer.Cold, m_LocalPlayer.MaxCold);
         OnHPChanged(m_LocalPlayer.HP, m_LocalPlayer.MaxHP);
         ApplyDayNightTint(GetCurrentPhase(), _instant: true);
+
+        // R4 ① 현재 날씨 즉시 반영(스폰 시점 전역 스냅샷) + 이동 추적 초기화
+        m_CurrentWeather = WeatherWorker.GlobalWeather;
+        ApplyWeatherOverlay(m_CurrentWeather, _instant: true);
+        m_HasLastPos = false;
+        m_IsLocalMoving = false;
     }
 
     public void ClearLocalPlayer()
     {
         UnsubscribePlayer();
         m_LocalPlayer = null;
+        m_HasLastPos = false;
+        m_IsLocalMoving = false;
     }
 
     /// <summary>
@@ -214,8 +250,13 @@ public class CoreTensionOverlayWorker : MonoBehaviour
         if (m_ColdFadeCoroutine != null)
             return; // 페이드 중에는 펄스 미적용
 
+        // R4 ①: 이동 중이면 맥동 주기를 단축(빠르게 식는 체감). 정지 시 기본 주기.
+        float period = m_ColdStage3PulsePeriod;
+        if (m_IsLocalMoving && m_ColdPulseMoveMul > 0f)
+            period /= m_ColdPulseMoveMul;
+
         // 펄스도 완전차폐 금지 천장(COLD_OVERLAY_MAX_ALPHA) 안에서 진동. 진폭은 천장 아래로 흔든다.
-        float pulse = COLD_OVERLAY_MAX_ALPHA + Mathf.Sin(Time.time * Mathf.PI * 2f / m_ColdStage3PulsePeriod) * m_ColdStage3PulseAmplitude;
+        float pulse = COLD_OVERLAY_MAX_ALPHA + Mathf.Sin(Time.time * Mathf.PI * 2f / period) * m_ColdStage3PulseAmplitude;
         SetAlpha(m_ColdOverlay3, Mathf.Clamp(pulse, 0f, COLD_OVERLAY_MAX_ALPHA));
     }
 
@@ -345,6 +386,108 @@ public class CoreTensionOverlayWorker : MonoBehaviour
     {
         var worker = InGameController.Instance?.DayNightWorker;
         return worker != null ? worker.CurrentPhase : DayPhase.Day;
+    }
+
+    // ── R4 ① 날씨/이동 연출 ───────────────────────────────────────
+
+    // 로컬 플레이어(오너) 위치 델타로 이동 중/정지 판정(서버 권한·Rpc 불필요).
+    // 정지 = Cold 회복 구간이면 추위 단계가 OnColdChanged로 자연 하락해 오버레이가 "서서히 걷힘"(기획 §5-1).
+    private void UpdateLocalMovement()
+    {
+        if (m_LocalPlayer == null)
+        {
+            m_IsLocalMoving = false;
+            return;
+        }
+
+        Vector3 pos = m_LocalPlayer.transform.position;
+        if (!m_HasLastPos)
+        {
+            m_LastLocalPos = pos;
+            m_HasLastPos = true;
+            m_IsLocalMoving = false;
+            return;
+        }
+
+        float dt = Time.deltaTime;
+        if (dt <= 0f)
+            return;
+
+        Vector3 horiz = pos - m_LastLocalPos;
+        horiz.y = 0f; // 경사/낙하 제외(MoveCostWorker와 동일 기준)
+        m_LastLocalPos = pos;
+
+        float speed = horiz.magnitude / dt;
+        m_IsLocalMoving = speed >= MOVE_SPEED_THRESHOLD;
+    }
+
+    private void OnWeatherChanged(WeatherType _prev, WeatherType _cur)
+    {
+        if (_cur == m_CurrentWeather)
+            return;
+        m_CurrentWeather = _cur;
+        ApplyWeatherOverlay(_cur, _instant: false);
+        ApplyWeatherAmbient(_cur);
+    }
+
+    // R4 ③ 날씨별 환경음(루프) 전환. 음원 미등록이면 AudioManager가 무음 통과.
+    private void ApplyWeatherAmbient(WeatherType _weather)
+    {
+        string key = _weather switch
+        {
+            WeatherType.Rain => AudioKey.AMBIENT_RAIN,
+            WeatherType.Snowstorm => AudioKey.AMBIENT_SNOWSTORM,
+            _ => AudioKey.AMBIENT_DEFAULT,
+        };
+        Managers.Audio.PlayAmbient(key);
+    }
+
+    // 날씨별 목표 알파를 결정하고 페이드. 눈보라 백색은 가시성 천장(중앙 시야 보장) 안에서만 차폐.
+    private void ApplyWeatherOverlay(WeatherType _weather, bool _instant)
+    {
+        // 가시성 천장: 어떤 날씨도 화면 차폐가 m_OverlayVisibilityCeiling을 넘지 않는다(눈보라 백색 포함).
+        float ceiling = m_OverlayVisibilityCeiling;
+
+        float rainTarget = _weather == WeatherType.Rain ? Mathf.Min(m_RainEdgeAlpha, ceiling) : 0f;
+        // 안개: I-5 앰비언트 안개 위에 풀스크린 베일을 추가 강화.
+        float fogTarget = _weather == WeatherType.Fog ? Mathf.Min(m_FogVeilAlpha, ceiling) : 0f;
+        float snowTarget = _weather == WeatherType.Snowstorm ? Mathf.Min(m_SnowstormAlpha, ceiling) : 0f;
+
+        if (m_WeatherFadeCoroutine != null)
+            StopCoroutine(m_WeatherFadeCoroutine);
+
+        if (_instant)
+        {
+            SetAlpha(m_RainEdge, rainTarget);
+            SetAlpha(m_FogVeil, fogTarget);
+            SetAlpha(m_SnowstormOverlay, snowTarget);
+            return;
+        }
+
+        m_WeatherFadeCoroutine = StartCoroutine(CoFadeWeather(rainTarget, fogTarget, snowTarget));
+    }
+
+    private IEnumerator CoFadeWeather(float _rain, float _fog, float _snow)
+    {
+        float sRain = GetAlpha(m_RainEdge);
+        float sFog = GetAlpha(m_FogVeil);
+        float sSnow = GetAlpha(m_SnowstormOverlay);
+        float elapsed = 0f;
+
+        while (elapsed < WEATHER_FADE_DURATION)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / WEATHER_FADE_DURATION);
+            SetAlpha(m_RainEdge, Mathf.Lerp(sRain, _rain, t));
+            SetAlpha(m_FogVeil, Mathf.Lerp(sFog, _fog, t));
+            SetAlpha(m_SnowstormOverlay, Mathf.Lerp(sSnow, _snow, t));
+            yield return null;
+        }
+
+        SetAlpha(m_RainEdge, _rain);
+        SetAlpha(m_FogVeil, _fog);
+        SetAlpha(m_SnowstormOverlay, _snow);
+        m_WeatherFadeCoroutine = null;
     }
 
     private void UpdateFogScroll()
