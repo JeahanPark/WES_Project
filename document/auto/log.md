@@ -14,6 +14,8 @@ vault 변경 이력. 시간 역순(최신이 위).
 
 ---
 
+## [2026-06-21] ingest | Stop hook auto-update - new class=2, new signal=1
+
 ## [2026-06-21] ingest | Stop hook auto-update - new class=1, new signal=0
 
 ## [2026-06-21] ingest | Stop hook auto-update - new class=1, new signal=1
@@ -125,3 +127,4 @@ vault 변경 이력. 시간 역순(최신이 위).
 2026-06-21 R1-T4(부분) 덫 — TrapSystem.TriggerTrapDamage(범위 몬스터 피해 코어) + TestTrapDamage 검증 PASS(적중1, HP100→83). 덫 건물 프리팹·설치·근접발동·표지 UI는 R2~R4
 2026-06-21 R1-T7 통합 QA — 전 시스템 1세션 공존·프로브 일괄 에러0. R1 통합보고(reports/2026-06-21-R1-통합보고.md). 코드 토대 완료, 콘텐츠·6지역 연동 R2~R4
 2026-06-21 R2 Phase1 합의(6지역 공간, 미결0)·Phase2 슬라이스1 코드토대 — InGameAreaBandWorker(선두Z→지역d→Weather/MoveCost.SetArea, 단조증가+히스테리시스)·AreaGateComponent 스켈레톤·WorldAreaInfo AxisMin/Max(CSV 단일진실원). 씬 부착+와이어링(team-lead MCP)·플레이검증 PASS(z-40→a1, z10→a2, z51→a3, 역행 a3유지). 프로브 Warp 수정.
+2026-06-21 R2 슬라이스2a — MapGenerator 6지역 선형종단 회랑 개편(원형섬→Z -70~203 6밴드, CSV WorldAreaInfo 단일진실원 파싱, 지형벽 시야차폐) + CSV 6지역(WorldArea/Weather17/Monster13행+신규몬스터10종 placeholder). 메뉴 Validate(PASS16/0)·Generate·Bake 실행. 플레이검증 6지역 밴드전환 PASS(a1~a6 단조증가). 지형아트·관문배치·몬스터모델은 2b.

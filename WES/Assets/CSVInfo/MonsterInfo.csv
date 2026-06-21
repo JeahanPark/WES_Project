@@ -3,3 +3,13 @@ Id.INT,Name.STRING,MaxHP.INT,PrefabKey.STRING,DropTableId.INT,ATK.INT
 2,늑대,80,Test01Monster,1002,8
 3,골렘,250,Test01Monster,1003,14
 4,어둠늑대,90,Test01Monster,1004,10
+10,갯게,40,Test01Monster,1001,5
+11,갈매기,25,Test01Monster,1001,3
+12,멧돼지,80,Test01Monster,1002,12
+13,독개구리,45,Test01Monster,1003,9
+14,수렁손,70,Test01Monster,1003,10
+15,동굴박쥐,30,Test01Monster,1002,7
+16,혹한늑대,70,Test01Monster,1002,12
+17,설인,130,Test01Monster,1003,18
+18,망령,60,Test01Monster,1004,13
+19,관문보스,400,Test01Monster,1003,25

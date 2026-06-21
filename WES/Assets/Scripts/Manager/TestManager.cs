@@ -1660,7 +1660,7 @@ public class TestManager : MonoSingleton<TestManager>
                 player.transform.position = p;
         }
 
-        float[] zTargets = { -40f, 10f, 50f };
+        float[] zTargets = { -40f, 10f, 50f, 100f, 140f, 180f }; // 6지역 종단(해안~폐허)
         GameDebug.Log($"[R2][AreaBand] 시작 area={band.CurrentAreaId}");
         for (int i = 0; i < zTargets.Length; i++)
         {
