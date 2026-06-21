@@ -1623,6 +1623,51 @@ public class TestManager : MonoSingleton<TestManager>
         }
     }
 
+    // 이동비용 검증 프로브 (R1-T5). 로컬 플레이어를 실제 이동시켜 이동 중 Cold 누적을 확인.
+    public void TestMoveCostProbe()
+    {
+        StartCoroutine(CoTestMoveCostProbe());
+    }
+
+    private IEnumerator CoTestMoveCostProbe()
+    {
+        var player = InGameController.Instance?.PlayWorker?.LocalPlayer;
+        if (player == null)
+        {
+            GameDebug.LogError("[T5][MoveCost] LocalPlayer 없음 — 인게임 먼저 진입");
+            yield break;
+        }
+
+        // 자연 감쇠(낮)와 이동비용을 격리하기 위해, 낮 고정 + Cold 중간값에서 '이동 vs 정지' 비교.
+        var dn = InGameController.Instance?.DayNightWorker;
+        if (dn != null) dn.ForcePhase(DayPhase.Day);
+        player.SetCold(50);
+        yield return null;
+
+        var agent = player.GetComponent<NavMeshAgent>();
+
+        // 구간 A: 3초 정지 (감쇠만)
+        int aStart = player.Cold;
+        yield return new WaitForSeconds(3f);
+        int aEnd = player.Cold;
+
+        // 구간 B: 3초 이동 (감쇠 + 이동비용)
+        player.SetCold(50);
+        yield return null;
+        int bStart = player.Cold;
+        float t = 0f;
+        while (t < 3f)
+        {
+            if (agent != null && agent.enabled && (agent.pathPending || agent.remainingDistance < 2f))
+                agent.SetDestination(player.transform.position + player.transform.forward * 25f);
+            t += Time.deltaTime;
+            yield return null;
+        }
+        int bEnd = player.Cold;
+
+        GameDebug.Log($"[T5][MoveCost] 정지 ΔCold={aEnd - aStart} (감쇠만) / 이동 ΔCold={bEnd - bStart} (감쇠+이동비용) — 이동Δ가 정지Δ보다 크면(추위 더 누적) PASS");
+    }
+
     private void ApplyFullPlayInvincible(PlayerCharacter _player)
     {
         if (_player == null) return;
