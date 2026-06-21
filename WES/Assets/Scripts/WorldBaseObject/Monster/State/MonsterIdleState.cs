@@ -17,6 +17,14 @@ public class MonsterIdleState : MonsterStateBase
 
     public override void Update()
     {
+        // 감지: 타깃 발견 시 추격 전이(평화 몬스터는 Perception이 타깃을 안 잡음).
+        var perception = m_StateMachine.Owner.Perception;
+        if (perception != null && perception.HasTarget)
+        {
+            m_StateMachine.ChangeState(MonsterStateType.Chase);
+            return;
+        }
+
         m_Timer += Time.deltaTime;
 
         if (m_Timer >= IDLE_DURATION)

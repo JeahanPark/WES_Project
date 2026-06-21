@@ -1760,6 +1760,7 @@ public class TestManager : MonoSingleton<TestManager>
             GameDebug.LogError("[T4][Trap] 몬스터 스폰 실패");
             yield break;
         }
+        monster.SetMonsterId(minfo.Id); // placeholder 프리팹(id=1) → 의도 id로 정확화
 
         yield return new WaitForSeconds(0.5f);
         int before = monster.HP;
@@ -1828,6 +1829,8 @@ public class TestManager : MonoSingleton<TestManager>
             var monsterInfo = monsterList[0];
             Vector3 monsterPos = basePos + player.transform.forward * 3f;
             var monster = controller.SpawnWorker.SpawnObject<MonsterBase>(monsterInfo.PrefabKey, monsterPos);
+            if (monster != null)
+                monster.SetMonsterId(monsterInfo.Id); // placeholder 프리팹(id=1) → 의도 id로 정확화
             GameDebug.Log($"[TestManager] 몬스터 스폰: id={monsterInfo.Id}, key={monsterInfo.PrefabKey}, spawned={(monster != null)}");
         }
         else
@@ -2662,6 +2665,143 @@ public class TestManager : MonoSingleton<TestManager>
 
         Managers.Popup.CloseAll();
         GameDebug.Log($"[TestManager] TestResultPopupBackground 결과: PASS {passed}, FAIL {failed}");
+    }
+
+    // ===== R3-B 몬스터 추격/공격 행동 프로브 =====
+    // 공개 API 조합만 사용(테스트 전용 로직 금지). 서버(호스트)에서 실행 가정.
+    public void TestMonsterChaseAttack()
+    {
+        StartCoroutine(CoTestMonsterChaseAttack());
+    }
+
+    private IEnumerator CoTestMonsterChaseAttack()
+    {
+        GameDebug.Log("[TestManager] TestMonsterChaseAttack 시작");
+
+        var diagMonsters = Object.FindObjectsByType<MonsterBase>(FindObjectsSortMode.None);
+        GameDebug.Log($"[T-diag] 스폰 몬스터 {diagMonsters.Length}마리");
+        foreach (var dm in diagMonsters)
+            GameDebug.Log($"[T-diag] Id={dm.MonsterId} DetectRange={dm.DetectRange} Behavior={dm.BehaviorType} HP={dm.HP} z={dm.transform.position.z:F0}");
+
+        int passed = 0;
+        int failed = 0;
+        void Mark(bool _condition, string _label)
+        {
+            if (_condition) { passed++; GameDebug.Log($"[TestManager] PASS: {_label}"); }
+            else { failed++; GameDebug.LogError($"[TestManager] FAIL: {_label}"); }
+        }
+
+        var controller = Object.FindFirstObjectByType<InGameController>();
+        if (controller == null) { GameDebug.LogError("[TestManager] InGameController 없음"); yield break; }
+
+        var registry = controller.ObjectDataWorker?.GetCharacterRegistry();
+        var players = registry?.GetAlivePlayers();
+        if (players == null || players.Count == 0) { GameDebug.LogError("[TestManager] 플레이어 없음"); yield break; }
+        var player = players[0];
+        player.SetHP(99999);
+
+        // NavMeshAgent 활성(오너) 시 transform 직접설정은 되돌려지므로 Warp 사용.
+        var playerAgent = player.GetComponent<NavMeshAgent>();
+        void WarpPlayer(Vector3 _p)
+        {
+            if (playerAgent != null && playerAgent.enabled && playerAgent.isOnNavMesh) playerAgent.Warp(_p);
+            else player.transform.position = _p;
+        }
+
+        // 공격 몬스터(DetectRange>0) 1마리 확보 — 없으면 늑대(Id=2)를 직접 스폰.
+        MonsterBase aggressive = FindAggressiveMonster();
+        if (aggressive == null)
+        {
+            var spawned = controller.SpawnWorker.SpawnObject<MonsterBase>("Test01Monster", player.transform.position + Vector3.forward * 6f);
+            if (spawned != null)
+            {
+                // placeholder 프리팹(id=1, DetectRange=0)이므로 공격 몬스터(늑대 Id=2, Pack/DetectRange=8)를 명시 주입.
+                spawned.SetMonsterId(2);
+                aggressive = spawned.DetectRange > 0f ? spawned : null;
+            }
+            yield return new WaitForSeconds(0.3f);
+        }
+
+        Mark(aggressive != null, "공격 몬스터(DetectRange>0) 확보");
+        if (aggressive == null)
+        {
+            GameDebug.LogError($"[TestManager] TestMonsterChaseAttack 결과: PASS {passed}, FAIL {failed} (공격몬스터 없음 — MonsterInfo DetectRange/area 스폰 확인)");
+            yield break;
+        }
+
+        // 시나리오 1: 평화 몬스터(DetectRange=0) 존재 시 자발 추격 안 함(비파괴).
+        var peaceful = FindPeacefulMonster();
+        if (peaceful != null)
+        {
+            Mark(peaceful.DetectRange <= 0f, $"평화 몬스터 DetectRange=0 (Id={peaceful.MonsterId})");
+        }
+
+        // 시나리오 2: 플레이어를 공격 몬스터의 DetectRange 안으로 텔레포트 → 추격(거리 좁혀짐).
+        Vector3 nearPos = aggressive.transform.position + Vector3.forward * (aggressive.DetectRange * 0.5f);
+        WarpPlayer(nearPos);
+        yield return null;
+        float distBefore = Vector3.Distance(player.transform.position, aggressive.transform.position);
+        yield return new WaitForSeconds(2.5f);
+        float distAfter = Vector3.Distance(player.transform.position, aggressive.transform.position);
+        Mark(distAfter < distBefore + 0.1f, $"추격 진입 — 몬스터가 접근 ({distBefore:F1} → {distAfter:F1})");
+
+        // 시나리오 3: 사거리 내 유지 → 플레이어 HP 감소(공격).
+        int hpBefore = player.HP;
+        // 플레이어를 몬스터 바로 옆에 고정 유지.
+        for (float t = 0f; t < 4f; t += 0.2f)
+        {
+            WarpPlayer(aggressive.transform.position + Vector3.forward * (aggressive.AttackRange * 0.7f));
+            yield return new WaitForSeconds(0.2f);
+        }
+        Mark(player.HP < hpBefore, $"몬스터 공격으로 플레이어 HP 감소 ({hpBefore} → {player.HP})");
+
+        // 시나리오 4: leash — 플레이어를 멀리 텔레포트 → 추격 포기·복귀(몬스터가 스폰 근처로).
+        float spawnDistBefore = Vector3.Distance(aggressive.transform.position, GetMonsterSpawnPosition(aggressive));
+        WarpPlayer(aggressive.transform.position + Vector3.forward * (aggressive.LeashRadius + 30f));
+        yield return new WaitForSeconds(5f);
+        float spawnDistAfter = Vector3.Distance(aggressive.transform.position, GetMonsterSpawnPosition(aggressive));
+        Mark(spawnDistAfter <= spawnDistBefore + 1f, $"leash 복귀 — 스폰 거리 ({spawnDistBefore:F1} → {spawnDistAfter:F1})");
+
+        // 시나리오 5: 평화 몬스터 피격 → 반격(Chase 전환). 평화 몬스터 있으면.
+        if (peaceful != null && !peaceful.IsDead)
+        {
+            WarpPlayer(peaceful.transform.position + Vector3.forward * 2f);
+            yield return new WaitForSeconds(0.3f);
+            peaceful.TakeDamage(5, player);
+            yield return new WaitForSeconds(1.5f);
+            bool retaliating = peaceful.Perception != null && peaceful.Perception.HasTarget;
+            Mark(retaliating, $"평화 몬스터 피격 후 반격(타깃 보유) Id={peaceful.MonsterId}");
+        }
+
+        GameDebug.Log($"[TestManager] TestMonsterChaseAttack 결과: PASS {passed}, FAIL {failed}");
+    }
+
+    private MonsterBase FindAggressiveMonster()
+    {
+        var monsters = Object.FindObjectsByType<MonsterBase>(FindObjectsSortMode.None);
+        foreach (var m in monsters)
+        {
+            if (m != null && m.IsSpawned && !m.IsDead && m.DetectRange > 0f)
+                return m;
+        }
+        return null;
+    }
+
+    private MonsterBase FindPeacefulMonster()
+    {
+        var monsters = Object.FindObjectsByType<MonsterBase>(FindObjectsSortMode.None);
+        foreach (var m in monsters)
+        {
+            if (m != null && m.IsSpawned && !m.IsDead && m.DetectRange <= 0f)
+                return m;
+        }
+        return null;
+    }
+
+    private Vector3 GetMonsterSpawnPosition(MonsterBase _monster)
+    {
+        var sm = _monster.GetComponentInChildren<MonsterStateMachine>();
+        return sm != null ? sm.SpawnPosition : _monster.transform.position;
     }
 }
 #endif

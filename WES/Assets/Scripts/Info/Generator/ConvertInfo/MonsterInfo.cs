@@ -10,6 +10,11 @@ public partial class MonsterInfo
     public string PrefabKey;
     public int DropTableId;
     public int ATK;
+    public float MoveSpeed;
+    public float DetectRange;
+    public float AttackRange;
+    public float AttackCooldown;
+    public MonsterBehaviorType BehaviorType;
 }
 
 

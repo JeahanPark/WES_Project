@@ -10,6 +10,7 @@ public class MonsterSpawnArea : MonoBehaviour
     [SerializeField] private float m_SpawnRadius = 5f;
 
     public int AreaId => m_AreaId;
+    public float SpawnRadius => m_SpawnRadius;
 
     public Vector3 GetRandomSpawnPosition()
     {

@@ -16,6 +16,7 @@ public class InGameAreaWorker : MonoBehaviour
 
     private Dictionary<int, int> m_AreaAliveCount = new();
     private List<MonsterBase> m_NightMonsters = new();
+    private List<MonsterBase> m_AliveMonsters = new();
 
     private void OnEnable()
     {
@@ -52,6 +53,7 @@ public class InGameAreaWorker : MonoBehaviour
             return;
 
         m_NightMonsters.Remove(_monster);
+        m_AliveMonsters.Remove(_monster);
 
         var monsterInfo = Managers.Info.MonsterInfoList.Find(x => x.Id == _monster.MonsterId);
         if (monsterInfo != null)
@@ -115,8 +117,35 @@ public class InGameAreaWorker : MonoBehaviour
 
             if (m_AreaAliveCount.ContainsKey(monster.SpawnAreaId))
                 m_AreaAliveCount[monster.SpawnAreaId]--;
+
+            m_AliveMonsters.Remove(monster);
         }
         m_NightMonsters.Clear();
+    }
+
+    /// <summary>
+    /// Pack(무리) 어그로: 같은 SpawnAreaId의 살아있는 몬스터에게 동일 타깃을 전파한다(서버 권위 내부).
+    /// 자기 자신과 평화 몬스터(Perception 없음/null)는 제외. 추가 네트워크 동기화 없음.
+    /// </summary>
+    public void PropagatePackTarget(MonsterBase _source, int _areaId, PlayerCharacter _target)
+    {
+        if (!Managers.Network.IsServer || _target == null || _target.IsDead)
+            return;
+
+        for (int i = m_AliveMonsters.Count - 1; i >= 0; i--)
+        {
+            var monster = m_AliveMonsters[i];
+            if (monster == null || !monster.IsSpawned || monster.IsDead)
+                continue;
+            if (monster == _source || monster.SpawnAreaId != _areaId)
+                continue;
+            if (monster.BehaviorType != MonsterBehaviorType.Pack)
+                continue;
+            if (monster.Perception == null)
+                continue;
+
+            monster.Perception.SetForcedTarget(_target);
+        }
     }
 
     private void TrySpawnForArea(MonsterSpawnArea _area, bool _spawnNightOnly)
@@ -175,7 +204,15 @@ public class InGameAreaWorker : MonoBehaviour
             return;
         }
 
+        // 의도 MonsterId 주입 → MonsterInfo 재로딩(HP/행동/드롭 차별화). placeholder 프리팹은 id=1 직렬화.
+        monster.SetMonsterId(_monsterId);
         monster.SetSpawnAreaId(_areaId);
+
+        var spawnArea = System.Array.Find(m_SpawnAreas, x => x.AreaId == _areaId);
+        if (spawnArea != null)
+            monster.SetLeashBaseRadius(spawnArea.SpawnRadius);
+
+        m_AliveMonsters.Add(monster);
 
         if (_isNightMonster)
             m_NightMonsters.Add(monster);

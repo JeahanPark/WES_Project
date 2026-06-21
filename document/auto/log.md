@@ -132,3 +132,4 @@ vault 변경 이력. 시간 역순(최신이 위).
 2026-06-21 R2 2b-2 designer — 6지역 procedural 틴트 머티리얼(Generic_01_A_Beach~Ruins, Z밴드 할당 메뉴 Release6RegionTerrainSetup)·stale 마커 정리(빈 Area3_Swamp 삭제+Area3_Mountain→Area3_Swamp rename)·몬스터모델 백로그. 지역 색구분 캡처 확인. ⚠MapGenerator 재실행 시 틴트 소실→메뉴 재실행 필요.
 2026-06-21 R2 Phase3 통합 QA PASS(6지역 밴드전환·6스폰·에러0, 2b 편집 후 무회귀) + R2 통합보고(reports/2026-06-21-R2-6지역공간-통합보고.md). R2 기능코어 완료, 아트/몬스터메쉬/관문/튜닝 R3~백로그.
 2026-06-21 R3 Phase1 콘텐츠 스코프 합의(슬라이스 A/B/C, director 결정: 등급만/leash×1.5/도면중복무효/평화반격) + R3-A 도구 실아이템(도끼501~503·곡괭이511~513 ToolTier1/2/3 + 레시피6종). 검증 PASS(인벤24종, 철도구 보유→채집배수 x2.5, R1-T3 실아이템 활성화). 실수치 R5·아이콘 designer 백로그.
+2026-06-21 R3-B 몬스터 추격/공격 행동 — MonsterChase/AttackState+Perception+BehaviorType(Pack/Charge)+MonsterInfo 5컬럼(MoveSpeed/DetectRange/AttackRange/AttackCooldown/BehaviorType)+leash×1.5+피격반격. ★근본버그 수정: 전 몬스터가 placeholder프리팹 baked id=1로 고정→SetMonsterId 스폰주입(몬스터별 HP/ATK/드롭/행동 활성, R1/R2부터 잠재). 검증 PASS6/0(추격 4.0→1.0·공격 HP감소·leash·반격, 몬스터별 스탯).

@@ -7,7 +7,7 @@ using UnityEngine.AI;
 /// </summary>
 public class MonsterStateMachine : MonoBehaviour
 {
-    private const float MOVE_SPEED = 2f;
+    private const float DEFAULT_MOVE_SPEED = 2f;
     private const float WANDER_RADIUS = 5f;
 
     [SerializeField] private MonsterBase m_Owner;
@@ -18,8 +18,10 @@ public class MonsterStateMachine : MonoBehaviour
     private Vector3 m_TargetPosition;
     private Vector3 m_SpawnPosition;
     private NavMeshAgent m_Agent;
+    private float m_MoveSpeed = DEFAULT_MOVE_SPEED;
 
     public MonsterBase Owner => m_Owner;
+    public Vector3 SpawnPosition => m_SpawnPosition;
 
     private void Awake()
     {
@@ -40,7 +42,22 @@ public class MonsterStateMachine : MonoBehaviour
         if (m_Owner != null && !m_Owner.IsServer)
             return;
 
+        // 감지 갱신(서버) — Chase/Attack의 입력원.
+        if (m_Owner != null && m_Owner.Perception != null)
+            m_Owner.Perception.Tick();
+
         m_CurrentState?.Update();
+    }
+
+    /// <summary>MonsterInfo 행동 파라미터 반영(서버, LoadMonsterInfo 후). MoveSpeed → NavMeshAgent.</summary>
+    public void ApplyMonsterInfo(MonsterBase _owner)
+    {
+        if (_owner == null)
+            return;
+
+        m_MoveSpeed = _owner.ConfiguredMoveSpeed;
+        if (m_Agent != null)
+            m_Agent.speed = m_MoveSpeed;
     }
 
     public void ChangeState(MonsterStateType _stateType)
@@ -69,6 +86,12 @@ public class MonsterStateMachine : MonoBehaviour
         }
     }
 
+    /// <summary>추격용: 목표 위치를 직접 설정(타깃 플레이어 위치 또는 스폰 복귀 지점).</summary>
+    public void SetMoveTarget(Vector3 _position)
+    {
+        m_TargetPosition = _position;
+    }
+
     public bool HasReachedTarget(float _threshold)
     {
         if (m_Agent != null && m_Agent.isOnNavMesh)
@@ -93,13 +116,48 @@ public class MonsterStateMachine : MonoBehaviour
         Vector3 direction = (m_TargetPosition - transform.position).normalized;
         direction.y = 0f;
 
-        transform.position += direction * (MOVE_SPEED * Time.deltaTime);
+        transform.position += direction * (m_MoveSpeed * Time.deltaTime);
 
         if (direction.sqrMagnitude > 0.01f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
         }
+    }
+
+    /// <summary>고정 방향으로 1프레임 직선 이동(Charge 돌진). NavMesh 경계는 SamplePosition으로만 보정.</summary>
+    public void MoveStraight(Vector3 _direction, float _speed)
+    {
+        _direction.y = 0f;
+        if (_direction.sqrMagnitude < 0.0001f)
+            return;
+
+        _direction.Normalize();
+        Vector3 next = transform.position + _direction * (_speed * Time.deltaTime);
+
+        if (m_Agent != null && m_Agent.isOnNavMesh)
+        {
+            if (NavMesh.SamplePosition(next, out NavMeshHit hit, 1.5f, NavMesh.AllAreas))
+                m_Agent.Warp(hit.position);
+        }
+        else
+        {
+            transform.position = next;
+        }
+
+        Quaternion rot = Quaternion.LookRotation(_direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime * 10f);
+    }
+
+    /// <summary>현재 위치에서 스폰 지점까지의 거리(leash 판정).</summary>
+    public float DistanceFromSpawn()
+    {
+        return Vector3.Distance(transform.position, m_SpawnPosition);
+    }
+
+    public float DistanceTo(Vector3 _position)
+    {
+        return Vector3.Distance(transform.position, _position);
     }
 
     public void SetCollisionEnabled(bool _enabled)
@@ -125,6 +183,8 @@ public class MonsterStateMachine : MonoBehaviour
         {
             { MonsterStateType.Idle, new MonsterIdleState() },
             { MonsterStateType.Walk, new MonsterWalkState() },
+            { MonsterStateType.Chase, new MonsterChaseState() },
+            { MonsterStateType.Attack, new MonsterAttackState() },
             { MonsterStateType.Hit, new MonsterHitState() },
             { MonsterStateType.Death, new MonsterDeathState() }
         };

@@ -1980,6 +1980,7 @@ GameObject:
   - component: {fileID: 761285738412579915}
   - component: {fileID: -1295466925895157310}
   - component: {fileID: -5383694318948554869}
+  - component: {fileID: 8800000000000000001}
   m_Layer: 11
   m_Name: Test01Monster
   m_TagString: Untagged
@@ -2075,6 +2076,7 @@ MonoBehaviour:
   m_StateAnimationComponent: {fileID: 3585720746636348683}
   m_StateMachine: {fileID: 7027161138349586120}
   m_Renderer: {fileID: 1063570667729363517}
+  m_Perception: {fileID: 8800000000000000001}
 --- !u!114 &3585720746636348683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2099,7 +2101,20 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 637fc1cd24ee9754c99551777590ee74, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
+  m_Owner: {fileID: 2993646828391481527}
+--- !u!114 &8800000000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4965837990873821528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 758c73f66c147dc4589ce8d87541e9a6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
   m_Owner: {fileID: 2993646828391481527}
 --- !u!135 &761285738412579915
 SphereCollider:

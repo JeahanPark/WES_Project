@@ -21,7 +21,16 @@ public class MonsterHitState : MonsterStateBase
 
         if (m_Timer >= HIT_STUN_DURATION)
         {
-            m_StateMachine.ChangeState(MonsterStateType.Idle);
+            // 피격반격: 타깃(강제 주입 포함)이 있으면 추격, 없으면 대기.
+            var perception = m_StateMachine.Owner.Perception;
+            if (perception != null && perception.HasTarget)
+            {
+                m_StateMachine.ChangeState(MonsterStateType.Chase);
+            }
+            else
+            {
+                m_StateMachine.ChangeState(MonsterStateType.Idle);
+            }
         }
     }
 
