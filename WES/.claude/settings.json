@@ -44,7 +44,11 @@
       "mcp__playwright__browser_navigate",
       "mcp__playwright__browser_snapshot",
       "mcp__playwright__browser_close",
-      "mcp__playwright__browser_click"
+      "mcp__playwright__browser_click",
+      "WebFetch(domain:developer.valvesoftware.com)",
+      "WebFetch(domain:mikebarclay.co.uk)",
+      "WebFetch(domain:www.madngine.com)",
+      "WebFetch(domain:madngine.career.greetinghr.com)"
     ],
     "additionalDirectories": [
       "C:\\GitFork\\WES_Project\\WES\\.claude\\skills",
