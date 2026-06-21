@@ -131,3 +131,4 @@ vault 변경 이력. 시간 역순(최신이 위).
 2026-06-21 R2 2b-1 level-design — Area3~6 마커에 MonsterSpawnArea 부착(AreaId 1~6 유니크)+InGameAreaWorker.m_SpawnAreas 6개 등록. 플레이검증 PASS(Initialized 6 spawn areas, Area6 z184 몬스터 스폰). 보고는 포맷붕괴였으나 디스크검증으로 작업 확인. 잔여: stale Area3_Mountain 마커 정리(2b-2)
 2026-06-21 R2 2b-2 designer — 6지역 procedural 틴트 머티리얼(Generic_01_A_Beach~Ruins, Z밴드 할당 메뉴 Release6RegionTerrainSetup)·stale 마커 정리(빈 Area3_Swamp 삭제+Area3_Mountain→Area3_Swamp rename)·몬스터모델 백로그. 지역 색구분 캡처 확인. ⚠MapGenerator 재실행 시 틴트 소실→메뉴 재실행 필요.
 2026-06-21 R2 Phase3 통합 QA PASS(6지역 밴드전환·6스폰·에러0, 2b 편집 후 무회귀) + R2 통합보고(reports/2026-06-21-R2-6지역공간-통합보고.md). R2 기능코어 완료, 아트/몬스터메쉬/관문/튜닝 R3~백로그.
+2026-06-21 R3 Phase1 콘텐츠 스코프 합의(슬라이스 A/B/C, director 결정: 등급만/leash×1.5/도면중복무효/평화반격) + R3-A 도구 실아이템(도끼501~503·곡괭이511~513 ToolTier1/2/3 + 레시피6종). 검증 PASS(인벤24종, 철도구 보유→채집배수 x2.5, R1-T3 실아이템 활성화). 실수치 R5·아이콘 designer 백로그.

@@ -7,3 +7,9 @@ Id.INT,CategoryType.CRAFTCATEGORYTYPE,Name.STRING,Description.STRING,IconKey.STR
 6,Item,철검,강력한 철제 검입니다,ironsword_icon,202,1
 7,Item,가죽 갑옷,가죽으로 만든 방어구입니다,leatherarmor_icon,203,1
 8,Building,횃불,주변을 밝히는 횃불입니다,torch_icon,301,1
+9,Item,나무 도끼,채집 효율 1등급 도끼입니다,axe_wood_icon,501,1
+10,Item,돌 도끼,채집 효율 2등급 도끼입니다,axe_stone_icon,502,1
+11,Item,철 도끼,채집 효율 3등급 도끼입니다,axe_iron_icon,503,1
+12,Item,나무 곡괭이,채굴 효율 1등급 곡괭이입니다,pickaxe_wood_icon,511,1
+13,Item,돌 곡괭이,채굴 효율 2등급 곡괭이입니다,pickaxe_stone_icon,512,1
+14,Item,철 곡괭이,채굴 효율 3등급 곡괭이입니다,pickaxe_iron_icon,513,1
