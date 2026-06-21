@@ -128,3 +128,4 @@ vault 변경 이력. 시간 역순(최신이 위).
 2026-06-21 R1-T7 통합 QA — 전 시스템 1세션 공존·프로브 일괄 에러0. R1 통합보고(reports/2026-06-21-R1-통합보고.md). 코드 토대 완료, 콘텐츠·6지역 연동 R2~R4
 2026-06-21 R2 Phase1 합의(6지역 공간, 미결0)·Phase2 슬라이스1 코드토대 — InGameAreaBandWorker(선두Z→지역d→Weather/MoveCost.SetArea, 단조증가+히스테리시스)·AreaGateComponent 스켈레톤·WorldAreaInfo AxisMin/Max(CSV 단일진실원). 씬 부착+와이어링(team-lead MCP)·플레이검증 PASS(z-40→a1, z10→a2, z51→a3, 역행 a3유지). 프로브 Warp 수정.
 2026-06-21 R2 슬라이스2a — MapGenerator 6지역 선형종단 회랑 개편(원형섬→Z -70~203 6밴드, CSV WorldAreaInfo 단일진실원 파싱, 지형벽 시야차폐) + CSV 6지역(WorldArea/Weather17/Monster13행+신규몬스터10종 placeholder). 메뉴 Validate(PASS16/0)·Generate·Bake 실행. 플레이검증 6지역 밴드전환 PASS(a1~a6 단조증가). 지형아트·관문배치·몬스터모델은 2b.
+2026-06-21 R2 2b-1 level-design — Area3~6 마커에 MonsterSpawnArea 부착(AreaId 1~6 유니크)+InGameAreaWorker.m_SpawnAreas 6개 등록. 플레이검증 PASS(Initialized 6 spawn areas, Area6 z184 몬스터 스폰). 보고는 포맷붕괴였으나 디스크검증으로 작업 확인. 잔여: stale Area3_Mountain 마커 정리(2b-2)
